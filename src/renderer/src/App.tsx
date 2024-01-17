@@ -1,5 +1,6 @@
 import Versions from './components/Versions'
 import icons from './assets/icons.svg'
+import './styles/global.css'
 
 function App(): JSX.Element {
   return (
