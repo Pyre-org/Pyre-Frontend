@@ -1,5 +1,5 @@
 import { Button } from "@mantine/core";
-import GoogleIcon from "../../../../resources/google_icon.svg";
+import GoogleIcon from "@resources/google_icon.svg";
 
 function GoogleLoginBtn() {
   return (

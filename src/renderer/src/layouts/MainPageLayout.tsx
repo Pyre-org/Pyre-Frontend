@@ -10,7 +10,7 @@ import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
 
 function MainPageLayout() {
-  const [asideOpened, { toggle: toggleAside }] = useDisclosure(false);
+  const [asideOpened, { toggle: toggleAside }] = useDisclosure(true);
   return (
     <AppShell
       header={{ height: 60 }}
