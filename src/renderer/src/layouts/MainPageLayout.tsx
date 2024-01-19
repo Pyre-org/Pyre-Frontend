@@ -28,7 +28,7 @@ function MainPageLayout() {
       }}
       padding="md"
     >
-      <AppShell.Header className={classes.Header}>
+      <AppShell.Header className={clsx(classes.Header)}>
         <Logo />
         <Group>
           <TextInput
