@@ -1,10 +1,10 @@
-import { ActionIcon, AppShell, Group, TextInput } from "@mantine/core";
+import { ActionIcon, AppShell, Button, Group, TextInput } from "@mantine/core";
 import Logo from "@renderer/components/Logo";
 import {
   ChevronLeftIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/16/solid";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import classes from "./MainPageLayout.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
@@ -40,6 +40,9 @@ function MainPageLayout() {
               className={clsx("w-6 h-6", asideOpened && "rotate-180")}
             />
           </ActionIcon>
+          <Link to="/login">
+            <Button variant="light">로그인</Button>
+          </Link>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar>

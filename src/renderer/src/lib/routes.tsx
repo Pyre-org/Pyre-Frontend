@@ -1,5 +1,6 @@
 import MainPageLayout from "@renderer/layouts/MainPageLayout";
 import HomePage from "@renderer/pages/HomePage";
+import LoginPage from "@renderer/pages/LoginPage";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 export const router = createBrowserRouter([
@@ -15,5 +16,9 @@ export const router = createBrowserRouter([
         element: <HomePage />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
 ]);
