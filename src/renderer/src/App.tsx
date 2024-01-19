@@ -11,7 +11,7 @@ import { theme } from "./styles/theme";
 function App() {
   const [queryClient] = useState(() => new QueryClient());
   return (
-    <MantineProvider theme={theme}>
+    <MantineProvider theme={theme} defaultColorScheme="dark">
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} fallbackElement={null} />
         <ReactQueryDevtools />

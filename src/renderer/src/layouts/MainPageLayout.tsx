@@ -2,15 +2,17 @@ import { ActionIcon, AppShell, Button, Group, TextInput } from "@mantine/core";
 import Logo from "@renderer/components/Logo";
 import {
   ChevronLeftIcon,
+  HashtagIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/16/solid";
 import { Link, Outlet } from "react-router-dom";
 import classes from "./MainPageLayout.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
+import { NAVBAR_MENUS } from "@renderer/constants/layout";
 
 function MainPageLayout() {
-  const [asideOpened, { toggle: toggleAside }] = useDisclosure(true);
+  const [asideOpened, { toggle: toggleAside }] = useDisclosure(false);
   return (
     <AppShell
       header={{ height: 60 }}
@@ -26,9 +28,13 @@ function MainPageLayout() {
           mobile: !asideOpened,
         },
       }}
+      withBorder={false}
       padding="md"
     >
-      <AppShell.Header className={clsx(classes.Header)}>
+      <AppShell.Header
+        className={clsx(classes.Header, "shadow-lg")}
+        bg="dark.6"
+      >
         <Logo />
         <Group>
           <TextInput
@@ -45,12 +51,35 @@ function MainPageLayout() {
           </Link>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar>
-        <AppShell.Section>Hello world</AppShell.Section>
-        <AppShell.Section>Hello world</AppShell.Section>
-        <AppShell.Section>Hello world</AppShell.Section>
+      <AppShell.Navbar p="xs" bg="dark.7">
+        <AppShell.Section>
+          <Link to="/">
+            <Button
+              leftSection={<HashtagIcon className="w-5 h-5" />}
+              variant="subtle"
+              justify="start"
+              fullWidth
+            >
+              전체
+            </Button>
+          </Link>
+        </AppShell.Section>
+        {NAVBAR_MENUS.map((menu) => (
+          <AppShell.Section key={menu.name}>
+            <Link to={menu.href}>
+              <Button
+                leftSection={<HashtagIcon className="w-5 h-5" />}
+                variant="subtle"
+                justify="start"
+                fullWidth
+              >
+                {menu.name}
+              </Button>
+            </Link>
+          </AppShell.Section>
+        ))}
       </AppShell.Navbar>
-      <AppShell.Main>
+      <AppShell.Main bg="dark.6">
         <Outlet />
       </AppShell.Main>
       <AppShell.Aside>
