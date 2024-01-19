@@ -7,13 +7,13 @@
     "src/preload/*.d.ts"
   ],
   "compilerOptions": {
-    "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "paths": {
       "@renderer/*": [
         "src/renderer/src/*"
       ]
     }
-  }
+  },
 }

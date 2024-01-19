@@ -1,4 +1,12 @@
-import { app, shell, BrowserWindow } from "electron";
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  desktopCapturer,
+  screen,
+} from "electron";
+import fs from "fs";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
@@ -6,8 +14,10 @@ import icon from "../../resources/icon.png?asset";
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1080,
+    height: 720,
+    minWidth: 800,
+    minHeight: 450,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
@@ -69,3 +79,20 @@ app.on("window-all-closed", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+function downloadURI(uri, name) {
+  const data = uri.replace(/^data:image\/\w+;base64,/, "");
+  const buf = Buffer.from(data, "base64");
+  fs.writeFile(name, buf, () => console.log("done"));
+}
+
+ipcMain.handle("DESKTOP_CAPTURER_GET_SOURCES", async (_, opts) => {
+  const res = await desktopCapturer.getSources(opts);
+  res.map((i, idx) => downloadURI(i.thumbnail.toDataURL(), `test${idx}.png`));
+  return res;
+});
+
+ipcMain.handle("DESKTOP_CAPTURER_GET_PRIMARY_SCREEN", async () => {
+  const res = screen.getPrimaryDisplay();
+  return res;
+});

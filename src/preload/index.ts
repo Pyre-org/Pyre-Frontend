@@ -1,8 +1,15 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
 // Custom APIs for renderer
-const api = {};
+export const api = {
+  getSources: (
+    opts: Electron.SourcesOptions,
+  ): Promise<Electron.DesktopCapturerSource[]> =>
+    ipcRenderer.invoke("DESKTOP_CAPTURER_GET_SOURCES", opts),
+  getPrimaryScreen: (): Promise<Electron.Display> =>
+    ipcRenderer.invoke("DESKTOP_CAPTURER_GET_PRIMARY_SCREEN"),
+};
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
