@@ -14,18 +14,29 @@ import {
   RegisterSchemaType,
 } from "@renderer/lib/schemas/RegisterSchema";
 import { useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { useDisclosure } from "@mantine/hooks";
+import { useRegisterMutation } from "@renderer/lib/queries/auth";
 
 function RegisterPage() {
   const methods = useForm<RegisterSchemaType>({
     resolver: zodResolver(RegisterSchema),
   });
+  const navigate = useNavigate();
+  const registerMutation = useRegisterMutation();
   const [showPwd, { toggle: togglePwd }] = useDisclosure(false);
 
   const onSubmit = useCallback<SubmitHandler<RegisterSchemaType>>((data) => {
-    console.log(data);
+    registerMutation.mutate(data, {
+      onSuccess: () => {
+        alert("회원가입이 완료되었습니다.");
+        navigate("/home");
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
   }, []);
 
   const onError = useCallback<SubmitErrorHandler<RegisterSchemaType>>(

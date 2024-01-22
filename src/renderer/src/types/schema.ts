@@ -12,16 +12,84 @@ export interface User {
   id: number;
   email: string;
   password: string;
-  name?: string;
-  username?: string;
-  gender?: number;
-  image_url?: string;
-  age?: number;
-  phone_number?: string;
+  nickname: string;
+  profilePictureUrl: string;
+  shortDescription: string;
+  createDate: string;
+  modifyDate: string;
+  lastActive: string;
   refresh_token: string | null;
 }
 
 export interface IProfile
-  extends Pick<User, "id" | "email" | "image_url" | "name" | "username"> {}
+  extends Pick<User, "id" | "email" | "profilePictureUrl" | "nickname"> {}
 
 export type UserDTO = Omit<User, "id" | "refresh_token">;
+
+export interface Channel {
+  id: number;
+  title: string;
+  description: string;
+  genre: string;
+  rating: number;
+  rooms: Room[];
+  imageUrl: string;
+  type: ChannelType;
+  cAt: string;
+  mAt: string;
+}
+
+export enum ChannelType {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+  OPEN = "OPEN",
+}
+
+export interface Room {
+  id: number;
+  title: string;
+  description: string;
+  imageurl: string;
+  type: RoomType;
+  cAt: string;
+  mAt: string;
+}
+
+export enum RoomType {
+  ROOM_PUBLIC = "ROOM_PUBLIC",
+  ROOM_PRIVATE = "ROOM_PRIVATE",
+  ROOM_OPEN = "ROOM_OPEN",
+  ROOM_GLOBAL = "ROOM_GLOBAL",
+  ROOM_CAPTURE = "ROOM_CAPTURE",
+}
+
+export interface Chat {
+  id: number;
+  user: User;
+  room: Room;
+  message: string;
+  cAt: string;
+  mAt: string;
+}
+
+export interface ScreenShot {
+  id: number;
+  user: User;
+  uploadTimestamp: string;
+  imageUrl: string;
+  thumbnailUrl: string;
+  visibility: string;
+  likes: number;
+}
+
+export interface Feed {
+  id: number;
+  user: User;
+  description: string;
+  screenshots: ScreenShot[];
+  tags: string[];
+  visibility: string;
+  likes: number;
+  views: number;
+  room_id: number;
+}

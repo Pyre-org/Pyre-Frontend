@@ -1,5 +1,5 @@
 import { api } from "../api";
-import { BaseError, IProfile, User } from "../../types/schema";
+import { BaseError, IProfile } from "../../types/schema";
 import { AxiosError } from "axios";
 import {
   UseMutationOptions,
@@ -46,7 +46,11 @@ export const useLoginMutation = (
   });
 };
 
-export interface IRegisterBody extends Omit<User, "id" | "refresh_token"> {}
+export interface IRegisterBody {
+  email: string;
+  password: string;
+  nickname: string;
+}
 
 export const register = async (body: IRegisterBody) => {
   const res = await api.post<ITokenResponse>(`${baseUrl}/register`, body);

@@ -5,11 +5,14 @@ import {
   ipcMain,
   desktopCapturer,
   screen,
+  globalShortcut,
 } from "electron";
 import fs from "fs";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import icon from "../../resources/icon.png?asset";
+
+app.commandLine.appendSwitch("ignore-certificate-errors");
 
 function createWindow(): void {
   // Create the browser window.
@@ -49,6 +52,9 @@ function createWindow(): void {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  globalShortcut.register("CommandOrControl+R", () => {
+    handleScreenshot();
+  });
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron");
 
@@ -96,3 +102,24 @@ ipcMain.handle("DESKTOP_CAPTURER_GET_PRIMARY_SCREEN", async () => {
   const res = screen.getPrimaryDisplay();
   return res;
 });
+
+function handleScreenshot() {
+  const display = screen.getPrimaryDisplay();
+  const options: Electron.SourcesOptions = {
+    types: ["screen"],
+    thumbnailSize: display.size,
+  };
+  desktopCapturer.getSources(options).then((sources) => {
+    const source = sources?.[0];
+    if (!source) return;
+    const screenshotPath = join(app.getPath("pictures"), "screenshot.png");
+    console.log(screenshotPath);
+    fs.writeFile(screenshotPath, source.thumbnail.toPNG(), (error) => {
+      if (error) {
+        console.error(error);
+        return;
+      }
+      shell.openPath(screenshotPath);
+    });
+  });
+}
