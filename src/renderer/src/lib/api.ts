@@ -10,7 +10,7 @@ export const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {
-    config.headers["access_token"] = `Bearer ${token}`;
+    config.headers["authorization"] = `Bearer ${token}`;
   }
   return config;
 });
@@ -32,7 +32,7 @@ api.interceptors.response.use(
         if (!access_token) {
           return Promise.reject(error);
         }
-        originalRequest.headers["access_token"] = `Bearer ${access_token}`;
+        originalRequest.headers["authorization"] = `Bearer ${access_token}`;
         setToken(access_token);
         return api(originalRequest);
       } catch (e) {
