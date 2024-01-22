@@ -10,9 +10,11 @@ import classes from "./MainPageLayout.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import clsx from "clsx";
 import { NAVBAR_MENUS } from "@renderer/constants/layout";
+import Profile from "@renderer/components/Profile";
 
 function MainPageLayout() {
   const [asideOpened, { toggle: toggleAside }] = useDisclosure(false);
+
   return (
     <AppShell
       header={{ height: 60 }}
@@ -46,9 +48,7 @@ function MainPageLayout() {
               className={clsx("w-6 h-6", asideOpened && "rotate-180")}
             />
           </ActionIcon>
-          <Link to="/login">
-            <Button variant="light">로그인</Button>
-          </Link>
+          <Profile />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="xs" bg="dark.7">

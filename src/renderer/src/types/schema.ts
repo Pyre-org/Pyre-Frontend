@@ -13,7 +13,7 @@ export interface User {
   email: string;
   password: string;
   nickname: string;
-  profilePictureUrl: string;
+  image_url: string;
   shortDescription: string;
   createDate: string;
   modifyDate: string;
@@ -22,7 +22,7 @@ export interface User {
 }
 
 export interface IProfile
-  extends Pick<User, "id" | "email" | "profilePictureUrl" | "nickname"> {}
+  extends Pick<User, "id" | "email" | "image_url" | "nickname"> {}
 
 export type UserDTO = Omit<User, "id" | "refresh_token">;
 
