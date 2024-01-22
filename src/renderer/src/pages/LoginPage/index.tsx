@@ -17,15 +17,22 @@ import {
   LoginSchemaType,
 } from "@renderer/lib/schemas/LoginSchema";
 import { useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLoginMutation } from "@renderer/lib/queries/auth";
 
 function LoginPage() {
   const methods = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
   });
+  const navigate = useNavigate();
+  const loginMutation = useLoginMutation();
 
   const onSubmit = useCallback<SubmitHandler<LoginSchemaType>>((data) => {
-    console.log(data);
+    loginMutation.mutate(data, {
+      onSuccess: () => {
+        navigate("/");
+      },
+    });
   }, []);
 
   const onError = useCallback<SubmitErrorHandler<LoginSchemaType>>((error) => {
