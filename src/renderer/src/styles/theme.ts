@@ -30,6 +30,7 @@ export const custom_colors = {
 const themeOverides = createTheme({
   colors: custom_colors,
   primaryColor: "bluegray",
+  cursorType: "pointer",
   components: {
     Card: {
       defaultProps: {

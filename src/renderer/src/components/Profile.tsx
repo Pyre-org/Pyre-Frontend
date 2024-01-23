@@ -10,7 +10,11 @@ function Profile() {
   const isLogin = !!user;
 
   const handleLogout = useCallback(() => {
-    logoutMutation.mutate();
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        window.location.reload();
+      },
+    });
   }, []);
 
   if (!isLogin)

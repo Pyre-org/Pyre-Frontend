@@ -50,6 +50,9 @@ export interface IRegisterBody {
   email: string;
   password: string;
   nickname: string;
+  agreement1: boolean;
+  agreement2: boolean;
+  authNum: string;
 }
 
 export const register = async (body: IRegisterBody) => {
@@ -149,4 +152,23 @@ export const useSetTokenMutation = (
       options?.onSuccess?.(data, variables, context);
     },
   });
+};
+
+export interface ICheckResponse {
+  present: boolean;
+  message: string;
+}
+
+export const checkEmail = async (email: string) => {
+  const res = await api.post<ICheckResponse>(`${baseUrl}/check/email`, {
+    email,
+  });
+  return res.data;
+};
+
+export const checkNickname = async (nickname: string) => {
+  const res = await api.post<ICheckResponse>(`${baseUrl}/check/nickname`, {
+    nickname,
+  });
+  return res.data;
 };
