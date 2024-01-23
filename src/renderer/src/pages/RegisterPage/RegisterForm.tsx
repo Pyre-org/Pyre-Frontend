@@ -8,17 +8,12 @@ import {
   TextInput,
   UnstyledButton,
 } from "@mantine/core";
-import {
-  SubmitErrorHandler,
-  SubmitHandler,
-  UseFormReturn,
-} from "react-hook-form";
+import { SubmitErrorHandler, UseFormReturn } from "react-hook-form";
 import { RegisterSchemaType } from "@renderer/lib/schemas/RegisterSchema";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { useDisclosure } from "@mantine/hooks";
-import { useSendEmailMutation } from "@renderer/lib/queries/email";
 
 interface RegisterFormProps {
   methods: UseFormReturn<RegisterSchemaType>;
@@ -26,22 +21,7 @@ interface RegisterFormProps {
 }
 
 function RegisterForm({ methods, onNext }: RegisterFormProps) {
-  const sendEmailMutation = useSendEmailMutation();
   const [showPwd, { toggle: togglePwd }] = useDisclosure(false);
-
-  const onSubmit = useCallback<SubmitHandler<RegisterSchemaType>>((data) => {
-    sendEmailMutation.mutate(
-      { email: data.email },
-      {
-        onSuccess: () => {
-          onNext();
-        },
-        onError: (error) => {
-          console.log(error);
-        },
-      },
-    );
-  }, []);
 
   const onError = useCallback<SubmitErrorHandler<RegisterSchemaType>>(
     (error) => {
@@ -53,7 +33,7 @@ function RegisterForm({ methods, onNext }: RegisterFormProps) {
   return (
     <form
       className={classes.Container}
-      onSubmit={methods.handleSubmit(onSubmit, onError)}
+      onSubmit={methods.handleSubmit(onNext, onError)}
     >
       <div className={classes.InnerContainer}>
         <Center>

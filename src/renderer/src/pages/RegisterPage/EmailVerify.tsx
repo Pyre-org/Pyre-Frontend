@@ -44,6 +44,7 @@ function EmailVerify({ email, onNext }: EmailVerifyProps) {
         },
         onError: (error) => {
           console.log(error);
+          setError("인증 코드가 일치하지 않거나 인증 시간이 만료되었습니다.");
         },
       },
     );

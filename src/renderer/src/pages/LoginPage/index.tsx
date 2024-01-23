@@ -19,6 +19,7 @@ import {
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@renderer/lib/queries/auth";
+import { notifications } from "@mantine/notifications";
 
 function LoginPage() {
   const methods = useForm<LoginSchemaType>({
@@ -31,6 +32,15 @@ function LoginPage() {
     loginMutation.mutate(data, {
       onSuccess: () => {
         navigate("/");
+      },
+      onError: (error) => {
+        console.log(error);
+        notifications.show({
+          title: "로그인에 실패했습니다.",
+          message: "아이디와 비밀번호를 확인해주세요.",
+          color: "red",
+          autoClose: 1500,
+        });
       },
     });
   }, []);
