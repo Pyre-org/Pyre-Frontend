@@ -1,10 +1,5 @@
-import { ActionIcon, AppShell, Button, Group, TextInput } from "@mantine/core";
-import Logo from "@renderer/components/Logo";
-import {
-  ChevronLeftIcon,
-  HashtagIcon,
-  MagnifyingGlassIcon,
-} from "@heroicons/react/16/solid";
+import { AppShell, Button, TextInput } from "@mantine/core";
+import { HashtagIcon } from "@heroicons/react/16/solid";
 import { Link, Outlet } from "react-router-dom";
 import classes from "./MainPageLayout.module.css";
 import { useDisclosure } from "@mantine/hooks";
@@ -13,7 +8,7 @@ import { NAVBAR_MENUS } from "@renderer/constants/layout";
 import Profile from "@renderer/components/Profile";
 
 function MainPageLayout() {
-  const [asideOpened, { toggle: toggleAside }] = useDisclosure(false);
+  const [asideOpened] = useDisclosure(true);
 
   return (
     <AppShell
@@ -30,14 +25,12 @@ function MainPageLayout() {
           mobile: !asideOpened,
         },
       }}
-      withBorder={false}
       padding="md"
     >
       <AppShell.Header
-        className={clsx(classes.Header, "shadow-lg")}
-        bg="dark.6"
+        className={clsx(classes.Header, "shadow-lg", "!bg-gray-900")}
       >
-        <Logo />
+        {/* <Logo />
         <Group>
           <TextInput
             leftSection={<MagnifyingGlassIcon className="h-6 w-6" />}
@@ -49,9 +42,34 @@ function MainPageLayout() {
             />
           </ActionIcon>
           <Profile />
-        </Group>
+        </Group> */}
+        <div className="flex items-center gap-2">
+          <SearchIcon className="h-5 w-5 text-gray-400" />
+          <TextInput
+            className="w-64 text-white rounded-md px-2 py-1"
+            placeholder="검색"
+            type="search"
+            classNames={{ input: "!bg-gray-800" }}
+          />
+        </div>
+        <div className="flex items-center gap-4">
+          <Link className="text-white hover:underline" to="#">
+            <Button variant="subtle" size="sm">
+              마이 페이지
+            </Button>
+          </Link>
+          <Link className="text-white hover:underline" to="#">
+            <Button variant="subtle" size="sm">
+              설정
+            </Button>
+          </Link>
+          <Profile />
+        </div>
       </AppShell.Header>
-      <AppShell.Navbar p="xs" bg="dark.7">
+      <AppShell.Navbar p="sm" className="!bg-gray-900">
+        <AppShell.Section>
+          <h2 className="text-lg font-semibold mb-2">방 목록</h2>
+        </AppShell.Section>
         <AppShell.Section>
           <Link to="/">
             <Button
@@ -79,15 +97,61 @@ function MainPageLayout() {
           </AppShell.Section>
         ))}
       </AppShell.Navbar>
-      <AppShell.Main bg="dark.6">
+      <AppShell.Main className="bg-gray-900">
         <Outlet />
       </AppShell.Main>
-      <AppShell.Aside>
-        <AppShell.Section>Hello world</AppShell.Section>
-        <AppShell.Section>Hello world</AppShell.Section>
-        <AppShell.Section>Hello world</AppShell.Section>
+      <AppShell.Aside className="!bg-gray-900" p="sm">
+        <AppShell.Section>
+          <h2 className="text-lg font-semibold mb-2">채널 목록</h2>
+        </AppShell.Section>
+        <AppShell.Section>
+          <Link to="/">
+            <Button
+              leftSection={<HashtagIcon className="w-5 h-5" />}
+              variant="subtle"
+              justify="start"
+              fullWidth
+            >
+              전체
+            </Button>
+          </Link>
+        </AppShell.Section>
+        {NAVBAR_MENUS.map((menu) => (
+          <AppShell.Section key={menu.name}>
+            <Link to={menu.href}>
+              <Button
+                leftSection={<HashtagIcon className="w-5 h-5" />}
+                variant="subtle"
+                justify="start"
+                fullWidth
+              >
+                {menu.name}
+              </Button>
+            </Link>
+          </AppShell.Section>
+        ))}
       </AppShell.Aside>
     </AppShell>
+  );
+}
+
+function SearchIcon(props) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
   );
 }
 

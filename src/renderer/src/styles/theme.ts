@@ -31,13 +31,6 @@ const themeOverides = createTheme({
   colors: custom_colors,
   primaryColor: "bluegray",
   cursorType: "pointer",
-  components: {
-    Card: {
-      defaultProps: {
-        bg: "dark.5",
-      },
-    },
-  },
 });
 
 export const theme = mergeMantineTheme(DEFAULT_THEME, themeOverides);

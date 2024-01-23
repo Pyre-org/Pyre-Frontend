@@ -1,61 +1,44 @@
-import { Card, Stack, Text } from "@mantine/core";
+import { Button, Card, Text } from "@mantine/core";
 
 function HomePage() {
   return (
-    <Stack gap="md">
-      <Card w="100%" shadow="md">
-        <Text fz="lg" fw="bold">
-          Hello world
-        </Text>
-        <Text fz="sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu lectus
-          posuere, molestie dui et, sodales diam. Vivamus posuere at nisl vel
-          venenatis. Proin ultrices at purus at rutrum. Aenean sagittis et est
-          ut dignissim. Nulla libero nisl, sodales nec enim ut, eleifend aliquet
-          elit. Nunc vehicula feugiat egestas. Morbi in turpis elementum,
-          iaculis elit ac, facilisis sapien. Suspendisse potenti.
-        </Text>
-      </Card>
-      <Card w="100%" shadow="md">
-        <Text fz="lg" fw="bold">
-          Hello world
-        </Text>
-        <Text fz="sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu lectus
-          posuere, molestie dui et, sodales diam. Vivamus posuere at nisl vel
-          venenatis. Proin ultrices at purus at rutrum. Aenean sagittis et est
-          ut dignissim. Nulla libero nisl, sodales nec enim ut, eleifend aliquet
-          elit. Nunc vehicula feugiat egestas. Morbi in turpis elementum,
-          iaculis elit ac, facilisis sapien. Suspendisse potenti.
-        </Text>
-      </Card>
-      <Card w="100%" shadow="md">
-        <Text fz="lg" fw="bold">
-          Hello world
-        </Text>
-        <Text fz="sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu lectus
-          posuere, molestie dui et, sodales diam. Vivamus posuere at nisl vel
-          venenatis. Proin ultrices at purus at rutrum. Aenean sagittis et est
-          ut dignissim. Nulla libero nisl, sodales nec enim ut, eleifend aliquet
-          elit. Nunc vehicula feugiat egestas. Morbi in turpis elementum,
-          iaculis elit ac, facilisis sapien. Suspendisse potenti.
-        </Text>
-      </Card>
-      <Card w="100%" shadow="md">
-        <Text fz="lg" fw="bold">
-          Hello world
-        </Text>
-        <Text fz="sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu lectus
-          posuere, molestie dui et, sodales diam. Vivamus posuere at nisl vel
-          venenatis. Proin ultrices at purus at rutrum. Aenean sagittis et est
-          ut dignissim. Nulla libero nisl, sodales nec enim ut, eleifend aliquet
-          elit. Nunc vehicula feugiat egestas. Morbi in turpis elementum,
-          iaculis elit ac, facilisis sapien. Suspendisse potenti.
-        </Text>
-      </Card>
-    </Stack>
+    <section className="flex-1 p-4">
+      <div className="flex items-center gap-4 mb-4">
+        <h2 className="text-lg font-semibold text-white">스페이스 목록</h2>
+        <Button
+          className="!text-white border-gray-400 font-bold"
+          variant="outline"
+        >
+          스페이스 생성
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
+        <Card className="!bg-gray-800 text-white" p="md">
+          <Text c="white" fz="xl" fw="bold">
+            Space 1
+          </Text>
+          <p className="text-slate-400">This is a description of space 1.</p>
+        </Card>
+        <Card className="!bg-gray-800 text-white" p="md">
+          <Text c="white" fz="xl" fw="bold">
+            Space 2
+          </Text>
+          <p className="text-slate-400">This is a description of space 2.</p>
+        </Card>
+        <Card className="!bg-gray-800 text-white" p="md">
+          <Text c="white" fz="xl" fw="bold">
+            Space 3
+          </Text>
+          <p className="text-slate-400">This is a description of space 3.</p>
+        </Card>
+        <Card className="!bg-gray-800 text-white" p="md">
+          <Text c="white" fz="xl" fw="bold">
+            Space 4
+          </Text>
+          <p className="text-slate-400">This is a description of space 4.</p>
+        </Card>
+      </div>
+    </section>
   );
 }
 
