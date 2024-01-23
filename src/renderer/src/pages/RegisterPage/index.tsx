@@ -17,6 +17,7 @@ function RegisterPage() {
   const registerMutation = useRegisterMutation();
   const methods = useForm<RegisterSchemaType>({
     resolver: zodResolver(RegisterSchema),
+    reValidateMode: "onSubmit",
   });
   const navigate = useNavigate();
 
