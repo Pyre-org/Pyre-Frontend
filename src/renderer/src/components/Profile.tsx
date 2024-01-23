@@ -44,8 +44,9 @@ function Profile() {
         <Menu.Item
           leftSection={<ArrowRightStartOnRectangleIcon className="w-4 h-4" />}
           onClick={handleLogout}
+          color="red"
         >
-          Logout
+          로그아웃
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>

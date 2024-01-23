@@ -1,4 +1,12 @@
-import { Button, Center, Group, PinInput, Stack, Text } from "@mantine/core";
+import {
+  Button,
+  Center,
+  Group,
+  LoadingOverlay,
+  PinInput,
+  Stack,
+  Text,
+} from "@mantine/core";
 import classes from "./index.module.css";
 import Logo from "@renderer/components/Logo";
 import { useEffect, useState } from "react";
@@ -64,37 +72,39 @@ function EmailVerify({ email, onNext }: EmailVerifyProps) {
   }, [timer]);
 
   return (
-    <Center className={classes.Container}>
-      <Logo />
-      <Text fz="lg" fw="bold">
-        이메일 인증 코드를 입력해주세요
-      </Text>
-      <Stack align="center" gap="2rem">
-        <Stack align="center">
-          <Text fz="md">{moment(timer).format("mm:ss")}</Text>
-          <Text fz="md">{email}으로 6자리 코드를 전송했습니다.</Text>
-          <PinInput
-            type="number"
-            length={6}
-            value={value}
-            onChange={setValue}
-            error={!!error}
-          />
-          {error && (
-            <Text fz="sm" c="red">
-              {error}
-            </Text>
-          )}
-          <Button onClick={handleVerify}>인증하기</Button>
+    <>
+      <Center className={classes.Container}>
+        <Logo />
+        <Text fz="lg" fw="bold">
+          이메일 인증 코드를 입력해주세요
+        </Text>
+        <Stack align="center" gap="2rem">
+          <Stack align="center">
+            <Text fz="md">{moment(timer).format("mm:ss")}</Text>
+            <Text fz="md">{email}으로 6자리 코드를 전송했습니다.</Text>
+            <PinInput
+              length={6}
+              value={value}
+              onChange={setValue}
+              error={!!error}
+            />
+            {error && (
+              <Text fz="sm" c="red">
+                {error}
+              </Text>
+            )}
+            <Button onClick={handleVerify}>인증하기</Button>
+          </Stack>
+          <Group gap="xs">
+            <Text>이메일 전송에 문제가 있나요?</Text>
+            <Button variant="subtle" size="compact-md" onClick={handleResend}>
+              재전송
+            </Button>
+          </Group>
         </Stack>
-        <Group gap="xs">
-          <Text>이메일 전송에 문제가 있나요?</Text>
-          <Button variant="subtle" size="compact-md" onClick={handleResend}>
-            재전송
-          </Button>
-        </Group>
-      </Stack>
-    </Center>
+      </Center>
+      <LoadingOverlay visible={sendEmailMutation.isPending} zIndex={1000} />
+    </>
   );
 }
 

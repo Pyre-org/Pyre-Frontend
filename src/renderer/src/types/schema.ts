@@ -3,10 +3,11 @@ export interface ListResponse<T> {
   hits: T[];
 }
 
-export interface BaseError {
-  code: string;
-  message: string;
-}
+// export interface BaseError {
+//   code: string;
+//   message: string;
+// }
+export type BaseError = string;
 
 export interface User {
   id: number;
