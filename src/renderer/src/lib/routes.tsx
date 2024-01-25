@@ -1,3 +1,4 @@
+import AuthRoute from "@renderer/components/AuthRoute";
 import MainPageLayout from "@renderer/layouts/MainPageLayout";
 import HomePage from "@renderer/pages/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
@@ -7,14 +8,21 @@ import { createHashRouter, Navigate } from "react-router-dom";
 export const router = createHashRouter([
   {
     path: "/",
-    element: <Navigate to="/home" />,
-  },
-  {
-    element: <MainPageLayout />,
+    element: <AuthRoute />,
+    loader: () => import("@renderer/components/AuthRoute"),
     children: [
       {
-        path: "/home",
-        element: <HomePage />,
+        element: <MainPageLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/home" />,
+          },
+          {
+            path: "home",
+            element: <HomePage />,
+          },
+        ],
       },
     ],
   },

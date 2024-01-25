@@ -25,12 +25,33 @@ export const custom_colors = {
     "#39588f",
     "#2d4b81",
   ],
+  darknavy: [
+    "#f9fafb",
+    "#f3f4f6",
+    "#e5e7eb",
+    "#d1d5db",
+    "#9ca3af",
+    "#6b7280",
+    "#4b5563",
+    "#374151",
+    "#1f2937",
+    "#111827",
+  ],
 } as const;
 
 const themeOverides = createTheme({
   colors: custom_colors,
   primaryColor: "bluegray",
   cursorType: "pointer",
+  components: {
+    Menu: {
+      styles: {
+        dropdown: {
+          backgroundColor: "darknavy.8",
+        },
+      },
+    },
+  },
 });
 
 export const theme = mergeMantineTheme(DEFAULT_THEME, themeOverides);

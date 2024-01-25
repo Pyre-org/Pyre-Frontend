@@ -10,6 +10,7 @@ import { MantineProvider } from "@mantine/core";
 import { theme } from "./styles/theme";
 import { config } from "./lib/queryclient";
 import { Notifications } from "@mantine/notifications";
+import LoadingPage from "./pages/LoadingPage";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient(config));
@@ -17,7 +18,7 @@ function App() {
     <MantineProvider theme={theme} defaultColorScheme="dark">
       <Notifications />
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} fallbackElement={null} />
+        <RouterProvider router={router} fallbackElement={<LoadingPage />} />
         <ReactQueryDevtools />
       </QueryClientProvider>
     </MantineProvider>

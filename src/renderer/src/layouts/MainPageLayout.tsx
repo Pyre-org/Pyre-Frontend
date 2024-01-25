@@ -28,7 +28,8 @@ function MainPageLayout() {
       padding="md"
     >
       <AppShell.Header
-        className={clsx(classes.Header, "shadow-lg", "!bg-gray-900")}
+        bg="darknavy.8"
+        className={clsx(classes.Header, "shadow-lg")}
       >
         {/* <Logo />
         <Group>
@@ -66,7 +67,7 @@ function MainPageLayout() {
           <Profile />
         </div>
       </AppShell.Header>
-      <AppShell.Navbar p="sm" className="!bg-gray-900">
+      <AppShell.Navbar p="sm" bg="darknavy.8">
         <AppShell.Section>
           <h2 className="text-lg font-semibold mb-2">방 목록</h2>
         </AppShell.Section>
@@ -97,10 +98,10 @@ function MainPageLayout() {
           </AppShell.Section>
         ))}
       </AppShell.Navbar>
-      <AppShell.Main className="bg-gray-900">
+      <AppShell.Main bg="darknavy.7">
         <Outlet />
       </AppShell.Main>
-      <AppShell.Aside className="!bg-gray-900" p="sm">
+      <AppShell.Aside bg="darknavy.8" p="sm">
         <AppShell.Section>
           <h2 className="text-lg font-semibold mb-2">채널 목록</h2>
         </AppShell.Section>

@@ -28,7 +28,7 @@ function Profile() {
       <Menu.Target>
         <Button variant="subtle">{user?.nickname}</Button>
       </Menu.Target>
-      <Menu.Dropdown>
+      <Menu.Dropdown bg="darknavy.9">
         <Group p="sm">
           <Avatar src={user.image_url} radius="xl" />
           <div style={{ flex: 1 }}>
