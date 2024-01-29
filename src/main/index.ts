@@ -14,6 +14,11 @@ import icon from "../../resources/icon.png?asset";
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
 
+const windows = {
+  main: null as BrowserWindow | null,
+  screenshot: null as BrowserWindow | null,
+};
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -25,10 +30,12 @@ function createWindow(): void {
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
+      preload: join(__dirname, "../preload/index.ts"),
       sandbox: false,
     },
   });
+
+  windows.main = mainWindow;
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
@@ -48,12 +55,65 @@ function createWindow(): void {
   }
 }
 
+function createScreenshotWindow() {
+  if (windows.screenshot) {
+    windows.screenshot.close();
+    windows.screenshot = null;
+  }
+  const display = screen.getPrimaryDisplay();
+  // create a screenshot area to select the area to capture
+  const win = new BrowserWindow({
+    width: display.size.width,
+    height: display.size.height,
+    x: 0,
+    y: 0,
+    show: false,
+    frame: false,
+    transparent: true,
+    movable: false,
+    resizable: false,
+    fullscreen: true,
+    skipTaskbar: true,
+    hasShadow: false,
+    alwaysOnTop: true,
+    ...(process.platform === "linux" ? { icon } : {}),
+    webPreferences: {
+      preload: join(__dirname, "../preload/index.js"),
+      sandbox: false,
+    },
+  });
+
+  windows.screenshot = win;
+
+  win.on("ready-to-show", () => {
+    win.show();
+  });
+
+  // HMR for renderer base on electron-vite cli.
+  // Load the remote URL for development or the local html file for production.
+  if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+    win.loadURL(`${process.env["ELECTRON_RENDERER_URL"]}/screenshot.html`);
+  } else {
+    win.loadFile(join(__dirname, "../renderer/screenshot.html"));
+  }
+}
+
+function handleCloseScreenshotWindow() {
+  if (windows.screenshot) {
+    windows.screenshot.close();
+    windows.screenshot = null;
+  }
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  globalShortcut.register("CommandOrControl+R", () => {
-    handleScreenshot();
+  globalShortcut.register("CommandOrControl+Shift+C", () => {
+    createScreenshotWindow();
+  });
+  globalShortcut.register("ESC", () => {
+    handleCloseScreenshotWindow();
   });
   // Set app user model id for windows
   electronApp.setAppUserModelId("com.electron");
@@ -101,6 +161,26 @@ ipcMain.handle("DESKTOP_CAPTURER_GET_SOURCES", async (_, opts) => {
 ipcMain.handle("DESKTOP_CAPTURER_GET_PRIMARY_SCREEN", async () => {
   const res = screen.getPrimaryDisplay();
   return res;
+});
+
+ipcMain.handle("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", async (_, area) => {
+  const display = screen.getPrimaryDisplay();
+  const sources = await desktopCapturer.getSources({
+    types: ["screen"],
+    thumbnailSize: display.size,
+  });
+  const source = sources?.[0];
+  if (!source) return;
+  const screenshotPath = join(
+    app.getPath("pictures"),
+    `screenshot${Date.now()}.png`,
+  );
+  const image = source.thumbnail.crop(area);
+  fs.writeFileSync(screenshotPath, image.toPNG());
+});
+
+ipcMain.handle("CLOSE_SCREENSHOT_WINDOW", () => {
+  handleCloseScreenshotWindow();
 });
 
 function handleScreenshot() {

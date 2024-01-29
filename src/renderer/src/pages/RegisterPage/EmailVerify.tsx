@@ -1,12 +1,3 @@
-import {
-  Button,
-  Center,
-  Group,
-  LoadingOverlay,
-  PinInput,
-  Stack,
-  Text,
-} from "@mantine/core";
 import classes from "./index.module.css";
 import Logo from "@renderer/components/Logo";
 import { useEffect, useState } from "react";
@@ -15,6 +6,8 @@ import {
   useVerifyEmailMutation,
 } from "@renderer/lib/queries/email";
 import moment from "moment";
+import { Button } from "@renderer/components/ui/button";
+import PinField from "react-pin-field";
 
 interface EmailVerifyProps {
   email: string;
@@ -72,39 +65,43 @@ function EmailVerify({ email, onNext }: EmailVerifyProps) {
   }, [timer]);
 
   return (
-    <>
-      <Center className={classes.Container}>
-        <Logo />
-        <Text fz="lg" fw="bold">
-          이메일 인증 코드를 입력해주세요
-        </Text>
-        <Stack align="center" gap="2rem">
-          <Stack align="center">
-            <Text fz="md">{moment(timer).format("mm:ss")}</Text>
-            <Text fz="md">{email}으로 6자리 코드를 전송했습니다.</Text>
-            <PinInput
+    <div className={classes.Container}>
+      <Logo />
+      <h2 className="font-bold text-lg">이메일 인증 코드를 입력해주세요</h2>
+      <div className="flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center gap-4">
+          <p>{moment(timer).format("mm:ss")}</p>
+          <p>{email}으로 6자리 코드를 전송했습니다.</p>
+          <div className="grid auto-cols-max grid-flow-col justify-center">
+            <PinField
               length={6}
-              value={value}
+              format={(c) => c.toUpperCase()}
               onChange={setValue}
-              error={!!error}
+              className="first:rounded-l-lg last:rounded-r-lg border border-background h-12 text-2xl text-center w-12 bg-accent"
             />
-            {error && (
-              <Text fz="sm" c="red">
-                {error}
-              </Text>
-            )}
-            <Button onClick={handleVerify}>인증하기</Button>
-          </Stack>
-          <Group gap="xs">
-            <Text>이메일 전송에 문제가 있나요?</Text>
-            <Button variant="subtle" size="compact-md" onClick={handleResend}>
-              재전송
-            </Button>
-          </Group>
-        </Stack>
-      </Center>
-      <LoadingOverlay visible={sendEmailMutation.isPending} zIndex={1000} />
-    </>
+          </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <Button
+            onClick={handleVerify}
+            fullWidth
+            disabled={verifyEmailMutation.isPending}
+          >
+            {verifyEmailMutation.isPending ? "인증 중입니다..." : "인증하기"}
+          </Button>
+        </div>
+        <div className="flex gap-2 items-center">
+          <p>이메일 전송에 문제가 있나요?</p>
+          <Button
+            variant="link"
+            size="sm"
+            onClick={handleResend}
+            disabled={sendEmailMutation.isPending}
+          >
+            {sendEmailMutation.isPending ? "재전송 중..." : "재전송"}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 

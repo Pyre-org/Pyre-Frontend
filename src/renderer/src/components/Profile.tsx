@@ -1,11 +1,23 @@
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/solid";
-import { Avatar, Button, Group, Menu, Text } from "@mantine/core";
 import { useLogoutMutation, useMyUser } from "@renderer/lib/queries/auth";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useTheme } from "./ThemeProvider";
+import { Moon, Sun } from "lucide-react";
+import { Switch } from "./ui/switch";
 
 function Profile() {
   const { data: user } = useMyUser();
+  const { setTheme, theme } = useTheme();
   const logoutMutation = useLogoutMutation();
   const isLogin = !!user;
 
@@ -17,39 +29,54 @@ function Profile() {
     });
   }, []);
 
+  const toggleTheme = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setTheme(theme === "light" ? "dark" : "light");
+    },
+    [theme],
+  );
+
   if (!isLogin)
     return (
-      <Link to="/login">
-        <Button>로그인</Button>
-      </Link>
+      <Button asChild>
+        <Link to="/login">로그인</Link>
+      </Button>
     );
   return (
-    <Menu>
-      <Menu.Target>
-        <Button variant="subtle">{user?.nickname}</Button>
-      </Menu.Target>
-      <Menu.Dropdown bg="darknavy.9">
-        <Group p="sm">
-          <Avatar src={user.image_url} radius="xl" />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost">{user?.nickname}</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <div className="flex gap-4 items-center p-2">
+          <Avatar>
+            <AvatarImage src={user.image_url} alt="profile" />
+            <AvatarFallback>{user.nickname[0].toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div style={{ flex: 1 }}>
-            <Text size="sm" fw={500}>
-              {user.nickname}
-            </Text>
-            <Text c="dimmed" size="xs">
-              {user.email}
-            </Text>
+            <p className="text-md">{user.nickname}</p>
+            <p className="text-muted-foreground text-sm">{user.email}</p>
           </div>
-        </Group>
-        <Menu.Divider />
-        <Menu.Item
-          leftSection={<ArrowRightStartOnRectangleIcon className="w-4 h-4" />}
-          onClick={handleLogout}
-          color="red"
-        >
-          로그아웃
-        </Menu.Item>
-      </Menu.Dropdown>
-    </Menu>
+        </div>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="justify-between" onClick={toggleTheme}>
+          <div className="flex items-center">
+            {theme === "light" ? (
+              <Moon className="w-4 h-4 mr-2" />
+            ) : (
+              <Sun className="w-4 h-4 mr-2" />
+            )}
+            <span>{theme === "light" ? "다크 모드" : "라이트 모드"}</span>
+          </div>
+          <Switch checked={theme === "dark"} />
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
+          <ArrowRightStartOnRectangleIcon className="w-4 h-4 mr-2" />
+          <span>로그아웃</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
