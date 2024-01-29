@@ -9,6 +9,10 @@ export const api = {
     ipcRenderer.invoke("DESKTOP_CAPTURER_GET_SOURCES", opts),
   getPrimaryScreen: (): Promise<Electron.Display> =>
     ipcRenderer.invoke("DESKTOP_CAPTURER_GET_PRIMARY_SCREEN"),
+  captureScreenArea: (area: Electron.Rectangle): Promise<void> =>
+    ipcRenderer.invoke("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", area),
+  closeScreenshotWindow: (): Promise<void> =>
+    ipcRenderer.invoke("CLOSE_SCREENSHOT_WINDOW"),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

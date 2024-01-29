@@ -9,7 +9,6 @@ export const router = createHashRouter([
   {
     path: "/",
     element: <AuthRoute />,
-    loader: () => import("@renderer/components/AuthRoute"),
     children: [
       {
         element: <MainPageLayout />,

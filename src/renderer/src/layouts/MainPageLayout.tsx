@@ -1,138 +1,90 @@
-import { AppShell, Button, TextInput } from "@mantine/core";
 import { HashtagIcon } from "@heroicons/react/16/solid";
 import { Link, Outlet } from "react-router-dom";
-import classes from "./MainPageLayout.module.css";
-import { useDisclosure } from "@mantine/hooks";
-import clsx from "clsx";
 import { NAVBAR_MENUS } from "@renderer/constants/layout";
+import { Input } from "@renderer/components/ui/input";
+import { Button } from "@renderer/components/ui/button";
 import Profile from "@renderer/components/Profile";
 
 function MainPageLayout() {
-  const [asideOpened] = useDisclosure(true);
-
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{
-        width: 200,
-        breakpoint: "xs",
-      }}
-      aside={{
-        width: 200,
-        breakpoint: "xs",
-        collapsed: {
-          desktop: !asideOpened,
-          mobile: !asideOpened,
-        },
-      }}
-      padding="md"
-    >
-      <AppShell.Header
-        bg="darknavy.8"
-        className={clsx(classes.Header, "shadow-lg")}
-      >
-        {/* <Logo />
-        <Group>
-          <TextInput
-            leftSection={<MagnifyingGlassIcon className="h-6 w-6" />}
-            placeholder="검색하기"
-          />
-          <ActionIcon onClick={toggleAside}>
-            <ChevronLeftIcon
-              className={clsx("w-6 h-6", asideOpened && "rotate-180")}
-            />
-          </ActionIcon>
-          <Profile />
-        </Group> */}
+    <div className="flex flex-col min-h-screen w-full bg-background divide-y">
+      <header className="h-[60px] flex justify-between px-4">
         <div className="flex items-center gap-2">
-          <SearchIcon className="h-5 w-5 text-gray-400" />
-          <TextInput
-            className="w-64 text-white rounded-md px-2 py-1"
+          <SearchIcon className="h-5 w-5" />
+          <Input
+            className="w-64 rounded-md px-2 py-1"
             placeholder="검색"
             type="search"
-            classNames={{ input: "!bg-gray-800" }}
           />
         </div>
         <div className="flex items-center gap-4">
-          <Link className="text-white hover:underline" to="#">
-            <Button variant="subtle" size="sm">
-              마이 페이지
-            </Button>
-          </Link>
-          <Link className="text-white hover:underline" to="#">
-            <Button variant="subtle" size="sm">
-              설정
-            </Button>
-          </Link>
+          <Button size="sm" variant="ghost" asChild>
+            <Link to="#">마이 페이지</Link>
+          </Button>
+          <Button size="sm" variant="ghost" asChild>
+            <Link to="#">설정</Link>
+          </Button>
           <Profile />
         </div>
-      </AppShell.Header>
-      <AppShell.Navbar p="sm" bg="darknavy.8">
-        <AppShell.Section>
-          <h2 className="text-lg font-semibold mb-2">방 목록</h2>
-        </AppShell.Section>
-        <AppShell.Section>
-          <Link to="/">
-            <Button
-              leftSection={<HashtagIcon className="w-5 h-5" />}
-              variant="subtle"
-              justify="start"
-              fullWidth
-            >
-              전체
-            </Button>
-          </Link>
-        </AppShell.Section>
-        {NAVBAR_MENUS.map((menu) => (
-          <AppShell.Section key={menu.name}>
-            <Link to={menu.href}>
-              <Button
-                leftSection={<HashtagIcon className="w-5 h-5" />}
-                variant="subtle"
-                justify="start"
-                fullWidth
-              >
-                {menu.name}
-              </Button>
+      </header>
+      <div className="flex-1 flex divide-x">
+        <nav className="flex flex-col bg-background w-[200px] p-4 text-muted-foreground">
+          <div>
+            <h2 className="text-lg font-semibold mb-2 text-foreground">
+              방 목록
+            </h2>
+          </div>
+          <Button variant="ghost" className="justify-start" asChild>
+            <Link to="/" className="justify-start">
+              <HashtagIcon className="w-5 h-5 mr-2" />
+              <span>전체</span>
             </Link>
-          </AppShell.Section>
-        ))}
-      </AppShell.Navbar>
-      <AppShell.Main bg="darknavy.7">
-        <Outlet />
-      </AppShell.Main>
-      <AppShell.Aside bg="darknavy.8" p="sm">
-        <AppShell.Section>
-          <h2 className="text-lg font-semibold mb-2">채널 목록</h2>
-        </AppShell.Section>
-        <AppShell.Section>
-          <Link to="/">
+          </Button>
+          {NAVBAR_MENUS.map((menu) => (
             <Button
-              leftSection={<HashtagIcon className="w-5 h-5" />}
-              variant="subtle"
-              justify="start"
-              fullWidth
+              variant="ghost"
+              className="justify-start"
+              key={menu.name}
+              asChild
             >
-              전체
+              <Link to={menu.href}>
+                <HashtagIcon className="w-5 h-5 mr-2" />
+                <span>{menu.name}</span>
+              </Link>
             </Button>
-          </Link>
-        </AppShell.Section>
-        {NAVBAR_MENUS.map((menu) => (
-          <AppShell.Section key={menu.name}>
-            <Link to={menu.href}>
-              <Button
-                leftSection={<HashtagIcon className="w-5 h-5" />}
-                variant="subtle"
-                justify="start"
-                fullWidth
-              >
-                {menu.name}
-              </Button>
+          ))}
+        </nav>
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <aside className="flex flex-col p-4 w-[200px] bg-background text-muted-foreground">
+          <div>
+            <h2 className="text-lg font-semibold mb-2 text-foreground">
+              채널 목록
+            </h2>
+          </div>
+          <Button variant="ghost" className="justify-start" asChild>
+            <Link to="/">
+              <HashtagIcon className="w-5 h-5 mr-2" />
+              <span>전체</span>
             </Link>
-          </AppShell.Section>
-        ))}
-      </AppShell.Aside>
-    </AppShell>
+          </Button>
+          {NAVBAR_MENUS.map((menu) => (
+            <Button
+              variant="ghost"
+              className="justify-start"
+              key={menu.name}
+              asChild
+            >
+              <Link to={menu.href}>
+                <HashtagIcon className="w-5 h-5 mr-2" />
+                <span>{menu.name}</span>
+              </Link>
+            </Button>
+          ))}
+        </aside>
+      </div>
+    </div>
   );
 }
 

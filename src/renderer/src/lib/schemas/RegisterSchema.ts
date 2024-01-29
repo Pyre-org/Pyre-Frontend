@@ -3,7 +3,7 @@ import { checkEmail, checkNickname } from "../queries/auth";
 
 export const RegisterSchema = z.object({
   email: z
-    .string()
+    .string({ required_error: "값을 입력해주세요" })
     .min(5, "5자 이상 입력해주세요.")
     .max(40, "40자 이하로 입력해주세요.")
     .email("이메일 형식을 입력해주세요.")
@@ -17,11 +17,11 @@ export const RegisterSchema = z.object({
       },
     ),
   password: z
-    .string()
+    .string({ required_error: "값을 입력해주세요" })
     .min(8, "8자 이상 입력해주세요.")
     .max(40, "40자 이하로 입력해주세요."),
   nickname: z
-    .string()
+    .string({ required_error: "값을 입력해주세요" })
     .min(5, "5자 이상 입력해주세요.")
     .max(12, "12자 이하로 입력해주세요.")
     .regex(/^[a-zA-Z0-9]+$/, "영문과 숫자만 입력해주세요.")

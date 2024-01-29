@@ -45,9 +45,9 @@ const themeOverides = createTheme({
   cursorType: "pointer",
   components: {
     Menu: {
-      styles: {
+      classNames: {
         dropdown: {
-          backgroundColor: "darknavy.8",
+          backgroundColor: "bg-gray-800",
         },
       },
     },

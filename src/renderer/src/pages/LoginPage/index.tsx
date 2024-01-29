@@ -1,13 +1,5 @@
 import Logo from "@renderer/components/Logo";
 import classes from "./index.module.css";
-import {
-  Button,
-  Center,
-  Divider,
-  Group,
-  Stack,
-  TextInput,
-} from "@mantine/core";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import NaverLoginBtn from "@renderer/components/NaverLoginBtn";
@@ -19,7 +11,19 @@ import {
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@renderer/lib/queries/auth";
-import { notifications } from "@mantine/notifications";
+import { cn } from "@renderer/lib/utils";
+import { Button } from "@renderer/components/ui/button";
+import { Separator } from "@renderer/components/ui/separator";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@renderer/components/ui/form";
+import { Input } from "@renderer/components/ui/input";
+import { toast } from "@renderer/components/ui/use-toast";
 
 function LoginPage() {
   const methods = useForm<LoginSchemaType>({
@@ -35,11 +39,11 @@ function LoginPage() {
       },
       onError: (error) => {
         console.log(error);
-        notifications.show({
+        toast({
           title: "로그인에 실패했습니다.",
-          message: error.response?.data,
+          description: error.response?.data,
           color: "red",
-          autoClose: 1500,
+          duration: 1500,
         });
       },
     });
@@ -50,51 +54,70 @@ function LoginPage() {
   }, []);
 
   return (
-    <form
-      className={classes.Container}
-      onSubmit={methods.handleSubmit(onSubmit, onError)}
-    >
-      <div className={classes.InnerContainer}>
-        <Center>
-          <Logo />
-        </Center>
-        <div className={classes.FormContainer}>
-          <Stack w="100%">
-            <TextInput
-              label="이메일"
-              placeholder="example@domain.com"
-              {...methods.register("email")}
-              error={methods.formState.errors.email?.message}
-            />
-            <TextInput
-              label="비밀번호"
-              placeholder="비밀번호"
-              type="password"
-              {...methods.register("password")}
-              error={methods.formState.errors.password?.message}
-            />
-          </Stack>
-          <Button type="submit" fullWidth>
-            로그인
-          </Button>
-        </div>
-        <Divider label="또는" />
-        <Stack gap="xs">
-          <NaverLoginBtn />
-          <GoogleLoginBtn />
-        </Stack>
-        <Group justify="space-between">
-          <Button variant="transparent" size="xs">
-            비밀번호 찾기
-          </Button>
-          <Link to="/register">
-            <Button variant="transparent" size="xs">
-              회원가입
+    <Form {...methods}>
+      <form
+        className={cn(classes.Container)}
+        onSubmit={methods.handleSubmit(onSubmit, onError)}
+      >
+        <div className={classes.InnerContainer}>
+          <div className="flex w-full justify-center">
+            <Logo />
+          </div>
+          <div className={classes.FormContainer}>
+            <div className="w-full flex flex-col gap-4">
+              <FormField
+                control={methods.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>이메일</FormLabel>
+                    <FormControl>
+                      <Input placeholder="example@domain.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={methods.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>비밀번호</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="비밀번호"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button type="submit" className="w-full">
+              로그인
             </Button>
-          </Link>
-        </Group>
-      </div>
-    </form>
+          </div>
+          <Separator orientation="horizontal" />
+          <div className="flex flex-col gap-2">
+            <NaverLoginBtn />
+            <GoogleLoginBtn />
+          </div>
+          <div className="flex items-center justify-between">
+            <Button variant="link" size="sm">
+              비밀번호 찾기
+            </Button>
+            <Link to="/register">
+              <Button variant="link" size="sm">
+                회원가입
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </form>
+    </Form>
   );
 }
 

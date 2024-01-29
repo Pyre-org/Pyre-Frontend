@@ -10,6 +10,14 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
   },
   renderer: {
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve("src/renderer/index.html"),
+          screenshot: resolve("src/renderer/screenshot.html"),
+        },
+      },
+    },
     resolve: {
       alias: {
         "@renderer": resolve("src/renderer/src"),
