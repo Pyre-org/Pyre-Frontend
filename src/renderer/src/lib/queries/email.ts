@@ -3,7 +3,7 @@ import { api } from "../api";
 import { AxiosError } from "axios";
 import { BaseError } from "@renderer/types/schema";
 
-const baseUrl = "/api/v1/email";
+const baseUrl = "/auth-service/email";
 
 interface ISendEmailBody {
   email: string;

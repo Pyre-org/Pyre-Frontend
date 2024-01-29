@@ -6,6 +6,7 @@ import {
   desktopCapturer,
   screen,
   globalShortcut,
+  Notification,
 } from "electron";
 import fs from "fs";
 import { join } from "path";

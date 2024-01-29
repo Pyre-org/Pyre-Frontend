@@ -3,6 +3,13 @@ export interface ListResponse<T> {
   hits: T[];
 }
 
+export interface PageParams {
+  page: number;
+  count: number;
+  sortBy: string;
+  orderByDesc: boolean;
+}
+
 // export interface BaseError {
 //   code: string;
 //   message: string;
