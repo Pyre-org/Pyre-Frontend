@@ -1,6 +1,14 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { electronAPI } from "@electron-toolkit/preload";
 
+interface ICaptureResponse {
+  dataURL: string;
+  width: number;
+  height: number;
+  name: string;
+  path: string;
+}
+
 // Custom APIs for renderer
 export const api = {
   getSources: (
@@ -9,10 +17,13 @@ export const api = {
     ipcRenderer.invoke("DESKTOP_CAPTURER_GET_SOURCES", opts),
   getPrimaryScreen: (): Promise<Electron.Display> =>
     ipcRenderer.invoke("DESKTOP_CAPTURER_GET_PRIMARY_SCREEN"),
-  captureScreenArea: (area: Electron.Rectangle): Promise<void> =>
+  // returns data url of the screenshot
+  captureScreenArea: (area: Electron.Rectangle): Promise<ICaptureResponse> =>
     ipcRenderer.invoke("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", area),
   closeScreenshotWindow: (): Promise<void> =>
     ipcRenderer.invoke("CLOSE_SCREENSHOT_WINDOW"),
+  openPath: (path: string): Promise<void> =>
+    ipcRenderer.invoke("OPEN_PATH", path),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

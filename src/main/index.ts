@@ -6,14 +6,16 @@ import {
   desktopCapturer,
   screen,
   globalShortcut,
-  Notification,
 } from "electron";
 import fs from "fs";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
+import notifier from "node-notifier";
 import icon from "../../resources/icon.png?asset";
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
+
+const appID = "com.electron";
 
 const windows = {
   main: null as BrowserWindow | null,
@@ -117,7 +119,7 @@ app.whenReady().then(() => {
     handleCloseScreenshotWindow();
   });
   // Set app user model id for windows
-  electronApp.setAppUserModelId("com.electron");
+  electronApp.setAppUserModelId(appID);
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
@@ -172,16 +174,44 @@ ipcMain.handle("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", async (_, area) => {
   });
   const source = sources?.[0];
   if (!source) return;
-  const screenshotPath = join(
-    app.getPath("pictures"),
-    `screenshot${Date.now()}.png`,
-  );
+  const name = `screenshot${Date.now()}.png`;
+  const screenshotPath = join(app.getPath("pictures"), name);
   const image = source.thumbnail.crop(area);
   fs.writeFileSync(screenshotPath, image.toPNG());
+
+  const res = {
+    name,
+    path: screenshotPath,
+    width: image.getSize().width,
+    height: image.getSize().height,
+    dataURL: image.toDataURL(),
+  };
+
+  notifier.notify(
+    {
+      title: "스크린샷이 저장되었습니다",
+      message: screenshotPath,
+      icon: screenshotPath,
+      wait: true,
+      appID,
+    },
+    (err, response, metadata) => {
+      if (!response) {
+        shell.openPath(screenshotPath);
+      }
+    },
+  );
+
+  return res;
 });
 
 ipcMain.handle("CLOSE_SCREENSHOT_WINDOW", () => {
   handleCloseScreenshotWindow();
+});
+
+ipcMain.handle("OPEN_PATH", (_, path: string) => {
+  console.log(path);
+  shell.openPath(path);
 });
 
 function handleScreenshot() {

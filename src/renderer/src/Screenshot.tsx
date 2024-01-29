@@ -27,15 +27,16 @@ function Screenshot() {
   const handleMouseUp = () => {
     setRect({ top: 0, left: 0, width: 0, height: 0 });
     setShow(false);
-    window.api.captureScreenArea({
-      x: rect.left,
-      y: rect.top,
-      width: rect.width,
-      height: rect.height,
-    });
-    // .then(() => {
-    //   window.api.closeScreenshotWindow();
-    // });
+    window.api
+      .captureScreenArea({
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      })
+      .then(() => {
+        window.api.closeScreenshotWindow();
+      });
   };
 
   return (
