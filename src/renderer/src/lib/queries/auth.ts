@@ -10,7 +10,7 @@ import {
 import { QUERY_KEYS } from "../querykeys";
 import { useAuthStoreActions } from "../../stores/authStore";
 
-const baseUrl = "/api/v1/user";
+const baseUrl = "/auth-service/user";
 
 export interface ILoginBody {
   email: string;

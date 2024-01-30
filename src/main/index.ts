@@ -195,7 +195,7 @@ ipcMain.handle("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", async (_, area) => {
       wait: true,
       appID,
     },
-    (err, response, metadata) => {
+    (_, response) => {
       if (!response) {
         shell.openPath(screenshotPath);
       }
@@ -213,24 +213,3 @@ ipcMain.handle("OPEN_PATH", (_, path: string) => {
   console.log(path);
   shell.openPath(path);
 });
-
-function handleScreenshot() {
-  const display = screen.getPrimaryDisplay();
-  const options: Electron.SourcesOptions = {
-    types: ["screen"],
-    thumbnailSize: display.size,
-  };
-  desktopCapturer.getSources(options).then((sources) => {
-    const source = sources?.[0];
-    if (!source) return;
-    const screenshotPath = join(app.getPath("pictures"), "screenshot.png");
-    console.log(screenshotPath);
-    fs.writeFile(screenshotPath, source.thumbnail.toPNG(), (error) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-      shell.openPath(screenshotPath);
-    });
-  });
-}
