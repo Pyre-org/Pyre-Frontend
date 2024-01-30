@@ -6,6 +6,8 @@ import {
   desktopCapturer,
   screen,
   globalShortcut,
+  Tray,
+  Menu,
 } from "electron";
 import fs from "fs";
 import { join } from "path";
@@ -15,7 +17,9 @@ import icon from "../../resources/icon.png?asset";
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
 
-const appID = "com.electron";
+const appID = "Pyre";
+
+let isRunning = false;
 
 const windows = {
   main: null as BrowserWindow | null,
@@ -30,6 +34,7 @@ function createWindow(): void {
     minWidth: 800,
     minHeight: 450,
     show: false,
+    icon: join(__dirname, "../../resources/icon.png"),
     autoHideMenuBar: true,
     ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
@@ -42,6 +47,17 @@ function createWindow(): void {
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
+  });
+
+  mainWindow.on("close", () => {
+    windows.main = null;
+    if (!isRunning) return;
+    notifier.notify({
+      title: "Pyre",
+      message: "앱이 백그라운드에서 실행 중입니다.",
+      icon,
+      appID,
+    });
   });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -108,16 +124,44 @@ function handleCloseScreenshotWindow() {
   }
 }
 
+function openMainWindow() {
+  if (!windows.main) {
+    createWindow();
+  }
+  windows.main?.show();
+}
+
+function createTray() {
+  const tray = new Tray(join(__dirname, "../../resources/icon.png"));
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "종료",
+      click: () => {
+        app.quit();
+        isRunning = false;
+      },
+    },
+  ]);
+
+  tray.on("click", openMainWindow);
+  tray.setToolTip("Pyre");
+  tray.setContextMenu(contextMenu);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  isRunning = true;
   globalShortcut.register("CommandOrControl+Shift+C", () => {
     createScreenshotWindow();
   });
   globalShortcut.register("ESC", () => {
     handleCloseScreenshotWindow();
   });
+
+  createTray();
+
   // Set app user model id for windows
   electronApp.setAppUserModelId(appID);
 
@@ -141,9 +185,9 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
+  // if (process.platform !== "darwin") {
+  //   app.quit();
+  // }
 });
 
 // In this file you can include the rest of your app"s specific main process
