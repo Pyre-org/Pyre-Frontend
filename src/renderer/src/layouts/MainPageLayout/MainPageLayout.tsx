@@ -38,7 +38,7 @@ function MainPageLayout() {
         className="flex flex-1 divide-x"
       >
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
-          <nav className="flex flex-col bg-background p-4 text-muted-foreground">
+          <nav className="flex flex-col bg-background p-4 text-muted-foreground w-full">
             <div>
               <h2 className="text-lg font-semibold mb-2 text-foreground">
                 방 목록
@@ -67,13 +67,13 @@ function MainPageLayout() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel minSize={40}>
-          <main className="flex-1">
+          <main className="flex-1 w-full">
             <Outlet />
           </main>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
-          <aside className="flex flex-col p-4 w-[200px] bg-background text-muted-foreground">
+          <aside className="flex flex-col p-4 bg-background text-muted-foreground">
             <ChannelList />
           </aside>
         </ResizablePanel>
