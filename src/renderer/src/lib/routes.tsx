@@ -1,5 +1,5 @@
 import AuthRoute from "@renderer/components/AuthRoute";
-import MainPageLayout from "@renderer/layouts/MainPageLayout";
+import MainPageLayout from "@renderer/layouts/MainPageLayout/MainPageLayout";
 import HomePage from "@renderer/pages/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
 import RegisterPage from "@renderer/pages/RegisterPage";

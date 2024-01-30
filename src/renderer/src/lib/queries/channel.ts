@@ -44,7 +44,7 @@ export const useGetChannels = ({
     genre,
   };
   return useQuery({
-    queryKey: QUERY_KEYS.channel.list(params),
+    queryKey: QUERY_KEYS.channel.list.public(params),
     queryFn: () => getChannels(params),
   });
 };
@@ -172,7 +172,7 @@ export const useEditChannelMutation = (
         queryKey: QUERY_KEYS.channel.single(params[0].id),
       });
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.channel.list(),
+        queryKey: QUERY_KEYS.channel.list.all,
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.waiting.list(),
@@ -207,7 +207,7 @@ export const useApproveChannelMutation = (
     mutationFn: approveChannel,
     onSuccess: (...params) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.channel.list(),
+        queryKey: QUERY_KEYS.channel.list.all,
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.waiting.list(),
@@ -242,10 +242,59 @@ export const useDeleteChannelMutation = (
     mutationFn: deleteChannel,
     onSuccess: (...params) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.channel.list(),
+        queryKey: QUERY_KEYS.channel.list.all,
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.waiting.list(),
+      });
+      options?.onSuccess?.(...params);
+    },
+  });
+};
+
+export const getMyChannels = async () => {
+  const res = await api.get<ListResponse<Channel>>(baseUrl);
+  return res.data;
+};
+
+export const useGetMyChannels = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.channel.list.my,
+    queryFn: getMyChannels,
+  });
+};
+
+interface IJoinChannelResponse {
+  channelId: number;
+  joinDate: string;
+  agreement: boolean;
+}
+
+export const joinChannel = async (id: number) => {
+  const res = await api.post<IJoinChannelResponse>(`${baseUrl}/join`, {
+    channelId: id,
+    agreement: true,
+  });
+  return res.data;
+};
+
+export const useJoinChannelMutation = (
+  options?: UseMutationOptions<
+    IJoinChannelResponse,
+    AxiosError<BaseError>,
+    number
+  >,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: joinChannel,
+    onSuccess: (...params) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.channel.single(params[0].channelId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.channel.list.all,
       });
       options?.onSuccess?.(...params);
     },

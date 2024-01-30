@@ -135,7 +135,7 @@ function createTray() {
   const tray = new Tray(join(__dirname, "../../resources/icon.png"));
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: "종료",
+      label: "앱 종료",
       click: () => {
         app.quit();
         isRunning = false;

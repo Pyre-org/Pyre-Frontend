@@ -8,7 +8,16 @@ export const QUERY_KEYS = {
   channel: {
     all: ["channel"],
     single: (id: number) => ["channel", "single", id],
-    list: (params?: any) => ["channel", "list", ...(params ? [params] : [])],
+    list: {
+      all: ["channel", "list"],
+      public: (params?: any) => [
+        "channel",
+        "list",
+        "public",
+        ...(params ? [params] : []),
+      ],
+      my: ["channel", "list", "my"],
+    },
     genre: {
       all: ["genres"],
       list: (params?: any) => ["genres", "list", ...(params ? [params] : [])],
