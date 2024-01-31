@@ -1,13 +1,17 @@
 import { useGetChannels } from "@renderer/lib/queries/channel";
 import ChannelListItem from "./ChannelListItem";
 import Loader from "@renderer/components/Loader";
+import { Button } from "@renderer/components/ui/button";
 
 function ChannelsPage() {
   const { data: publicChannelData, isLoading } = useGetChannels({});
   const total = publicChannelData?.total ?? 0;
   return (
     <div className="container my-8">
-      <h1 className="text-xl">채널 탐색</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl">채널 탐색</h1>
+        <Button size="sm">채널 생성 요청</Button>
+      </div>
       {isLoading ? (
         <div className="flex justify-center items-center my-8">
           <Loader />

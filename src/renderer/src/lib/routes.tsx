@@ -1,5 +1,6 @@
 import AuthRoute from "@renderer/components/AuthRoute";
 import MainPageLayout from "@renderer/layouts/MainPageLayout/MainPageLayout";
+import ChannelDetailPage from "@renderer/pages/ChannelDetailPage";
 import ChannelsPage from "@renderer/pages/ChannelsPage";
 import HomePage from "@renderer/pages/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
@@ -24,7 +25,16 @@ export const router = createHashRouter([
           },
           {
             path: "channels",
-            element: <ChannelsPage />,
+            children: [
+              {
+                index: true,
+                element: <ChannelsPage />,
+              },
+              {
+                path: ":channelId",
+                element: <ChannelDetailPage />,
+              },
+            ],
           },
         ],
       },

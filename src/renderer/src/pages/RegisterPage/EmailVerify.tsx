@@ -38,7 +38,7 @@ function EmailVerify({ email, onNext }: EmailVerifyProps) {
 
   const handleVerify = () => {
     verifyEmailMutation.mutate(
-      { email, authNum: value },
+      { email, authNum: value.toLowerCase() },
       {
         onSuccess: () => {
           onNext(value);
