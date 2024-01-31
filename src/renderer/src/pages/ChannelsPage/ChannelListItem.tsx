@@ -47,7 +47,7 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
   };
   return (
     <Link to={`/channels/${channel.id}`}>
-      <Card className="flex flex-col gap-4">
+      <Card className="flex flex-col gap-4 group">
         <CardHeader className="flex flex-row justify-between">
           <div className="flex gap-4">
             <img
@@ -78,6 +78,7 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
               <Button
                 size="icon"
                 variant="ghost"
+                className="group-hover:block hidden"
                 onClick={() => {
                   setShow((show) => !show);
                 }}
