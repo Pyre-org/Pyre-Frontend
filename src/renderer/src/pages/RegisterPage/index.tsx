@@ -26,11 +26,11 @@ function RegisterPage() {
     sendEmailMutation.mutate({ email: methods.getValues("email") });
   }, []);
 
-  const handleRegister = useCallback((value) => {
+  const handleRegister = useCallback((value: string) => {
     registerMutation.mutate(
       {
         ...methods.getValues(),
-        authNum: value,
+        authNum: value.toLowerCase(),
       },
       {
         onSuccess: () => {

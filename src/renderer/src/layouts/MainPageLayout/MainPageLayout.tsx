@@ -28,6 +28,9 @@ function MainPageLayout() {
             <Link to="/">마이 페이지</Link>
           </Button>
           <Button size="sm" variant="ghost" asChild>
+            <Link to="/channels">채널</Link>
+          </Button>
+          <Button size="sm" variant="ghost" asChild>
             <Link to="#">설정</Link>
           </Button>
           <Profile />
