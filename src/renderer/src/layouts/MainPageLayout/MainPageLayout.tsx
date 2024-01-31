@@ -13,7 +13,7 @@ import {
 
 function MainPageLayout() {
   return (
-    <div className="flex flex-col min-h-screen w-full bg-background divide-y">
+    <div className="flex flex-col h-screen w-full bg-background divide-y overflow-hidden">
       <header className="h-[60px] flex justify-between px-4">
         <div className="flex items-center gap-2">
           <SearchIcon className="h-5 w-5" />
@@ -41,7 +41,7 @@ function MainPageLayout() {
         className="flex flex-1 divide-x"
       >
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
-          <nav className="flex flex-col bg-background p-4 text-muted-foreground w-full">
+          <nav className="flex flex-col bg-background p-4 text-muted-foreground w-full overflow-y-scroll h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
             <div>
               <h2 className="text-lg font-semibold mb-2 text-foreground">
                 방 목록
@@ -70,13 +70,13 @@ function MainPageLayout() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel minSize={40}>
-          <main className="flex-1 w-full">
+          <main className="flex-1 w-full overflow-y-scroll h-full scrollbar-thumb-border scrollbar-thin scrollbar-track-transparent">
             <Outlet />
           </main>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
-          <aside className="flex flex-col p-4 bg-background text-muted-foreground">
+          <aside className="flex flex-col p-4 bg-background text-muted-foreground overflow-y-scroll h-full scrollbar-thumb-border scrollbar-thin scrollbar-track-transparent">
             <ChannelList />
           </aside>
         </ResizablePanel>
