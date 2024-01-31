@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Screenshot() {
   const [show, setShow] = useState(false);
@@ -38,6 +38,16 @@ function Screenshot() {
         window.api.closeScreenshotWindow();
       });
   };
+
+  useEffect(() => {
+    const closeScreenshotWindow = (e: KeyboardEvent) => {
+      if (e.key === "Escape") window.api.closeScreenshotWindow();
+    };
+    window.addEventListener("keydown", closeScreenshotWindow);
+    return () => {
+      window.removeEventListener("keydown", closeScreenshotWindow);
+    };
+  }, []);
 
   return (
     <div

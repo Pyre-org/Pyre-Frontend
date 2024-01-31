@@ -156,9 +156,6 @@ app.whenReady().then(() => {
   globalShortcut.register("CommandOrControl+Shift+C", () => {
     createScreenshotWindow();
   });
-  globalShortcut.register("ESC", () => {
-    handleCloseScreenshotWindow();
-  });
 
   createTray();
 
