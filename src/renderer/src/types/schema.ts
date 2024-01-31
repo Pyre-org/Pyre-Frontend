@@ -40,11 +40,12 @@ export interface Channel {
   description: string;
   genre: string;
   rating: number;
-  rooms: Room[];
+  memberCounts: number;
+  roomCounts: number;
   imageUrl: string;
   type: ChannelType;
   cAt: string;
-  mAt: string;
+  mAt?: string;
 }
 
 export enum ChannelType {

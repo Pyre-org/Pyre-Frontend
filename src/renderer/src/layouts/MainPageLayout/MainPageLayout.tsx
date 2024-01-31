@@ -25,7 +25,7 @@ function MainPageLayout() {
         </div>
         <div className="flex items-center gap-4">
           <Button size="sm" variant="ghost" asChild>
-            <Link to="#">마이 페이지</Link>
+            <Link to="/">마이 페이지</Link>
           </Button>
           <Button size="sm" variant="ghost" asChild>
             <Link to="#">설정</Link>

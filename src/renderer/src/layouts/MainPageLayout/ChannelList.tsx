@@ -10,13 +10,19 @@ import {
   useGetChannels,
   useGetMyChannels,
 } from "@renderer/lib/queries/channel";
+import { Channel } from "@renderer/types/schema";
 import { Link } from "react-router-dom";
 
 function ChannelList() {
-  const { data: publicChannelData } = useGetChannels({});
+  const { data: initialPublicChannelData } = useGetChannels({});
   const { data: myChannelData } = useGetMyChannels();
 
-  if (!publicChannelData || !myChannelData) return null;
+  if (!initialPublicChannelData || !myChannelData) return null;
+
+  const publicChannels = initialPublicChannelData.hits.filter(
+    (channel) =>
+      !myChannelData.hits.some((myChannel) => myChannel.id === channel.id),
+  );
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col">
@@ -31,25 +37,15 @@ function ChannelList() {
         </div>
         {myChannelData.total > 0 ? (
           myChannelData.hits.map((channel) => (
-            <Button
-              variant="ghost"
-              className="justify-start"
-              key={channel.title}
-              asChild
-            >
-              <Link to={`/channels/${channel.id}`}>
-                <HashtagIcon className="w-5 h-5 mr-2 shrink-0" />
-                <span className="truncate">{channel.title}</span>
-              </Link>
-            </Button>
+            <ChannelListItem channel={channel} key={channel.id} />
           ))
         ) : (
           <div className="flex flex-col justify-center items-center gap-2">
             <span className="text-muted-foreground text-sm">
               채널을 추가해보세요
             </span>
-            <Button size="sm" variant="secondary">
-              채널 탐색
+            <Button size="sm" variant="secondary" asChild>
+              <Link to="/channels">채널 탐색</Link>
             </Button>
           </div>
         )}
@@ -58,26 +54,38 @@ function ChannelList() {
         <div>
           <h2 className="text-lg font-semibold mb-2 text-foreground">탐색</h2>
         </div>
-        {publicChannelData.hits.map((channel) => (
-          <Button
-            variant="ghost"
-            className="justify-start"
-            key={channel.title}
-            asChild
-          >
-            <Link to={`/channels/${channel.id}`}>
-              <Avatar className="w-6 h-6 mr-2 shrink-0">
-                <AvatarImage src={channel.imageUrl} />
-                <AvatarFallback>
-                  <HashtagIcon />
-                </AvatarFallback>
-              </Avatar>
-              <span className="truncate">{channel.title}</span>
-            </Link>
-          </Button>
-        ))}
+        {publicChannels.length > 0 ? (
+          publicChannels.map((channel) => (
+            <ChannelListItem channel={channel} key={channel.id} />
+          ))
+        ) : (
+          <div className="flex justify-center items-center text-sm">
+            <span>표시할 채널이 없습니다</span>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+function ChannelListItem({ channel }: { channel: Channel }) {
+  return (
+    <Button
+      variant="ghost"
+      className="justify-start"
+      key={channel.title}
+      asChild
+    >
+      <Link to={`/channels/${channel.id}`}>
+        <Avatar className="w-6 h-6 mr-2 shrink-0">
+          <AvatarImage src={channel.imageUrl} />
+          <AvatarFallback>
+            <HashtagIcon />
+          </AvatarFallback>
+        </Avatar>
+        <span className="truncate">{channel.title}</span>
+      </Link>
+    </Button>
   );
 }
 
