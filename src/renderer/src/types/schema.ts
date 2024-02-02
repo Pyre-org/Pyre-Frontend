@@ -17,7 +17,7 @@ export interface PageParams {
 export type BaseError = string;
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
   password: string;
   nickname: string;
@@ -35,7 +35,7 @@ export interface IProfile
 export type UserDTO = Omit<User, "id" | "refresh_token">;
 
 export interface Channel {
-  id: number;
+  id: string;
   title: string;
   description: string;
   genre: string;
@@ -55,7 +55,7 @@ export enum ChannelType {
 }
 
 export interface Room {
-  id: number;
+  id: string;
   title: string;
   description: string;
   imageurl: string;
@@ -73,7 +73,7 @@ export enum RoomType {
 }
 
 export interface Chat {
-  id: number;
+  id: string;
   user: User;
   room: Room;
   message: string;
@@ -82,7 +82,7 @@ export interface Chat {
 }
 
 export interface ScreenShot {
-  id: number;
+  id: string;
   user: User;
   uploadTimestamp: string;
   imageUrl: string;
@@ -92,7 +92,7 @@ export interface ScreenShot {
 }
 
 export interface Feed {
-  id: number;
+  id: string;
   user: User;
   description: string;
   screenshots: ScreenShot[];
@@ -100,5 +100,5 @@ export interface Feed {
   visibility: string;
   likes: number;
   views: number;
-  room_id: number;
+  room_id: string;
 }

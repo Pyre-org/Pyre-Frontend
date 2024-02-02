@@ -20,6 +20,7 @@ const baseUrl = "/community/channel";
 
 interface GetChannelsParams extends Partial<PageParams> {
   genre?: string;
+  keyword?: string;
 }
 
 export const getChannels = async (params: GetChannelsParams) => {
@@ -34,12 +35,14 @@ export const useGetChannels = ({
   page = 0,
   count = 10,
   sortBy,
+  keyword,
   orderByDesc = false,
 }: GetChannelsParams) => {
   const params = {
     page,
     count,
     orderByDesc,
+    keyword,
     sortBy,
     genre,
   };
