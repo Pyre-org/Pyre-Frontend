@@ -51,7 +51,7 @@ import { toast } from "../ui/use-toast";
 interface ChannelCreateForm {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
-  editChannelId?: number | null;
+  editChannelId?: string | null;
 }
 
 const defaultValues = {
@@ -66,7 +66,7 @@ function ChannelCreateForm({
   setOpen,
   editChannelId,
 }: ChannelCreateForm) {
-  const { data: editChannelData } = useGetChannel(editChannelId ?? 0, {
+  const { data: editChannelData } = useGetChannel(editChannelId ?? "", {
     enabled: !!editChannelId,
   });
   const methods = useForm<CreateChannelSchemaType>({

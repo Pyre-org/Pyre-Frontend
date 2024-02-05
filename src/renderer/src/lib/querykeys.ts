@@ -2,12 +2,12 @@ export const QUERY_KEYS = {
   user: {
     all: ["user"],
     me: ["user", "me"],
-    single: (id: number) => ["user", "single", id],
+    single: (id: string) => ["user", "single", id],
     list: (params?: any) => ["user", "list", ...(params ? [params] : [])],
   },
   channel: {
     all: ["channel"],
-    single: (id: number) => ["channel", "single", id],
+    single: (id: string) => ["channel", "single", id],
     list: {
       all: ["channel", "list"],
       public: (params?: any) => [
@@ -24,8 +24,29 @@ export const QUERY_KEYS = {
     },
     waiting: {
       all: ["waiting"],
-      single: (id: number) => ["waiting", "single", id],
+      single: (id: string) => ["waiting", "single", id],
       list: (params?: any) => ["waiting", "list", ...(params ? [params] : [])],
+    },
+  },
+  room: {
+    all: ["room"],
+    single: (id: string) => ["room", "single", id],
+    list: {
+      all: ["room", "list"],
+      public: (id: string, params?: any) => [
+        "room",
+        "list",
+        id,
+        "public",
+        ...(params ? [params] : []),
+      ],
+      my: (id: string, params?: any) => [
+        "room",
+        "list",
+        id,
+        "my",
+        ...(params ? [params] : []),
+      ],
     },
   },
 };

@@ -11,6 +11,7 @@ import {
   useGetMyChannels,
 } from "@renderer/lib/queries/channel";
 import { Channel } from "@renderer/types/schema";
+import { AtSignIcon, Tv2Icon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function ChannelList() {
@@ -80,7 +81,7 @@ function ChannelListItem({ channel }: { channel: Channel }) {
         <Avatar className="w-6 h-6 mr-2 shrink-0">
           <AvatarImage src={channel.imageUrl} />
           <AvatarFallback>
-            <HashtagIcon />
+            <AtSignIcon className="w-4 h-4" />
           </AvatarFallback>
         </Avatar>
         <span className="truncate">{channel.title}</span>

@@ -1,5 +1,5 @@
 import { HashtagIcon } from "@heroicons/react/16/solid";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 import { NAVBAR_MENUS } from "@renderer/constants/layout";
 import { Input } from "@renderer/components/ui/input";
 import { Button } from "@renderer/components/ui/button";
@@ -10,8 +10,11 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@renderer/components/ui/resizable";
+import RoomList from "./RoomList";
 
 function MainPageLayout() {
+  const { channelId } = useParams<{ channelId: string }>();
+
   return (
     <div className="flex flex-col h-screen w-full bg-background divide-y overflow-hidden">
       <header className="h-[60px] flex justify-between px-4">
@@ -42,30 +45,14 @@ function MainPageLayout() {
       >
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
           <nav className="flex flex-col bg-background p-4 text-muted-foreground w-full overflow-y-scroll h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
-            <div>
-              <h2 className="text-lg font-semibold mb-2 text-foreground">
-                방 목록
-              </h2>
-            </div>
-            <Button variant="ghost" className="justify-start" asChild>
-              <Link to="/" className="justify-start">
-                <HashtagIcon className="w-5 h-5 mr-2" />
-                <span>전체</span>
-              </Link>
-            </Button>
-            {NAVBAR_MENUS.map((menu) => (
-              <Button
-                variant="ghost"
-                className="justify-start"
-                key={menu.name}
-                asChild
-              >
-                <Link to={menu.href}>
-                  <HashtagIcon className="w-5 h-5 mr-2" />
-                  <span>{menu.name}</span>
-                </Link>
-              </Button>
-            ))}
+            {channelId ? (
+              <RoomList />
+            ) : (
+              <div className="flex flex-col items-center gap-2 w-full">
+                <span className="text-sm">아직 선택된 채널이 없습니다</span>
+                <span className="text-sm">채널을 선택해주세요</span>
+              </div>
+            )}
           </nav>
         </ResizablePanel>
         <ResizableHandle />

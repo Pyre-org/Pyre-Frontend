@@ -58,10 +58,12 @@ export interface Room {
   id: string;
   title: string;
   description: string;
-  imageurl: string;
+  imageUrl: string;
+  memberCounts: number;
+  spaceCounts: number;
   type: RoomType;
   cAt: string;
-  mAt: string;
+  mAt?: string;
 }
 
 export enum RoomType {

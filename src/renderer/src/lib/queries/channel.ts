@@ -52,13 +52,13 @@ export const useGetChannels = ({
   });
 };
 
-export const getChannel = async (id: number) => {
+export const getChannel = async (id: string) => {
   const res = await api.get<Channel>(`${baseUrl}/get/${id}`);
   return res.data;
 };
 
 export const useGetChannel = (
-  id: number,
+  id: string,
   options?: Omit<
     UseQueryOptions<Channel, AxiosError<BaseError>, Channel>,
     "queryKey" | "queryFn"
@@ -79,7 +79,7 @@ interface ICreateChannelBody {
 }
 
 interface ICreateChannelResponse {
-  id: number;
+  id: string;
   title: string;
 }
 
@@ -154,7 +154,7 @@ export const useGetWaitingChannels = () => {
   });
 };
 
-export const editChannel = async (id: number, body: ICreateChannelBody) => {
+export const editChannel = async (id: string, body: ICreateChannelBody) => {
   const res = await api.put<Channel>(`${baseUrl}/edit/${id}`, body);
   return res.data;
 };
@@ -163,7 +163,7 @@ export const useEditChannelMutation = (
   options?: UseMutationOptions<
     Channel,
     AxiosError<BaseError>,
-    ICreateChannelBody & { id: number }
+    ICreateChannelBody & { id: string }
   >,
 ) => {
   const queryClient = useQueryClient();
@@ -186,7 +186,7 @@ export const useEditChannelMutation = (
 };
 
 interface IApproveChannelBody {
-  id: number;
+  id: string;
   status: "ALLOW" | "DENY" | "CHECKING";
 }
 
@@ -224,7 +224,7 @@ interface IDeleteChannelResponse {
   status: string;
 }
 
-export const deleteChannel = async (id: number) => {
+export const deleteChannel = async (id: string) => {
   const res = await api.delete<IDeleteChannelResponse>(
     `${baseUrl}/delete/${id}`,
   );
@@ -235,7 +235,7 @@ export const useDeleteChannelMutation = (
   options?: UseMutationOptions<
     IDeleteChannelResponse,
     AxiosError<BaseError>,
-    number,
+    string,
     unknown
   >,
 ) => {
@@ -268,12 +268,12 @@ export const useGetMyChannels = () => {
 };
 
 interface IJoinChannelResponse {
-  channelId: number;
+  channelId: string;
   joinDate: string;
   agreement: boolean;
 }
 
-export const joinChannel = async (id: number) => {
+export const joinChannel = async (id: string) => {
   const res = await api.post<IJoinChannelResponse>(`${baseUrl}/join`, {
     channelId: id,
     agreement: true,
@@ -285,7 +285,7 @@ export const useJoinChannelMutation = (
   options?: UseMutationOptions<
     IJoinChannelResponse,
     AxiosError<BaseError>,
-    number
+    string
   >,
 ) => {
   const queryClient = useQueryClient();
