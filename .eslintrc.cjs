@@ -1,7 +1,6 @@
 module.exports = {
   root: true,
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -12,8 +11,9 @@ module.exports = {
   rules: {
     semi: ["error", "always"],
     quotes: ["error", "double"],
+    "no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "react/prop-types": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "prettier/prettier": [

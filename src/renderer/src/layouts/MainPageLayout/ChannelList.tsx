@@ -1,4 +1,4 @@
-import { HashtagIcon, MagnifyingGlassIcon } from "@heroicons/react/16/solid";
+import { MagnifyingGlassIcon } from "@heroicons/react/16/solid";
 import {
   Avatar,
   AvatarFallback,
@@ -11,7 +11,7 @@ import {
   useGetMyChannels,
 } from "@renderer/lib/queries/channel";
 import { Channel } from "@renderer/types/schema";
-import { AtSignIcon, Tv2Icon } from "lucide-react";
+import { AtSignIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 function ChannelList() {

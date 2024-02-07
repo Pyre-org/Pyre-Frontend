@@ -1,9 +1,9 @@
-import Logo from "@renderer/components/Logo";
+import Logo from "@renderer/components/common/Logo";
 import classes from "./index.module.css";
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import NaverLoginBtn from "@renderer/components/NaverLoginBtn";
-import GoogleLoginBtn from "@renderer/components/GoogleLoginBtn";
+import NaverLoginBtn from "@renderer/components/common/NaverLoginBtn";
+import GoogleLoginBtn from "@renderer/components/common/GoogleLoginBtn";
 import {
   LoginSchema,
   LoginSchemaType,

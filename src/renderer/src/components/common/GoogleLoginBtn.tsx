@@ -1,5 +1,5 @@
 import GoogleIcon from "@resources/google_icon.svg";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 
 function GoogleLoginBtn() {
   return (

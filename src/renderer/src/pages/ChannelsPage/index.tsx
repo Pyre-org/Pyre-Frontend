@@ -1,6 +1,6 @@
 import { useGetChannels } from "@renderer/lib/queries/channel";
 import ChannelListItem from "./ChannelListItem";
-import Loader from "@renderer/components/Loader";
+import Loader from "@renderer/components/common/Loader";
 import { Button } from "@renderer/components/ui/button";
 import { useState } from "react";
 import ChannelCreateForm from "@renderer/components/channel/ChannelCreateForm";

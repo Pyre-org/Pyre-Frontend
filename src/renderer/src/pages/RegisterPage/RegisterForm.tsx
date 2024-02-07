@@ -1,4 +1,4 @@
-import Logo from "@renderer/components/Logo";
+import Logo from "@renderer/components/common/Logo";
 import classes from "./index.module.css";
 import { SubmitErrorHandler, UseFormReturn } from "react-hook-form";
 import { RegisterSchemaType } from "@renderer/lib/schemas/RegisterSchema";

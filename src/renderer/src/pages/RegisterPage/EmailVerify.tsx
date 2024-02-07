@@ -1,5 +1,5 @@
 import classes from "./index.module.css";
-import Logo from "@renderer/components/Logo";
+import Logo from "@renderer/components/common/Logo";
 import { useEffect, useState } from "react";
 import {
   useSendEmailMutation,

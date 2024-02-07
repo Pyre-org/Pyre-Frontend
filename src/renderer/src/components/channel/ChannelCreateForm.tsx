@@ -237,12 +237,25 @@ function ChannelCreateForm({
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={methods.control}
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>이미지</FormLabel>
+                  <FormControl>
+                    <Dropzone onDrop={(files) => {}} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+            <FormField
+              control={methods.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>채널 이미지 URL</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

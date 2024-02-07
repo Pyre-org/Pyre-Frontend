@@ -6,11 +6,14 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
 import { config } from "./lib/queryclient";
 import LoadingPage from "./pages/LoadingPage";
-import { ThemeProvider } from "@renderer/components/ThemeProvider";
+import { ThemeProvider } from "@renderer/components/common/ThemeProvider";
 import { Toaster } from "@renderer/components/ui/toaster";
+import { useDragDrop } from "./hooks/useDragDrop";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient(config));
+  useDragDrop();
+
   return (
     <ThemeProvider>
       <Toaster />

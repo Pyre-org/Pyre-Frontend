@@ -2,18 +2,22 @@ import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/solid";
 import { useLogoutMutation, useMyUser } from "@renderer/lib/queries/auth";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
+import { Button } from "@renderer/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+} from "@renderer/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@renderer/components/ui/avatar";
 import { useTheme } from "./ThemeProvider";
 import { Moon, Sun } from "lucide-react";
-import { Switch } from "./ui/switch";
+import { Switch } from "@renderer/components/ui/switch";
 
 function Profile() {
   const { data: user } = useMyUser();

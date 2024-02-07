@@ -1,4 +1,4 @@
-import Logo from "@renderer/components/Logo";
+import Logo from "@renderer/components/common/Logo";
 
 function LoadingPage() {
   return (

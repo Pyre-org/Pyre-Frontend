@@ -1,4 +1,4 @@
-import AuthRoute from "@renderer/components/AuthRoute";
+import AuthRoute from "@renderer/components/common/AuthRoute";
 import MainPageLayout from "@renderer/layouts/MainPageLayout/MainPageLayout";
 import ChannelDetailPage from "@renderer/pages/ChannelDetailPage";
 import ChannelsPage from "@renderer/pages/ChannelsPage";

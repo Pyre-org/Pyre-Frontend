@@ -1,9 +1,7 @@
-import { HashtagIcon } from "@heroicons/react/16/solid";
 import { Link, Outlet, useParams } from "react-router-dom";
-import { NAVBAR_MENUS } from "@renderer/constants/layout";
 import { Input } from "@renderer/components/ui/input";
 import { Button } from "@renderer/components/ui/button";
-import Profile from "@renderer/components/Profile";
+import Profile from "@renderer/components/common/Profile";
 import ChannelList from "./ChannelList";
 import {
   ResizableHandle,
