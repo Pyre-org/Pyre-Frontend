@@ -20,7 +20,9 @@ function RoomList() {
   return (
     <>
       <div>
-        <h2 className="text-lg font-semibold mb-2 text-foreground">방 목록</h2>
+        <h2 className="text-lg font-semibold mb-2 text-foreground">
+          룸 & 스페이스
+        </h2>
       </div>
       {total > 0 ? (
         rooms.map((room) => <RoomListItem key={room.id} room={room} />)
