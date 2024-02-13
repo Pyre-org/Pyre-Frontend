@@ -4,7 +4,7 @@ import {
   PopoverTrigger,
 } from "@renderer/components/ui/popover";
 import { cn } from "@renderer/lib/utils";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, XIcon } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -47,6 +47,8 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { AxiosError } from "axios";
 import { BaseError } from "@renderer/types/schema";
 import { toast } from "../ui/use-toast";
+import Dropzone from "../common/Dropzone";
+import { useUploadFileToS3Mutation } from "@renderer/lib/queries/upload";
 
 interface ChannelCreateForm {
   open: boolean;
@@ -82,6 +84,7 @@ function ChannelCreateForm({
   const [openGenre, setOpenGenre] = useState(false);
   const createChannelMutation = useCreateChannelMutation();
   const editChannelMutation = useEditChannelMutation();
+  const uploadMutation = useUploadFileToS3Mutation();
   const isEdit = !!editChannelId;
 
   const onMutationSuccess = useCallback(() => {
@@ -98,7 +101,7 @@ function ChannelCreateForm({
     (error: AxiosError<BaseError>) => {
       toast({
         title: `채널 ${isEdit ? "수정" : "등록"} 중 오류기 발생했습니다.`,
-        description: error.response?.data,
+        description: error.response?.data.reason,
         color: "red",
         duration: 1500,
       });
@@ -144,7 +147,7 @@ function ChannelCreateForm({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="max-h-[80%] overflow-y-scroll scrollbar-thin">
         <DialogHeader>
           <DialogTitle>{isEdit ? "채널 수정" : "새 채널 생성"}</DialogTitle>
           <DialogDescription>
@@ -237,20 +240,56 @@ function ChannelCreateForm({
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={methods.control}
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>이미지</FormLabel>
                   <FormControl>
-                    <Dropzone onDrop={(files) => {}} />
+                    <Dropzone
+                      onDrop={(files) => {
+                        const file = files[0];
+                        if (file) {
+                          uploadMutation.mutate(file, {
+                            onSuccess: (url) => {
+                              field.onChange(url);
+                            },
+                            onError: (error: AxiosError<BaseError>) => {
+                              toast({
+                                title: "이미지 업로드 중 오류가 발생했습니다.",
+                                description: error.response?.data.reason,
+                                color: "red",
+                                duration: 1500,
+                              });
+                            },
+                          });
+                        }
+                      }}
+                      dropzoneProps={{
+                        accept: { "image/*": [] },
+                        multiple: false,
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
+                  {field.value && (
+                    <div className="mt-8 relative">
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        className="absolute right-0 top-0"
+                        onClick={() => field.onChange("")}
+                      >
+                        <XIcon className="w-4 h-4" />
+                      </Button>
+                      <img src={field.value} alt="img" />
+                    </div>
+                  )}
                 </FormItem>
               )}
-            /> */}
-            <FormField
+            />
+            {/* <FormField
               control={methods.control}
               name="imageUrl"
               render={({ field }) => (
@@ -262,7 +301,7 @@ function ChannelCreateForm({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <DialogFooter>
               <Button type="submit">{isEdit ? "수정" : "생성"}</Button>
             </DialogFooter>

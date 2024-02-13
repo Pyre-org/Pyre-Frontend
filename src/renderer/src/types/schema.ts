@@ -10,11 +10,13 @@ export interface PageParams {
   orderByDesc: boolean;
 }
 
-// export interface BaseError {
-//   code: string;
-//   message: string;
-// }
-export type BaseError = string;
+export interface BaseError {
+  status: number;
+  divisionCode: string;
+  resultMsg: string;
+  errors: null;
+  reason: string;
+}
 
 export interface User {
   id: string;

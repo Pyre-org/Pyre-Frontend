@@ -7,7 +7,7 @@ import { api } from "../api";
 const baseUrl = "/community/room";
 
 export const getRooms = async (id: string) => {
-  const res = await api.get<ListResponse<Room>>(`${baseUrl}/list/${id}`);
+  const res = await api.get<ListResponse<Room>>(`${baseUrl}/my/${id}`);
   return res.data;
 };
 

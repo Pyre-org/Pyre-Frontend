@@ -28,7 +28,7 @@ function RoomList() {
         rooms.map((room) => <RoomListItem key={room.id} room={room} />)
       ) : (
         <div className="flex justify-center text-sm my-2">
-          채널에 방이 없습니다
+          채널에 룸/스페이스가 없습니다
         </div>
       )}
     </>

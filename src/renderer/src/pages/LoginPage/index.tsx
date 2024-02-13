@@ -41,7 +41,7 @@ function LoginPage() {
         console.log(error);
         toast({
           title: "로그인에 실패했습니다.",
-          description: error.response?.data,
+          description: error.response?.data.reason,
           color: "red",
           duration: 1500,
         });
