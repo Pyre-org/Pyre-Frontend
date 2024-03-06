@@ -23,7 +23,8 @@ import {
   FormMessage,
 } from "@renderer/components/ui/form";
 import { Input } from "@renderer/components/ui/input";
-import { toast } from "@renderer/components/ui/use-toast";
+import { requestOAuth } from "@renderer/lib/queries/oauth";
+import { toast } from "sonner";
 
 function LoginPage() {
   const methods = useForm<LoginSchemaType>({
@@ -39,12 +40,7 @@ function LoginPage() {
       },
       onError: (error) => {
         console.log(error);
-        toast({
-          title: "로그인에 실패했습니다.",
-          description: error.response?.data.reason,
-          color: "red",
-          duration: 1500,
-        });
+        toast("로그인에 실패했습니다", { description: error.message });
       },
     });
   }, []);
@@ -52,6 +48,16 @@ function LoginPage() {
   const onError = useCallback<SubmitErrorHandler<LoginSchemaType>>((error) => {
     console.log(error);
   }, []);
+
+  const handleOAuthLogin = (authority: string) => async () => {
+    try {
+      const redirectUrl = await requestOAuth(authority);
+      navigate(redirectUrl);
+    } catch (error) {
+      console.error(error);
+      toast.error("로그인 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <Form {...methods}>
@@ -102,8 +108,11 @@ function LoginPage() {
           </div>
           <Separator orientation="horizontal" />
           <div className="flex flex-col gap-2">
-            <NaverLoginBtn />
-            <GoogleLoginBtn />
+            <NaverLoginBtn onClick={handleOAuthLogin("NAVER")} type="button" />
+            <GoogleLoginBtn
+              onClick={handleOAuthLogin("GOOGLE")}
+              type="button"
+            />
           </div>
           <div className="flex items-center justify-between">
             <Button variant="link" size="sm">

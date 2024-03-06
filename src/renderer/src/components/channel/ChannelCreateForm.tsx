@@ -22,13 +22,11 @@ import {
   Dialog,
 } from "@renderer/components/ui/dialog";
 import { useDebouncedValue } from "@mantine/hooks";
-import { AxiosError } from "axios";
-import { BaseError } from "@renderer/types/schema";
-import { toast } from "../ui/use-toast";
 import FormDropzone from "../form/FormDropzone";
 import FormInput from "../form/FormInput";
 import FormComboBox from "../form/FormCombobox";
 import { Trash2Icon } from "lucide-react";
+import { toast } from "sonner";
 
 interface ChannelCreateForm {
   open: boolean;
@@ -60,25 +58,12 @@ function ChannelCreateForm({
 
   const onMutationSuccess = useCallback(() => {
     setOpen(false);
-    toast({
-      title: `채널 ${isEdit ? "수정" : "등록"} 완료`,
-      description: `채널 ${isEdit ? "수정" : "등록"}이 완료되었습니다.`,
-      color: "green",
-      duration: 1500,
-    });
+    toast.success(`채널 ${isEdit ? "수정" : "등록"}이 완료되었습니다`);
   }, [isEdit]);
 
-  const onMutationError = useCallback(
-    (error: AxiosError<BaseError>) => {
-      toast({
-        title: `채널 ${isEdit ? "수정" : "등록"} 중 오류기 발생했습니다.`,
-        description: error.response?.data.reason,
-        color: "red",
-        duration: 1500,
-      });
-    },
-    [isEdit],
-  );
+  const onMutationError = useCallback(() => {
+    toast.error(`채널 ${isEdit ? "수정" : "등록"} 중 오류가 발생했습니다`);
+  }, [isEdit]);
 
   const onSubmit = (data: CreateChannelSchemaType) => {
     methods.reset();

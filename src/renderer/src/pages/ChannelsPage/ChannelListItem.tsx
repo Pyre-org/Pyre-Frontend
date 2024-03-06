@@ -12,12 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
-import { toast } from "@renderer/components/ui/use-toast";
 import { useJoinChannelMutation } from "@renderer/lib/queries/channel";
 import { Channel } from "@renderer/types/schema";
 import { MoreHorizontal, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 interface ChannelListItemProps {
   channel: Channel;
@@ -31,18 +31,10 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
     setShow(false);
     joinMutation.mutate(channel.id, {
       onSuccess: () => {
-        toast({
-          title: "채널 참가 성공",
-          description: `${channel.title}에 참가하였습니다.`,
-          duration: 3000,
-        });
+        toast.success(`${channel.title}에 참가하였습니다.`);
       },
       onError: (error) => {
-        toast({
-          title: "채널 참가 실패",
-          description: error.message,
-          duration: 3000,
-        });
+        toast.error("채널 참가에 실패했습니다", { description: error.message });
       },
     });
   };

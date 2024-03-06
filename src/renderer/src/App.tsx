@@ -7,7 +7,7 @@ import { useState } from "react";
 import { config } from "./lib/queryclient";
 import LoadingPage from "./pages/LoadingPage";
 import { ThemeProvider } from "@renderer/components/common/ThemeProvider";
-import { Toaster } from "@renderer/components/ui/toaster";
+import { Toaster } from "sonner";
 import { useDragDrop } from "./hooks/useDragDrop";
 
 function App() {

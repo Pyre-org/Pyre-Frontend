@@ -1,9 +1,9 @@
 import GoogleIcon from "@resources/google_icon.svg";
-import { Button } from "../ui/button";
+import { Button, ButtonProps } from "../ui/button";
 
-function GoogleLoginBtn() {
+function GoogleLoginBtn(props: ButtonProps) {
   return (
-    <Button variant="outline">
+    <Button variant="outline" {...props}>
       <img src={GoogleIcon} className="w-4 h-4 mr-2" />
       <span>구글 로그인</span>
     </Button>

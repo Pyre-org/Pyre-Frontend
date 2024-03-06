@@ -1,8 +1,15 @@
-import { Button } from "../ui/button";
+import { cn } from "@renderer/lib/utils";
+import { Button, ButtonProps } from "../ui/button";
 
-function NaverLoginBtn() {
+function NaverLoginBtn(props: ButtonProps) {
   return (
-    <Button className="bg-green-500 hover:bg-green-600/90 text-white">
+    <Button
+      {...props}
+      className={cn(
+        "bg-green-500 hover:bg-green-600/90 text-white",
+        props.className,
+      )}
+    >
       <span className="text-white font-extrabold mr-2">N</span>
       <span>네이버 로그인</span>
     </Button>

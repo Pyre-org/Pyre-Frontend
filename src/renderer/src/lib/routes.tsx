@@ -4,6 +4,7 @@ import ChannelDetailPage from "@renderer/pages/ChannelDetailPage";
 import ChannelsPage from "@renderer/pages/ChannelsPage";
 import HomePage from "@renderer/pages/HomePage";
 import LoginPage from "@renderer/pages/LoginPage";
+import OAuthPage from "@renderer/pages/OAuthPage";
 import RegisterPage from "@renderer/pages/RegisterPage";
 import { createHashRouter, Navigate } from "react-router-dom";
 
@@ -47,5 +48,9 @@ export const router = createHashRouter([
   {
     path: "/register",
     element: <RegisterPage />,
+  },
+  {
+    path: "/oauth/callback/:authority",
+    element: <OAuthPage />,
   },
 ]);
