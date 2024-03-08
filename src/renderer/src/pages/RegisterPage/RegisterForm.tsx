@@ -1,6 +1,6 @@
 import Logo from "@renderer/components/common/Logo";
 import classes from "./index.module.css";
-import { SubmitErrorHandler, UseFormReturn } from "react-hook-form";
+import { SubmitErrorHandler, UseFormReturn, useWatch } from "react-hook-form";
 import { RegisterSchemaType } from "@renderer/lib/schemas/RegisterSchema";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
@@ -17,6 +17,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@renderer/components/ui/form";
+import FormInput from "@renderer/components/form/FormInput";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { cn } from "@renderer/lib/utils";
 
 interface RegisterFormProps {
   methods: UseFormReturn<RegisterSchemaType>;
@@ -25,6 +28,7 @@ interface RegisterFormProps {
 
 function RegisterForm({ methods, onNext }: RegisterFormProps) {
   const [showPwd, { toggle: togglePwd }] = useDisclosure(false);
+  const pwd = useWatch({ control: methods.control, name: "password" });
 
   const onError = useCallback<SubmitErrorHandler<RegisterSchemaType>>(
     (error) => {
@@ -46,18 +50,11 @@ function RegisterForm({ methods, onNext }: RegisterFormProps) {
           <div className={classes.FormContainer}>
             <div className="w-full flex flex-col">
               <div className="flex flex-col gap-4">
-                <FormField
+                <FormInput
                   control={methods.control}
                   name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>이메일</FormLabel>
-                      <FormControl>
-                        <Input placeholder="example@domain.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="이메일"
+                  inputProps={{ placeholder: "example@domain.com" }}
                 />
 
                 <FormField
@@ -93,22 +90,30 @@ function RegisterForm({ methods, onNext }: RegisterFormProps) {
                     </FormItem>
                   )}
                 />
+                <div className="mb-4 flex gap-2 items-center">
+                  <PasswordIndicator
+                    value={pwd}
+                    regex={/.{8,}/}
+                    label="8자 이상"
+                  />
+                  <PasswordIndicator
+                    value={pwd}
+                    regex={/[a-z]/}
+                    label="영어 소문자"
+                  />
+                  <PasswordIndicator
+                    value={pwd}
+                    regex={/[A-Z]/}
+                    label="영어 대문자"
+                  />
+                  <PasswordIndicator value={pwd} regex={/\d/} label="숫자" />
+                </div>
 
-                <FormField
+                <FormInput
                   control={methods.control}
                   name="nickname"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>닉네임</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="두 글자 이상 입력해주세요."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="닉네임"
+                  inputProps={{ placeholder: "두 글자 이상 입력해주세요" }}
                 />
               </div>
 
@@ -174,3 +179,32 @@ function RegisterForm({ methods, onNext }: RegisterFormProps) {
 }
 
 export default RegisterForm;
+
+interface PasswordIndicatorProps {
+  value: string;
+  regex: RegExp;
+  label: string;
+}
+
+export function PasswordIndicator({
+  value,
+  regex,
+  label,
+}: PasswordIndicatorProps) {
+  const isMatch = regex.test(value);
+  return (
+    <div className="flex gap-1 items-center">
+      <CheckCircleIcon
+        className={`w-4 h-4 ${isMatch ? "text-primary" : "text-muted-foreground"}`}
+      />
+      <div
+        className={cn(
+          !isMatch ? "text-muted-foreground" : "text-primary",
+          "text-xs",
+        )}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}

@@ -19,7 +19,11 @@ export const RegisterSchema = z.object({
   password: z
     .string({ required_error: "값을 입력해주세요" })
     .min(8, "8자 이상 입력해주세요.")
-    .max(40, "40자 이하로 입력해주세요."),
+    .max(40, "40자 이하로 입력해주세요.")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,40}$/,
+      "최소 1개 이상의 숫자, 대문자, 소문자를 포함해주세요.",
+    ),
   nickname: z
     .string({ required_error: "값을 입력해주세요" })
     .min(5, "5자 이상 입력해주세요.")
