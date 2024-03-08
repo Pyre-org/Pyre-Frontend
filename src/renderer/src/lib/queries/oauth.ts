@@ -2,9 +2,8 @@ import { api } from "../api";
 
 const baseUrl = "/auth-service/oauth";
 
-export const requestOAuth = async (authority: string) => {
-  const res = await api.get<string>(`${baseUrl}/${authority}`);
-  return res.data;
+export const getOAuthRequestUrl = (authority: string) => {
+  return `${import.meta.env.VITE_API_URL}/auth-service/oauth/${authority}`;
 };
 
 interface TokenResponse {

@@ -24,6 +24,7 @@ let isRunning = false;
 const windows = {
   main: null as BrowserWindow | null,
   screenshot: null as BrowserWindow | null,
+  auth: null as BrowserWindow | null,
 };
 
 function createWindow(): void {
@@ -36,9 +37,8 @@ function createWindow(): void {
     show: false,
     icon: join(__dirname, "../../resources/icon.png"),
     autoHideMenuBar: true,
-    ...(process.platform === "linux" ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, "../preload/index.ts"),
+      preload: join(__dirname, "../preload/index.js"),
       sandbox: false,
     },
   });
@@ -253,4 +253,43 @@ ipcMain.handle("CLOSE_SCREENSHOT_WINDOW", () => {
 ipcMain.handle("OPEN_PATH", (_, path: string) => {
   console.log(path);
   shell.openPath(path);
+});
+
+interface IOAuthLoginParams {
+  authority: string;
+  url: string;
+}
+
+ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
+  if (windows.auth) {
+    windows.auth.close();
+    windows.auth = null;
+  }
+
+  const authWindow = new BrowserWindow({
+    width: 600,
+    height: 800,
+    show: false,
+    webPreferences: {
+      nodeIntegration: false,
+      webSecurity: false,
+    },
+  });
+  windows.auth = authWindow;
+
+  authWindow.loadURL(url);
+  authWindow.show();
+  authWindow.webContents.on("will-navigate", (_, newUrl) => {
+    const code = new URL(newUrl).searchParams.get("code");
+    const state = new URL(newUrl).searchParams.get("state");
+    if (code) {
+      windows.main?.webContents.send("oauth-login", { authority, code, state });
+      authWindow.close();
+      windows.auth = null;
+    }
+  });
+
+  authWindow.on("close", () => {
+    windows.auth = null;
+  });
 });

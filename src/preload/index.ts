@@ -24,6 +24,8 @@ export const api = {
     ipcRenderer.invoke("CLOSE_SCREENSHOT_WINDOW"),
   openPath: (path: string): Promise<void> =>
     ipcRenderer.invoke("OPEN_PATH", path),
+  handleOAuthLogin: (params: { url: string; authority: string }) =>
+    ipcRenderer.invoke("OAUTH_LOGIN", params),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

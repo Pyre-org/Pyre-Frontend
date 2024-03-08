@@ -10,7 +10,11 @@ import {
 } from "@renderer/lib/schemas/LoginSchema";
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "@renderer/lib/queries/auth";
+import {
+  ITokenResponse,
+  useLoginMutation,
+  useSetTokenMutation,
+} from "@renderer/lib/queries/auth";
 import { cn } from "@renderer/lib/utils";
 import { Button } from "@renderer/components/ui/button";
 import { Separator } from "@renderer/components/ui/separator";
@@ -23,8 +27,9 @@ import {
   FormMessage,
 } from "@renderer/components/ui/form";
 import { Input } from "@renderer/components/ui/input";
-import { requestOAuth } from "@renderer/lib/queries/oauth";
 import { toast } from "sonner";
+import { getOAuthRequestUrl } from "@renderer/lib/queries/oauth";
+import { api } from "@renderer/lib/api";
 
 function LoginPage() {
   const methods = useForm<LoginSchemaType>({
@@ -32,6 +37,7 @@ function LoginPage() {
   });
   const navigate = useNavigate();
   const loginMutation = useLoginMutation();
+  const setTokenMutation = useSetTokenMutation();
 
   const onSubmit = useCallback<SubmitHandler<LoginSchemaType>>((data) => {
     loginMutation.mutate(data, {
@@ -49,14 +55,33 @@ function LoginPage() {
     console.log(error);
   }, []);
 
-  const handleOAuthLogin = (authority: string) => async () => {
-    try {
-      const redirectUrl = await requestOAuth(authority);
-      navigate(redirectUrl);
-    } catch (error) {
-      console.error(error);
-      toast.error("로그인 중 오류가 발생했습니다.");
-    }
+  const handleOAuth = (authority: string) => {
+    console.log(window.api);
+    window.api.handleOAuthLogin({
+      authority,
+      url: getOAuthRequestUrl(authority),
+    });
+    const handler = async (res) => {
+      if (res.code) {
+        const tokenRes = await api.post<ITokenResponse>(
+          `${import.meta.env.VITE_API_URL}/auth-service/oauth/login/${authority}`,
+          { code: res.code },
+        );
+        setTokenMutation.mutate(tokenRes.data.access_token, {
+          onSuccess: () => {
+            navigate("/");
+          },
+          onError: (error) => {
+            console.log(error);
+            toast("로그인에 실패했습니다", { description: error.message });
+          },
+        });
+      } else {
+        toast("로그인에 실패했습니다");
+      }
+    };
+
+    window.electron.ipcRenderer.once("oauth-login", (_, res) => handler(res));
   };
 
   return (
@@ -108,9 +133,9 @@ function LoginPage() {
           </div>
           <Separator orientation="horizontal" />
           <div className="flex flex-col gap-2">
-            <NaverLoginBtn onClick={handleOAuthLogin("NAVER")} type="button" />
+            <NaverLoginBtn onClick={() => handleOAuth("NAVER")} type="button" />
             <GoogleLoginBtn
-              onClick={handleOAuthLogin("GOOGLE")}
+              onClick={() => handleOAuth("GOOGLE")}
               type="button"
             />
           </div>
