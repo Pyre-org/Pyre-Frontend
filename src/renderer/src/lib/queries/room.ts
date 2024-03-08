@@ -6,13 +6,22 @@ import { api } from "../api";
 
 const baseUrl = "/community/room";
 
-export const getRooms = async (id: string) => {
-  const res = await api.get<ListResponse<Room>>(`${baseUrl}/my/${id}`);
+interface GetRoomsParams {
+  channelId: string;
+  keyword: string;
+}
+
+export const getRooms = async (params: Partial<GetRoomsParams>) => {
+  const { channelId, ...rest } = params;
+  const res = await api.get<ListResponse<Room>>(
+    `${baseUrl}/list/${channelId}`,
+    { params: rest },
+  );
   return res.data;
 };
 
 export const useGetRooms = (
-  id: string,
+  { channelId, keyword }: Partial<GetRoomsParams>,
   options?: Omit<
     UseQueryOptions<
       ListResponse<Room>,
@@ -22,10 +31,47 @@ export const useGetRooms = (
     "queryKey" | "queryFn"
   >,
 ) => {
+  const params = {
+    channelId,
+    keyword,
+  };
+
   return useQuery({
     ...options,
-    queryKey: QUERY_KEYS.room.list.public(id),
-    queryFn: () => getRooms(id),
+    queryKey: QUERY_KEYS.room.list.public(params),
+    queryFn: () => getRooms(params),
+  });
+};
+
+export const getMyRooms = async (params: Partial<GetRoomsParams>) => {
+  const { channelId, ...rest } = params;
+  const res = await api.get<ListResponse<Room>>(
+    `${baseUrl}/my/list/${channelId}`,
+    { params: rest },
+  );
+  return res.data;
+};
+
+export const useGetMyRooms = (
+  { channelId, keyword }: Partial<GetRoomsParams>,
+  options?: Omit<
+    UseQueryOptions<
+      ListResponse<Room>,
+      AxiosError<BaseError>,
+      ListResponse<Room>
+    >,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  const params = {
+    channelId,
+    keyword,
+  };
+
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.room.list.my(params),
+    queryFn: () => getMyRooms(params),
   });
 };
 
@@ -46,4 +92,9 @@ export const useGetRoom = (
     queryKey: QUERY_KEYS.room.single(id),
     queryFn: () => getRoom(id),
   });
+};
+
+export const joinRoom = async (id: string) => {
+  const res = await api.post<Room>(`${baseUrl}/${id}/join`);
+  return res.data;
 };

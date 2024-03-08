@@ -9,6 +9,7 @@ import {
   ResizablePanelGroup,
 } from "@renderer/components/ui/resizable";
 import RoomList from "./RoomList";
+import MyChannelRoomList from "./MyChannelRoomList";
 
 function MainPageLayout() {
   const { channelId } = useParams<{ channelId: string }>();
@@ -42,14 +43,15 @@ function MainPageLayout() {
         className="flex flex-1 divide-x"
       >
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
-          <nav className="flex flex-col bg-background p-4 text-muted-foreground w-full overflow-y-scroll h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
+          <nav className="flex flex-col bg-background p-4 w-full overflow-y-scroll h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
             {channelId ? (
               <RoomList />
             ) : (
-              <div className="flex flex-col items-center gap-2 w-full">
-                <span className="text-sm">아직 선택된 채널이 없습니다</span>
-                <span className="text-sm">채널을 선택해주세요</span>
-              </div>
+              // <div className="flex flex-col items-center gap-2 w-full">
+              //   <span className="text-sm">아직 선택된 채널이 없습니다</span>
+              //   <span className="text-sm">채널을 선택해주세요</span>
+              // </div>
+              <MyChannelRoomList />
             )}
           </nav>
         </ResizablePanel>

@@ -33,20 +33,13 @@ export const QUERY_KEYS = {
     single: (id: string) => ["room", "single", id],
     list: {
       all: ["room", "list"],
-      public: (id: string, params?: any) => [
+      public: (params?: any) => [
         "room",
         "list",
-        id,
         "public",
         ...(params ? [params] : []),
       ],
-      my: (id: string, params?: any) => [
-        "room",
-        "list",
-        id,
-        "my",
-        ...(params ? [params] : []),
-      ],
+      my: (params?: any) => ["room", "list", "my", ...(params ? [params] : [])],
     },
   },
 };

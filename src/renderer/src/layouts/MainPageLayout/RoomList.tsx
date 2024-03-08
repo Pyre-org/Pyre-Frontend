@@ -13,12 +13,12 @@ function RoomList() {
   const { channelId } = useParams<{ channelId: string }>();
   const id = channelId as string;
 
-  const { data: roomData } = useGetRooms(id);
+  const { data: roomData } = useGetRooms({ channelId: id });
   const total = roomData?.total ?? 0;
   const rooms = roomData?.hits ?? [];
 
   return (
-    <>
+    <div className="text-muted-foreground">
       <div>
         <h2 className="text-lg font-semibold mb-2 text-foreground">
           룸 & 스페이스
@@ -31,7 +31,7 @@ function RoomList() {
           채널에 룸/스페이스가 없습니다
         </div>
       )}
-    </>
+    </div>
   );
 }
 
