@@ -56,7 +56,6 @@ function LoginPage() {
   }, []);
 
   const handleOAuth = (authority: string) => {
-    console.log(window.api);
     window.api.handleOAuthLogin({
       authority,
       url: getOAuthRequestUrl(authority),

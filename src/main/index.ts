@@ -267,7 +267,7 @@ ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
   }
 
   const authWindow = new BrowserWindow({
-    width: 600,
+    width: 700,
     height: 800,
     show: false,
     webPreferences: {
@@ -277,17 +277,27 @@ ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
   });
   windows.auth = authWindow;
 
-  authWindow.loadURL(url);
+  authWindow.loadURL(url, {
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0",
+  });
   authWindow.show();
-  authWindow.webContents.on("will-navigate", (_, newUrl) => {
+
+  let sent = false;
+  const handler = (_, newUrl) => {
+    if (sent) return;
     const code = new URL(newUrl).searchParams.get("code");
     const state = new URL(newUrl).searchParams.get("state");
     if (code) {
+      sent = true;
       windows.main?.webContents.send("oauth-login", { authority, code, state });
       authWindow.close();
       windows.auth = null;
     }
-  });
+  };
+
+  authWindow.webContents.on("will-navigate", handler);
+  authWindow.webContents.on("did-navigate", handler);
 
   authWindow.on("close", () => {
     windows.auth = null;
