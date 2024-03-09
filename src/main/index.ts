@@ -16,6 +16,7 @@ import notifier from "node-notifier";
 import icon from "../../resources/icon.png?asset";
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
+app.setAppUserModelId(process.execPath);
 
 const appID = "Pyre";
 
@@ -55,7 +56,7 @@ function createWindow(): void {
     notifier.notify({
       title: "Pyre",
       message: "앱이 백그라운드에서 실행 중입니다.",
-      icon,
+      icon: join(__dirname, "../../resources/icon.png"),
       appID,
     });
   });
