@@ -28,7 +28,7 @@ interface RegisterFormProps {
 
 function RegisterForm({ methods, onNext }: RegisterFormProps) {
   const [showPwd, { toggle: togglePwd }] = useDisclosure(false);
-  const pwd = useWatch({ control: methods.control, name: "password" });
+  const pwd = useWatch({ control: methods.control, name: "password" }) ?? "";
 
   const onError = useCallback<SubmitErrorHandler<RegisterSchemaType>>(
     (error) => {
