@@ -43,9 +43,13 @@ function RoomCreateBtn() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)}>
+        <Button
+          onClick={() => setOpen(true)}
+          variant="ghost"
+          className="text-primary hover:text-primary"
+        >
           <PlusCircleIcon className="size-4 mr-2" />
-          <span>룸 생성</span>
+          <span>룸 생성하기</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="flex flex-col max-h-[80%] overflow-y-scroll scrollbar-thin">
