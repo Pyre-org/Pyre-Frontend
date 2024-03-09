@@ -284,20 +284,33 @@ ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
   authWindow.show();
 
   let sent = false;
-  const handler = (_, newUrl) => {
-    if (sent) return;
-    const code = new URL(newUrl).searchParams.get("code");
-    const state = new URL(newUrl).searchParams.get("state");
-    if (code) {
-      sent = true;
-      windows.main?.webContents.send("oauth-login", { authority, code, state });
-      authWindow.close();
-      windows.auth = null;
+  const handler = (
+    details: Electron.Event<Electron.WebContentsWillRedirectEventParams>,
+  ) => {
+    try {
+      if (sent) return;
+      const newUrl = details.url;
+      const code = new URL(newUrl).searchParams.get("code");
+      const state = new URL(newUrl).searchParams.get("state");
+      if (code) {
+        console.log("code", code, state);
+        details.preventDefault();
+        sent = true;
+        windows.main?.webContents.send("oauth-login", {
+          authority,
+          code,
+          state,
+        });
+        authWindow.close();
+        windows.auth = null;
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
+  authWindow.webContents.on("will-redirect", handler);
   authWindow.webContents.on("will-navigate", handler);
-  authWindow.webContents.on("did-navigate", handler);
 
   authWindow.on("close", () => {
     windows.auth = null;

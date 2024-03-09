@@ -42,7 +42,12 @@ function RoomListItem({ room }: { room: Room }) {
   const id = channelId as string;
 
   return (
-    <Button variant="ghost" className="justify-start" key={room.title} asChild>
+    <Button
+      variant="ghost"
+      className="justify-start w-full"
+      key={room.title}
+      asChild
+    >
       <Link to={`/channels/${id}/rooms/${room.id}`}>
         <Avatar className="w-6 h-6 mr-2 shrink-0">
           <AvatarImage src={room.imageUrl} />

@@ -34,6 +34,12 @@ interface ChannelCreateForm {
   editChannelId?: string | null;
 }
 
+const defaultValues = {
+  title: "",
+  description: "",
+  imageUrl: [],
+};
+
 function ChannelCreateForm({
   open,
   setOpen,
@@ -44,6 +50,7 @@ function ChannelCreateForm({
   });
   const methods = useForm<CreateChannelSchemaType>({
     resolver: zodResolver(CreateChannelSchema),
+    defaultValues,
   });
   const imageUrl = useWatch({ control: methods.control, name: "imageUrl" });
   const [genreKeyword, setGenreKeyword] = useState("");
@@ -96,7 +103,7 @@ function ChannelCreateForm({
         imageUrl: [{ url: editChannelData.imageUrl }],
       });
     } else {
-      methods.reset({});
+      methods.reset(defaultValues);
     }
   }, [editChannelData, editChannelId]);
 
