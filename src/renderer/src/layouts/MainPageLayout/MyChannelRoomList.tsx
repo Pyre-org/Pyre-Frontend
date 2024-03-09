@@ -10,7 +10,7 @@ function MyChannelRoomList() {
     <div className="flex flex-col gap-2">
       <h1 className="text-xl font-semibold">내 채널 및 룸</h1>
       {total > 0 ? (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {channels.map((channel) => (
             <MyRoomList key={channel.id} channel={channel} />
           ))}

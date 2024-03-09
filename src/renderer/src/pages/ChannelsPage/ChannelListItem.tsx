@@ -28,6 +28,7 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
   const joinMutation = useJoinChannelMutation();
 
   const handleJoinChannel = async () => {
+    if (joinMutation.isPending) return;
     setShow(false);
     joinMutation.mutate(channel.id, {
       onSuccess: () => {
@@ -65,8 +66,8 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
                 </CardDescription>
               </div>
               <div className="text-xs flex gap-4">
-                <span>멤버 수 {channel.memberCounts}명</span>
-                <span>{channel.roomCounts}개의 스페이스</span>
+                <span>구독 멤버 {channel.memberCounts}명</span>
+                <span>{channel.roomCounts}개의 룸</span>
               </div>
               <p className="text-xs text-muted-foreground">
                 {`생성일 ${channel.cAt}`}
@@ -89,7 +90,10 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
               onClick={(e) => e.stopPropagation()}
               className="w-44"
             >
-              <DropdownMenuItem onClick={handleJoinChannel}>
+              <DropdownMenuItem
+                onClick={handleJoinChannel}
+                disabled={joinMutation.isPending}
+              >
                 <PlusIcon className="w-4 h-4 mr-2" />
                 <span>채널 참가하기</span>
               </DropdownMenuItem>

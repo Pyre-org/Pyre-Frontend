@@ -29,7 +29,7 @@ function RoomList() {
       {total > 0 ? (
         rooms.map((room) => <RoomListItem key={room.id} room={room} />)
       ) : (
-        <div className="flex justify-center text-sm my-2">
+        <div className="flex justify-center text-sm my-4">
           채널에 룸이 없습니다
         </div>
       )}

@@ -23,13 +23,19 @@ function RoomCreateBtn() {
     setOpen(false);
     const body = {
       ...data,
-      imageUrl: data.imageUrl?.[0].url ?? undefined,
+      description: data.description ?? "",
+      imageUrl: data.imageUrl?.[0]?.url ?? undefined,
       channelId: channelId as string,
     };
 
     createMutation.mutate(body, {
       onSuccess: () => {
         toast.success("룸이 생성되었습니다");
+      },
+      onError: (error) => {
+        toast.error("채널 생성 중 오류가 발생했습니다", {
+          description: error.response?.data.reason,
+        });
       },
     });
   };
