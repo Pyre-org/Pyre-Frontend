@@ -29,7 +29,7 @@ function ChannelList() {
       <div className="flex flex-col">
         <div>
           <h2 className="text-lg font-semibold mb-2 text-foreground">
-            내 채널
+            구독 채널
           </h2>
           <div className="relative">
             <Input className="h-8 mb-4 pl-8" placeholder="채널 이름으로 검색" />

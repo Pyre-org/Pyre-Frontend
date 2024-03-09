@@ -1,3 +1,5 @@
+import { RoomCreateSchemaType } from "@renderer/lib/schemas/RoomCreateSchema";
+
 export interface ListResponse<T> {
   total: number;
   hits: T[];
@@ -66,6 +68,11 @@ export interface Room {
   type: RoomType;
   cAt: string;
   mAt?: string;
+}
+
+export interface RoomBody extends Omit<RoomCreateSchemaType, "imageUrl"> {
+  imageUrl?: string;
+  channelId: string;
 }
 
 export enum RoomType {

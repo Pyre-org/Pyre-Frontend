@@ -16,8 +16,9 @@ function MyChannelRoomList() {
           ))}
         </div>
       ) : (
-        <div className="text-center text-sm text-muted-foreground">
-          채널이 없습니다. 채널을 추가해보세요.
+        <div className="flex flex-col items-center justify-center text-sm text-muted-foreground">
+          <span>채널이 없습니다.</span>
+          <span>채널을 추가해보세요.</span>
         </div>
       )}
     </div>

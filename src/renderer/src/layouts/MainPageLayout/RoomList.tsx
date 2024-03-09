@@ -5,6 +5,7 @@ import {
   AvatarImage,
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
+import { useGetChannel } from "@renderer/lib/queries/channel";
 import { useGetRooms } from "@renderer/lib/queries/room";
 import { Room } from "@renderer/types/schema";
 import { Link, useParams } from "react-router-dom";
@@ -13,6 +14,7 @@ function RoomList() {
   const { channelId } = useParams<{ channelId: string }>();
   const id = channelId as string;
 
+  const { data: channelData } = useGetChannel(id);
   const { data: roomData } = useGetRooms({ channelId: id });
   const total = roomData?.total ?? 0;
   const rooms = roomData?.hits ?? [];
@@ -21,14 +23,14 @@ function RoomList() {
     <div className="text-muted-foreground">
       <div>
         <h2 className="text-lg font-semibold mb-2 text-foreground">
-          룸 & 스페이스
+          {channelData?.title} 채널의 내 룸
         </h2>
       </div>
       {total > 0 ? (
         rooms.map((room) => <RoomListItem key={room.id} room={room} />)
       ) : (
         <div className="flex justify-center text-sm my-2">
-          채널에 룸/스페이스가 없습니다
+          채널에 룸이 없습니다
         </div>
       )}
     </div>

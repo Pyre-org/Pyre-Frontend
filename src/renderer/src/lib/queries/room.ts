@@ -1,5 +1,16 @@
-import { BaseError, ListResponse, Room } from "@renderer/types/schema";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import {
+  BaseError,
+  ListResponse,
+  Room,
+  RoomBody,
+} from "@renderer/types/schema";
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { QUERY_KEYS } from "../querykeys";
 import { api } from "../api";
@@ -97,4 +108,33 @@ export const useGetRoom = (
 export const joinRoom = async (id: string) => {
   const res = await api.post<Room>(`${baseUrl}/${id}/join`);
   return res.data;
+};
+
+interface CreateRoomResponse {
+  id: string;
+  title: string;
+}
+
+export const createRoom = async (data: RoomBody) => {
+  const res = await api.post<CreateRoomResponse>(`${baseUrl}/create`, data);
+  return res.data;
+};
+
+export const useCreateRoomMutation = (
+  options?: UseMutationOptions<
+    CreateRoomResponse,
+    AxiosError<BaseError>,
+    RoomBody
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: createRoom,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
 };

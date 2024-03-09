@@ -59,8 +59,8 @@ function Profile() {
             <AvatarFallback>{user.nickname[0].toUpperCase()}</AvatarFallback>
           </Avatar>
           <div style={{ flex: 1 }}>
-            <p className="text-md">{user.nickname}</p>
-            <p className="text-muted-foreground text-sm">{user.email}</p>
+            <p className="text-sm font-semibold">{user.nickname}</p>
+            <p className="text-muted-foreground text-xs">{user.email}</p>
           </div>
         </div>
         <DropdownMenuSeparator />
