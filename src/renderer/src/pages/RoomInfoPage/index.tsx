@@ -42,7 +42,9 @@ function RoomInfoPage() {
             toast("룸 참가에 성공했습니다");
           },
           onError: (error) => {
-            toast("룸 참가에 실패했습니다", { description: error.message });
+            toast("룸 참가에 실패했습니다", {
+              description: error.response?.data.reason,
+            });
           },
         },
       );
@@ -53,7 +55,7 @@ function RoomInfoPage() {
         },
         onError: (error) => {
           toast("룸 나가기에 실패했습니다", {
-            description: error.message,
+            description: error.response?.data.reason,
           });
         },
       });

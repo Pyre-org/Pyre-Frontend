@@ -1,5 +1,5 @@
 import { Button } from "@renderer/components/ui/button";
-import { useGetSpaces } from "@renderer/lib/queries/space";
+import { useGetSpace, useGetSpaces } from "@renderer/lib/queries/space";
 import { Space } from "@renderer/types/schema";
 import { Link, useParams } from "react-router-dom";
 
@@ -24,6 +24,7 @@ function SpaceList() {
 
 function SpaceListItem({ space }: { space: Space }) {
   const { channelId } = useParams<{ channelId: string }>();
+  const { data: spaceData } = useGetSpace(space.id);
 
   return (
     <Button
@@ -35,7 +36,7 @@ function SpaceListItem({ space }: { space: Space }) {
       <Link
         to={`/channels/${channelId}/rooms/${space.roomId}/spaces/${space.id}`}
       >
-        <span className="truncate">{space.id}</span>
+        <span className="truncate">{spaceData?.title}</span>
       </Link>
     </Button>
   );

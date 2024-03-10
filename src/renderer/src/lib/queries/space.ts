@@ -32,3 +32,22 @@ export const useGetSpaces = (
     queryFn: () => getSpaces(params),
   });
 };
+
+export const getSpace = async (spaceId: string) => {
+  const res = await api.get<Space>(`${baseUrl}/info/${spaceId}`);
+  return res.data;
+};
+
+export const useGetSpace = (
+  spaceId: string,
+  options?: Omit<
+    UseQueryOptions<Space, AxiosError<BaseError>, Space>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.space.single(spaceId).all,
+    queryFn: () => getSpace(spaceId),
+  });
+};

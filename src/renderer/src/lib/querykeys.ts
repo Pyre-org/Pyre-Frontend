@@ -56,7 +56,7 @@ export const QUERY_KEYS = {
   },
   space: {
     all: ["space"],
-    single: (id: string) => ["space", "single", id],
+    single: (id: string) => ({ all: ["space", "single", id] }),
     list: (params?: any) => ["space", "list", ...(params ? [params] : [])],
   },
 };

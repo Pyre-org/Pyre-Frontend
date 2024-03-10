@@ -121,6 +121,8 @@ export interface Feed {
 export interface Space {
   id: string;
   roomId: string;
+  title: string;
+  description: string;
   type: "SPACE_FEED" | "SPACE_CHAT";
   role: "SPACEROLE_GUEST" | "SPACEROLE_USER" | "SPACEROLE_MODE";
   prevSpaceId: string;

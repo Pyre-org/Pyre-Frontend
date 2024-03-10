@@ -35,7 +35,9 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
         toast.success(`${channel.title}에 참가하였습니다.`);
       },
       onError: (error) => {
-        toast.error("채널 참가에 실패했습니다", { description: error.message });
+        toast.error("채널 참가에 실패했습니다", {
+          description: error.response?.data.reason,
+        });
       },
     });
   };

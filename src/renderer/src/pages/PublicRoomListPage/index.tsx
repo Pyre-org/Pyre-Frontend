@@ -39,7 +39,9 @@ function PublicRoomListPage() {
           toast("채널 구독에 성공했습니다");
         },
         onError: (error) => {
-          toast("채널 구독에 실패했습니다", { description: error.message });
+          toast("채널 구독에 실패했습니다", {
+            description: error.response?.data.reason,
+          });
         },
       });
     } else {
@@ -49,7 +51,7 @@ function PublicRoomListPage() {
         },
         onError: (error) => {
           toast("채널 구독 취소에 실패했습니다", {
-            description: error.message,
+            description: error.response?.data.reason,
           });
         },
       });
