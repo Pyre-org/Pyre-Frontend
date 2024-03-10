@@ -105,9 +105,41 @@ export const useGetRoom = (
   });
 };
 
-export const joinRoom = async (id: string) => {
-  const res = await api.post<Room>(`${baseUrl}/${id}/join`);
+interface JoinRoomBody {
+  roomId: string;
+  channelId: string;
+}
+
+interface JoinRoomResponse {
+  id: string;
+}
+
+export const joinRoom = async (data: JoinRoomBody) => {
+  const { roomId, ...body } = data;
+  const res = await api.post<JoinRoomResponse>(
+    `${baseUrl}/join/${roomId}`,
+    body,
+  );
   return res.data;
+};
+
+export const useJoinRoomMutation = (
+  options?: UseMutationOptions<
+    JoinRoomResponse,
+    AxiosError<BaseError>,
+    JoinRoomBody
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: joinRoom,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
 };
 
 interface CreateRoomResponse {

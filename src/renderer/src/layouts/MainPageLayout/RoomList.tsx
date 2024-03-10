@@ -6,7 +6,7 @@ import {
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
 import { useGetChannel } from "@renderer/lib/queries/channel";
-import { useGetRooms } from "@renderer/lib/queries/room";
+import { useGetMyRooms } from "@renderer/lib/queries/room";
 import { Room } from "@renderer/types/schema";
 import { Link, useParams } from "react-router-dom";
 
@@ -15,7 +15,7 @@ function RoomList() {
   const id = channelId as string;
 
   const { data: channelData } = useGetChannel(id);
-  const { data: roomData } = useGetRooms({ channelId: id });
+  const { data: roomData } = useGetMyRooms({ channelId: id });
   const total = roomData?.total ?? 0;
   const rooms = roomData?.hits ?? [];
 

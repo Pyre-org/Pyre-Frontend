@@ -66,7 +66,7 @@ export const useGetChannel = (
 ) => {
   return useQuery({
     ...options,
-    queryKey: QUERY_KEYS.channel.single(id),
+    queryKey: QUERY_KEYS.channel.single(id).all,
     queryFn: () => getChannel(id),
   });
 };
@@ -172,7 +172,7 @@ export const useEditChannelMutation = (
     mutationFn: ({ id, ...rest }) => editChannel(id, rest),
     onSuccess: (...params) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.channel.single(params[0].id),
+        queryKey: QUERY_KEYS.channel.single(params[0].id).all,
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.list.all,
@@ -294,12 +294,55 @@ export const useJoinChannelMutation = (
     mutationFn: joinChannel,
     onSuccess: (...params) => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.channel.single(params[0].channelId),
+        queryKey: QUERY_KEYS.channel.single(params[1]).all,
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.list.all,
       });
       options?.onSuccess?.(...params);
     },
+  });
+};
+
+export const leaveChannel = async (id: string) => {
+  const res = await api.delete<string>(`${baseUrl}/leave/${id}`);
+  return res.data;
+};
+
+export const useLeaveChannelMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, string>,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: leaveChannel,
+    onSuccess: (...params) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.channel.single(params[1]).all,
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.channel.list.all,
+      });
+      options?.onSuccess?.(...params);
+    },
+  });
+};
+
+export const checkSubscription = async (channelId: string) => {
+  const res = await api.get<boolean>(`${baseUrl}/isSubscribe/${channelId}`);
+  return res.data;
+};
+
+export const useCheckSubscription = (
+  channelId: string,
+  options?: Omit<
+    UseQueryOptions<boolean, AxiosError<BaseError>, boolean>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.channel.single(channelId).sub,
+    queryFn: () => checkSubscription(channelId),
   });
 };

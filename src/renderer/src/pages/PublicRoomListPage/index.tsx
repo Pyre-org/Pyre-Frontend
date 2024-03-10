@@ -4,20 +4,57 @@ import {
   AvatarImage,
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
-import { useGetChannel } from "@renderer/lib/queries/channel";
+import {
+  useCheckSubscription,
+  useGetChannel,
+  useJoinChannelMutation,
+  useLeaveChannelMutation,
+} from "@renderer/lib/queries/channel";
 import { ArrowLeftIcon, StarIcon } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import RoomCreateBtn from "./RoomCreateBtn";
 import { Separator } from "@renderer/components/ui/separator";
 import RoomList from "./RoomList";
+import { useTheme } from "@renderer/components/common/ThemeProvider";
+import { toast } from "sonner";
 
 function PublicRoomListPage() {
   const { channelId } = useParams<{ channelId: string }>();
   const { data: channelData } = useGetChannel(channelId!, {
     enabled: !!channelId,
   });
+  const joinMutation = useJoinChannelMutation();
+  const leaveMutation = useLeaveChannelMutation();
+  const { data: subData } = useCheckSubscription(channelId!);
+  const { theme } = useTheme();
 
-  const isSubscribed = false;
+  const isSubscribed = subData;
+  const subPending = joinMutation.isPending || leaveMutation.isPending;
+
+  const handleSubscribe = () => {
+    if (subPending) return;
+    if (!isSubscribed) {
+      joinMutation.mutate(channelId!, {
+        onSuccess: () => {
+          toast("채널 구독에 성공했습니다");
+        },
+        onError: (error) => {
+          toast("채널 구독에 실패했습니다", { description: error.message });
+        },
+      });
+    } else {
+      leaveMutation.mutate(channelId!, {
+        onSuccess: () => {
+          toast("채널 구독을 취소했습니다");
+        },
+        onError: (error) => {
+          toast("채널 구독 취소에 실패했습니다", {
+            description: error.message,
+          });
+        },
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2 p-4">
@@ -39,8 +76,17 @@ function PublicRoomListPage() {
               <p className="text-sm">{channelData?.title}</p>
             </div>
             <div>
-              <Button variant="outline">
-                <StarIcon className="size-4 mr-2" />
+              <Button
+                variant="outline"
+                disabled={subPending}
+                onClick={handleSubscribe}
+              >
+                <StarIcon
+                  className="size-4 mr-2"
+                  {...(isSubscribed
+                    ? { fill: theme === "light" ? "black" : "white" }
+                    : {})}
+                />
                 {isSubscribed ? "구독 중" : "채널 구독"}
               </Button>
             </div>

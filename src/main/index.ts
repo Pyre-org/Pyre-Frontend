@@ -279,7 +279,7 @@ ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
   windows.auth = authWindow;
 
   authWindow.loadURL(url, {
-    userAgent: "Chrome",
+    userAgent: windows.main?.webContents.userAgent,
   });
   authWindow.show();
 
@@ -293,7 +293,6 @@ ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
       const code = new URL(newUrl).searchParams.get("code");
       const state = new URL(newUrl).searchParams.get("state");
       if (code) {
-        console.log("code", code, state);
         details.preventDefault();
         sent = true;
         windows.main?.webContents.send("oauth-login", {
