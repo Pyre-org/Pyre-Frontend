@@ -33,7 +33,10 @@ export const QUERY_KEYS = {
   },
   room: {
     all: ["room"],
-    single: (id: string) => ["room", "single", id],
+    single: (id: string) => ({
+      all: ["room", "single", id],
+      sub: ["room", "single", id, "subscription"],
+    }),
     list: {
       all: ["room", "list"],
       public: (params?: any) => [
@@ -43,6 +46,12 @@ export const QUERY_KEYS = {
         ...(params ? [params] : []),
       ],
       my: (params?: any) => ["room", "list", "my", ...(params ? [params] : [])],
+      myWithSpaces: (params?: any) => [
+        "room",
+        "list",
+        "myWithSpaces",
+        ...(params ? [params] : []),
+      ],
     },
   },
   space: {

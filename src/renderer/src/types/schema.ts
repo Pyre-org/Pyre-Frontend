@@ -70,6 +70,10 @@ export interface Room {
   mAt?: string;
 }
 
+export interface RoomWithSpace extends Room {
+  spaces: ListResponse<Space>;
+}
+
 export interface RoomBody extends Omit<RoomCreateSchemaType, "imageUrl"> {
   imageUrl?: string;
   channelId: string;

@@ -3,6 +3,7 @@ import {
   ListResponse,
   Room,
   RoomBody,
+  RoomWithSpace,
 } from "@renderer/types/schema";
 import {
   UseMutationOptions,
@@ -17,12 +18,15 @@ import { api } from "../api";
 
 const baseUrl = "/community/room";
 
-interface GetRoomsParams {
+interface ChannelIdParams {
   channelId: string;
-  keyword: string;
 }
 
-export const getRooms = async (params: Partial<GetRoomsParams>) => {
+interface GetRoomsParams extends ChannelIdParams {
+  keyword?: string;
+}
+
+export const getRooms = async (params: GetRoomsParams) => {
   const { channelId, ...rest } = params;
   const res = await api.get<ListResponse<Room>>(
     `${baseUrl}/list/${channelId}`,
@@ -32,7 +36,7 @@ export const getRooms = async (params: Partial<GetRoomsParams>) => {
 };
 
 export const useGetRooms = (
-  { channelId, keyword }: Partial<GetRoomsParams>,
+  { channelId, keyword }: GetRoomsParams,
   options?: Omit<
     UseQueryOptions<
       ListResponse<Room>,
@@ -54,7 +58,7 @@ export const useGetRooms = (
   });
 };
 
-export const getMyRooms = async (params: Partial<GetRoomsParams>) => {
+export const getMyRooms = async (params: GetRoomsParams) => {
   const { channelId, ...rest } = params;
   const res = await api.get<ListResponse<Room>>(
     `${baseUrl}/my/list/${channelId}`,
@@ -64,7 +68,7 @@ export const getMyRooms = async (params: Partial<GetRoomsParams>) => {
 };
 
 export const useGetMyRooms = (
-  { channelId, keyword }: Partial<GetRoomsParams>,
+  { channelId, keyword }: GetRoomsParams,
   options?: Omit<
     UseQueryOptions<
       ListResponse<Room>,
@@ -86,6 +90,32 @@ export const useGetMyRooms = (
   });
 };
 
+export const getMyRoomsWithSpaces = async (params: ChannelIdParams) => {
+  const channelId = params.channelId;
+  const res = await api.get<ListResponse<RoomWithSpace>>(
+    `${baseUrl}/my/${channelId}`,
+  );
+  return res.data;
+};
+
+export const useGetMyRoomsWithSpaces = (
+  { channelId }: ChannelIdParams,
+  options?: Omit<
+    UseQueryOptions<
+      ListResponse<RoomWithSpace>,
+      AxiosError<BaseError>,
+      ListResponse<RoomWithSpace>
+    >,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.room.list.myWithSpaces(channelId),
+    queryFn: () => getMyRoomsWithSpaces({ channelId }),
+  });
+};
+
 export const getRoom = async (id: string) => {
   const res = await api.get<Room>(`${baseUrl}/get/${id}`);
   return res.data;
@@ -100,7 +130,7 @@ export const useGetRoom = (
 ) => {
   return useQuery({
     ...options,
-    queryKey: QUERY_KEYS.room.single(id),
+    queryKey: QUERY_KEYS.room.single(id).all,
     queryFn: () => getRoom(id),
   });
 };
@@ -137,6 +167,32 @@ export const useJoinRoomMutation = (
     mutationFn: joinRoom,
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.single(variables.roomId).all,
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const leaveRoom = async (roomId: string) => {
+  const res = await api.post<string>(`${baseUrl}/leave/${roomId}`);
+  return res.data;
+};
+
+export const useLeaveRoomMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, string>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: leaveRoom,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.single(variables).all,
+      });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -168,5 +224,24 @@ export const useCreateRoomMutation = (
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
       options?.onSuccess?.(data, variables, context);
     },
+  });
+};
+
+export const checkSubscribtion = async (roomId: string) => {
+  const res = await api.get<boolean>(`${baseUrl}/isSubscribe/${roomId}`);
+  return res.data;
+};
+
+export const useCheckSubscribtion = (
+  roomId: string,
+  options?: Omit<
+    UseQueryOptions<boolean, AxiosError<BaseError>, boolean>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.room.single(roomId).sub,
+    queryFn: () => checkSubscribtion(roomId),
   });
 };

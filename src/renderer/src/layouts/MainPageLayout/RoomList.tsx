@@ -1,4 +1,3 @@
-import { HashtagIcon } from "@heroicons/react/16/solid";
 import {
   Avatar,
   AvatarFallback,
@@ -6,7 +5,7 @@ import {
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
 import { useGetChannel } from "@renderer/lib/queries/channel";
-import { useGetMyRooms } from "@renderer/lib/queries/room";
+import { useGetMyRoomsWithSpaces } from "@renderer/lib/queries/room";
 import { Room } from "@renderer/types/schema";
 import { Link, useParams } from "react-router-dom";
 
@@ -15,7 +14,7 @@ function RoomList() {
   const id = channelId as string;
 
   const { data: channelData } = useGetChannel(id);
-  const { data: roomData } = useGetMyRooms({ channelId: id });
+  const { data: roomData } = useGetMyRoomsWithSpaces({ channelId: id });
   const total = roomData?.total ?? 0;
   const rooms = roomData?.hits ?? [];
 
@@ -48,11 +47,11 @@ function RoomListItem({ room }: { room: Room }) {
       key={room.title}
       asChild
     >
-      <Link to={`/channels/${id}/rooms/${room.id}`}>
+      <Link to={`/channels/${id}/rooms/${room.id}/spaces`}>
         <Avatar className="w-6 h-6 mr-2 shrink-0">
           <AvatarImage src={room.imageUrl} />
           <AvatarFallback>
-            <HashtagIcon className="w-4 h-4" />
+            <span>{room.title[0].toUpperCase()}</span>
           </AvatarFallback>
         </Avatar>
         <span className="truncate">{room.title}</span>

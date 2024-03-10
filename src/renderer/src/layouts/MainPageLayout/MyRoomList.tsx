@@ -4,19 +4,20 @@ import {
   AvatarImage,
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
-import { useGetMyRooms } from "@renderer/lib/queries/room";
+import { useGetMyRoomsWithSpaces } from "@renderer/lib/queries/room";
 import { Channel } from "@renderer/types/schema";
 import { ChevronDownIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@renderer/lib/utils";
+import { Link } from "react-router-dom";
 
 interface MyRoomListProps {
   channel: Channel;
 }
 
 function MyRoomList({ channel }: MyRoomListProps) {
-  const { data: roomData } = useGetMyRooms({ channelId: channel.id });
+  const { data: roomData } = useGetMyRoomsWithSpaces({ channelId: channel.id });
   const [open, setOpen] = useState(true);
   const rooms = roomData?.hits ?? [];
   const total = roomData?.total ?? 0;
@@ -55,14 +56,19 @@ function MyRoomList({ channel }: MyRoomListProps) {
                     key={room.id}
                     className="flex justify-start gap-2"
                     variant="ghost"
+                    asChild
                   >
-                    <Avatar className="size-8 shrink-0">
-                      <AvatarImage src={room.imageUrl} />
-                      <AvatarFallback>
-                        {room.title[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="truncate">{room.title}</span>
+                    <Link
+                      to={`/channels/${channel.id}/rooms/${room.id}/spaces`}
+                    >
+                      <Avatar className="size-8 shrink-0">
+                        <AvatarImage src={room.imageUrl} />
+                        <AvatarFallback>
+                          {room.title[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="truncate">{room.title}</span>
+                    </Link>
                   </Button>
                 ))}
               </>
