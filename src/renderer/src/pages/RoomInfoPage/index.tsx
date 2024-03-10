@@ -100,7 +100,7 @@ function RoomInfoPage() {
             <span>{roomData?.cAt}</span>
           </div>
           <div className="text-muted-foreground text-sm">
-            {channelData?.description}
+            {roomData?.description}
           </div>
         </div>
         <Separator />

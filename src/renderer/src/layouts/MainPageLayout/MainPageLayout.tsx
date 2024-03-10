@@ -37,10 +37,7 @@ function MainPageLayout() {
           <Profile />
         </div>
       </header>
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="flex flex-1 divide-x"
-      >
+      <ResizablePanelGroup direction="horizontal" className="flex flex-1">
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
           <nav className="flex flex-col bg-background p-4 w-full overflow-y-scroll h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
             <Routes>
@@ -55,7 +52,7 @@ function MainPageLayout() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel minSize={40}>
-          <main className="flex-1 w-full overflow-y-scroll h-full scrollbar-thumb-border scrollbar-thin scrollbar-track-transparent">
+          <main className="flex-1 w-full h-full overflow-y-auto scrollbar-thumb-border scrollbar-thin scrollbar-track-transparent">
             <Outlet />
           </main>
         </ResizablePanel>

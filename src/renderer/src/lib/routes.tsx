@@ -7,6 +7,7 @@ import PublicRoomListPage from "@renderer/pages/PublicRoomListPage";
 import RegisterPage from "@renderer/pages/RegisterPage";
 import RoomInfoPage from "@renderer/pages/RoomInfoPage";
 import SpaceDetailPage from "@renderer/pages/SpaceDetailPage";
+import SpaceHomePage from "@renderer/pages/SpaceHomePage";
 import { createHashRouter, Navigate } from "react-router-dom";
 
 export const router = createHashRouter([
@@ -48,6 +49,10 @@ export const router = createHashRouter([
                           {
                             path: "spaces",
                             children: [
+                              {
+                                index: true,
+                                element: <SpaceHomePage />,
+                              },
                               {
                                 path: ":spaceId",
                                 element: <SpaceDetailPage />,
