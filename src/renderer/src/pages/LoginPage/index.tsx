@@ -134,7 +134,7 @@ function LoginPage() {
           <div className="flex flex-col gap-2">
             <NaverLoginBtn onClick={() => handleOAuth("NAVER")} type="button" />
             <GoogleLoginBtn
-              onClick={() => handleOAuth("GOOGLE")}
+              onClick={() => handleOAuth("GOOGLECLI")}
               type="button"
             />
           </div>

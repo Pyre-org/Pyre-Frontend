@@ -87,7 +87,7 @@ export const useGetMyRooms = (
 };
 
 export const getRoom = async (id: string) => {
-  const res = await api.get<Room>(`${baseUrl}/${id}`);
+  const res = await api.get<Room>(`${baseUrl}/get/${id}`);
   return res.data;
 };
 

@@ -113,3 +113,12 @@ export interface Feed {
   views: number;
   room_id: string;
 }
+
+export interface Space {
+  id: string;
+  roomId: string;
+  type: "SPACE_FEED" | "SPACE_CHAT";
+  role: "SPACEROLE_GUEST" | "SPACEROLE_USER" | "SPACEROLE_MODE";
+  prevSpaceId: string;
+  nextSpaceId: string;
+}

@@ -1,4 +1,4 @@
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, Route, Routes } from "react-router-dom";
 import { Input } from "@renderer/components/ui/input";
 import { Button } from "@renderer/components/ui/button";
 import Profile from "@renderer/components/common/Profile";
@@ -10,10 +10,9 @@ import {
 } from "@renderer/components/ui/resizable";
 import RoomList from "./RoomList";
 import MyChannelRoomList from "./MyChannelRoomList";
+import SpaceList from "./SpaceList";
 
 function MainPageLayout() {
-  const { channelId } = useParams<{ channelId: string }>();
-
   return (
     <div className="flex flex-col h-screen w-full bg-background divide-y overflow-hidden">
       <header className="h-[60px] flex justify-between px-4">
@@ -44,15 +43,14 @@ function MainPageLayout() {
       >
         <ResizablePanel defaultSize={20} minSize={20} maxSize={40}>
           <nav className="flex flex-col bg-background p-4 w-full overflow-y-scroll h-full scrollbar-thin scrollbar-track-transparent scrollbar-thumb-border">
-            {channelId ? (
-              <RoomList />
-            ) : (
-              // <div className="flex flex-col items-center gap-2 w-full">
-              //   <span className="text-sm">아직 선택된 채널이 없습니다</span>
-              //   <span className="text-sm">채널을 선택해주세요</span>
-              // </div>
-              <MyChannelRoomList />
-            )}
+            <Routes>
+              <Route path="/channels/:channelId/*" element={<RoomList />} />
+              <Route
+                path="/channels/:channelId/rooms/:roomId/spaces/*"
+                element={<SpaceList />}
+              />
+              <Route path="*" element={<MyChannelRoomList />} />
+            </Routes>
           </nav>
         </ResizablePanel>
         <ResizableHandle />

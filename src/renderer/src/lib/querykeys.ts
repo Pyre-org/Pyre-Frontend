@@ -42,4 +42,9 @@ export const QUERY_KEYS = {
       my: (params?: any) => ["room", "list", "my", ...(params ? [params] : [])],
     },
   },
+  space: {
+    all: ["space"],
+    single: (id: string) => ["space", "single", id],
+    list: (params?: any) => ["space", "list", ...(params ? [params] : [])],
+  },
 };
