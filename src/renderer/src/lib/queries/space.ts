@@ -82,3 +82,28 @@ export const useCreateSpaceMutation = (
     },
   });
 };
+
+interface LocateSpaceBody {
+  from: string;
+  to: string;
+}
+
+export const locateSpace = async (body: LocateSpaceBody) => {
+  const res = await api.patch<string>(`${baseUrl}/locate`, body);
+  return res.data;
+};
+
+export const useLocateSpaceMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, LocateSpaceBody>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: locateSpace,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
