@@ -3,6 +3,7 @@ import FormDropzone from "@renderer/components/form/FormDropzone";
 import FormInput from "@renderer/components/form/FormInput";
 import FormSelect from "@renderer/components/form/FormSelect";
 import FormTextarea from "@renderer/components/form/FormTextarea";
+import RoomDeleteBtn from "@renderer/components/room/RoomDeleteBtn";
 import { Button } from "@renderer/components/ui/button";
 import { Form } from "@renderer/components/ui/form";
 import { ROOM_TYPES, ROOM_TYPE_OPTIONS } from "@renderer/constants/room";
@@ -26,13 +27,14 @@ const defaultValues = {
 
 function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
   const room = useRoomStore((state) => state.room);
+  const isEdit = !!room;
+
   const methods = useForm<RoomCreateSchemaType>({
     resolver: zodResolver(roomCreateSchema),
-    defaultValues:
-      { ...room, imageUrl: room?.imageUrl ? [{ url: room.imageUrl }] : [] } ??
-      defaultValues,
+    defaultValues: isEdit
+      ? { ...room, imageUrl: room?.imageUrl ? [{ url: room.imageUrl }] : [] }
+      : defaultValues,
   });
-  const isEdit = !!room;
 
   const imageUrl = useWatch({
     control: methods.control,
@@ -91,7 +93,12 @@ function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
             </Button>
           </div>
         )}
-        <Button type="submit">룸 {isEdit ? "수정" : "생성"}하기</Button>
+        <div className="flex gap-2">
+          <Button type="submit" fullWidth>
+            룸 {isEdit ? "수정" : "생성"}하기
+          </Button>
+          {isEdit && <RoomDeleteBtn />}
+        </div>
       </form>
     </Form>
   );

@@ -8,6 +8,8 @@ import ChatDetail from "./ChatDetail";
 export const SpaceTypeMap: Record<Space["type"], ComponentType> = {
   SPACE_FEED: FeedDetail,
   SPACE_CHAT: ChatDetail,
+  SPACE_GENERAL: FeedDetail,
+  SPACE_GENERAL_CHAT: ChatDetail,
 };
 
 function SpaceDetailPage() {

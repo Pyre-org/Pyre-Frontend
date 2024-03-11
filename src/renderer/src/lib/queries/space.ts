@@ -102,7 +102,7 @@ export const useLocateSpaceMutation = (
     ...options,
     mutationFn: locateSpace,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
       options?.onSuccess?.(data, variables, context);
     },
   });

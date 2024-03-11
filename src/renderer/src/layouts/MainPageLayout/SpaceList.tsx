@@ -125,6 +125,8 @@ function SpaceList() {
 const iconMap: Record<Space["type"], LucideIcon> = {
   SPACE_FEED: NewspaperIcon,
   SPACE_CHAT: MessageSquareIcon,
+  SPACE_GENERAL: NewspaperIcon,
+  SPACE_GENERAL_CHAT: MessageSquareIcon,
 };
 
 function SpaceListItem({ space }: { space: Space }) {

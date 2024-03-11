@@ -298,3 +298,23 @@ export const useLocateRoomMutation = (
     },
   });
 };
+
+export const deleteRoom = async (roomId: string) => {
+  const res = await api.delete<string>(`${baseUrl}/delete/${roomId}`);
+  return res.data;
+};
+
+export const useDeleteRoomMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, string>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: deleteRoom,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};

@@ -15,6 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import RoomCreateDialog from "@renderer/components/room/RoomCreateDialog";
 import {
   Avatar,
   AvatarFallback,
@@ -77,31 +78,37 @@ function RoomList() {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-      modifiers={[restrictToVerticalAxis]}
-    >
-      <div className="text-muted-foreground">
-        <div>
-          <h2 className="text-lg font-semibold mb-2 text-foreground truncate">
-            <span>채널에 속한 내 룸</span>
-          </h2>
-        </div>
-        {total > 0 ? (
-          <SortableContext items={rooms} strategy={verticalListSortingStrategy}>
-            {rooms.map((room) => (
-              <RoomListItem key={room.id} room={room} />
-            ))}
-          </SortableContext>
-        ) : (
-          <div className="flex justify-center text-sm my-4">
-            채널에 룸이 없습니다
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
+      >
+        <div className="text-muted-foreground">
+          <div>
+            <h2 className="text-lg font-semibold mb-2 text-foreground truncate">
+              <span>채널에 속한 내 룸</span>
+            </h2>
           </div>
-        )}
-      </div>
-    </DndContext>
+          {total > 0 ? (
+            <SortableContext
+              items={rooms}
+              strategy={verticalListSortingStrategy}
+            >
+              {rooms.map((room) => (
+                <RoomListItem key={room.id} room={room} />
+              ))}
+            </SortableContext>
+          ) : (
+            <div className="flex justify-center text-sm my-4">
+              채널에 룸이 없습니다
+            </div>
+          )}
+        </div>
+      </DndContext>
+      <RoomCreateDialog />
+    </>
   );
 }
 
