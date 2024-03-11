@@ -67,8 +67,8 @@ function ChannelListItem({ channel }: ChannelListItemProps) {
                   {channel.description}
                 </CardDescription>
               </div>
-              <div className="text-xs flex gap-4">
-                <span>구독 멤버 {channel.memberCounts}명</span>
+              <div className="text-xs flex gap-2">
+                <span>구독 멤버 {channel.memberCounts}명</span>·
                 <span>{channel.roomCounts}개의 룸</span>
               </div>
               <p className="text-xs text-muted-foreground">
