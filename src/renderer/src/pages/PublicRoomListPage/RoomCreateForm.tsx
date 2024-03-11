@@ -10,6 +10,7 @@ import {
   RoomCreateSchemaType,
   roomCreateSchema,
 } from "@renderer/lib/schemas/RoomCreateSchema";
+import { useRoomStore } from "@renderer/stores/RoomStore";
 import { Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -24,10 +25,14 @@ const defaultValues = {
 };
 
 function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
+  const room = useRoomStore((state) => state.room);
   const methods = useForm<RoomCreateSchemaType>({
     resolver: zodResolver(roomCreateSchema),
-    defaultValues,
+    defaultValues:
+      { ...room, imageUrl: room?.imageUrl ? [{ url: room.imageUrl }] : [] } ??
+      defaultValues,
   });
+  const isEdit = !!room;
 
   const imageUrl = useWatch({
     control: methods.control,
@@ -86,7 +91,7 @@ function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
             </Button>
           </div>
         )}
-        <Button type="submit">룸 생성하기</Button>
+        <Button type="submit">룸 {isEdit ? "수정" : "생성"}하기</Button>
       </form>
     </Form>
   );

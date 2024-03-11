@@ -25,7 +25,9 @@ import {
   useGetMyRoomsWithSpaces,
   useLocateRoomMutation,
 } from "@renderer/lib/queries/room";
-import { Room } from "@renderer/types/schema";
+import { useRoomStore } from "@renderer/stores/RoomStore";
+import { Room, RoomType } from "@renderer/types/schema";
+import { SettingsIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -103,10 +105,15 @@ function RoomList() {
   );
 }
 
+const showSettings = (type: RoomType) => {
+  return type !== RoomType.ROOM_GLOBAL && type !== RoomType.ROOM_CAPTURE;
+};
+
 function RoomListItem({ room }: { room: Room }) {
   const { channelId } = useParams<{ channelId: string }>();
   const id = channelId as string;
   const navigate = useNavigate();
+  const { open: openRoom } = useRoomStore((state) => state.actions);
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: room.id });
@@ -123,7 +130,7 @@ function RoomListItem({ room }: { room: Room }) {
   return (
     <Button
       variant="ghost"
-      className="justify-start w-full"
+      className="justify-between w-full items-center truncate"
       key={room.title}
       ref={setNodeRef}
       style={style}
@@ -131,13 +138,26 @@ function RoomListItem({ room }: { room: Room }) {
       {...listeners}
       onClick={handleClick}
     >
-      <Avatar className="w-6 h-6 mr-2 shrink-0">
-        <AvatarImage src={room.imageUrl} />
-        <AvatarFallback>
-          <span>{room.title[0].toUpperCase()}</span>
-        </AvatarFallback>
-      </Avatar>
-      <span className="truncate">{room.title}</span>
+      <div className="flex items-center w-full truncate">
+        <Avatar className="w-6 h-6 mr-2 shrink-0">
+          <AvatarImage src={room.imageUrl} />
+          <AvatarFallback>
+            <span>{room.title[0].toUpperCase()}</span>
+          </AvatarFallback>
+        </Avatar>
+        <span className="truncate">{room.title}</span>
+      </div>
+      {showSettings(room.type) && (
+        <div
+          className="size-8 flex justify-center items-center aspect-square"
+          onClick={(e) => {
+            e.stopPropagation();
+            openRoom(room);
+          }}
+        >
+          <SettingsIcon className="w-4 hover:text-primary" />
+        </div>
+      )}
     </Button>
   );
 }

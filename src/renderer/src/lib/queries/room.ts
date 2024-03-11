@@ -227,6 +227,34 @@ export const useCreateRoomMutation = (
   });
 };
 
+interface UpdateRoomBody extends RoomBody {
+  roomId: string;
+}
+
+export const updateRoom = async (data: UpdateRoomBody) => {
+  const { roomId, ...rest } = data;
+  const res = await api.put<string>(`${baseUrl}/update/${roomId}`, rest);
+  return res.data;
+};
+
+export const useUpdateRoomMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, UpdateRoomBody>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: updateRoom,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.single(variables.roomId).all,
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
 export const checkSubscribtion = async (roomId: string) => {
   const res = await api.get<boolean>(`${baseUrl}/isSubscribe/${roomId}`);
   return res.data;
