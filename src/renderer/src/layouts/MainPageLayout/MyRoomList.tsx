@@ -25,7 +25,7 @@ function MyRoomList({ channel }: MyRoomListProps) {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center gap-2">
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-1 truncate">
           <Avatar className="size-8 shrink-0">
             <AvatarImage src={channel.imageUrl} />
             <AvatarFallback>{channel.title[0].toUpperCase()}</AvatarFallback>
@@ -35,7 +35,7 @@ function MyRoomList({ channel }: MyRoomListProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="size-6"
+          className="size-6 shrink-0"
           onClick={() => setOpen((o) => !o)}
         >
           <ChevronDownIcon size={16} className={cn(open && "rotate-180")} />

@@ -1,7 +1,18 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import {
+  UseMutationOptions,
+  UseQueryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { api } from "../api";
 import { QUERY_KEYS } from "../querykeys";
-import { BaseError, ListResponse, Space } from "@renderer/types/schema";
+import {
+  BaseError,
+  ListResponse,
+  Space,
+  SpaceBody,
+} from "@renderer/types/schema";
 import { AxiosError } from "axios";
 
 const baseUrl = "/community/space";
@@ -49,5 +60,25 @@ export const useGetSpace = (
     ...options,
     queryKey: QUERY_KEYS.space.single(spaceId).all,
     queryFn: () => getSpace(spaceId),
+  });
+};
+
+export const createSpace = async (body: SpaceBody) => {
+  const res = await api.post(`${baseUrl}/create`, body);
+  return res.data;
+};
+
+export const useCreateSpaceMutation = (
+  options?: UseMutationOptions<Space, AxiosError<BaseError>, SpaceBody>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: createSpace,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      options?.onSuccess?.(data, variables, context);
+    },
   });
 };

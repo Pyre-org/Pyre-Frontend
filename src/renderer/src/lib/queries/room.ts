@@ -245,3 +245,28 @@ export const useCheckSubscribtion = (
     queryFn: () => checkSubscribtion(roomId),
   });
 };
+
+interface LocateRoomBody {
+  from: string;
+  to: string;
+}
+
+export const locateRoom = async (body: LocateRoomBody) => {
+  const res = await api.patch<string>(`${baseUrl}/locate`, body);
+  return res.data;
+};
+
+export const useLocateRoomMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, LocateRoomBody>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: locateRoom,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};

@@ -1,61 +1,143 @@
 import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
-import { useGetChannel } from "@renderer/lib/queries/channel";
-import { useGetMyRoomsWithSpaces } from "@renderer/lib/queries/room";
+import {
+  useGetMyRoomsWithSpaces,
+  useLocateRoomMutation,
+} from "@renderer/lib/queries/room";
 import { Room } from "@renderer/types/schema";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 function RoomList() {
   const { channelId } = useParams<{ channelId: string }>();
   const id = channelId as string;
 
-  const { data: channelData } = useGetChannel(id);
   const { data: roomData } = useGetMyRoomsWithSpaces({ channelId: id });
+  const locateMutation = useLocateRoomMutation();
+
   const total = roomData?.total ?? 0;
   const rooms = roomData?.hits ?? [];
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!active || !over) {
+      return;
+    }
+    const curIdx = rooms.findIndex((room) => room.id === active.id);
+    const targetIdx = rooms.findIndex((room) => room.id === over.id);
+    if (targetIdx - 1 < 0) return;
+    locateMutation.mutate(
+      {
+        from: active.id.toString(),
+        to: rooms[curIdx <= targetIdx ? targetIdx : targetIdx - 1].id,
+      },
+      {
+        onError: (error) => {
+          console.error(error);
+          toast.error("룸 위치 변경에 실패했습니다", {
+            description: error.response?.data.reason,
+          });
+        },
+      },
+    );
+  };
+
   return (
-    <div className="text-muted-foreground">
-      <div>
-        <h2 className="text-lg font-semibold mb-2 text-foreground">
-          {channelData?.title} 채널의 내 룸
-        </h2>
-      </div>
-      {total > 0 ? (
-        rooms.map((room) => <RoomListItem key={room.id} room={room} />)
-      ) : (
-        <div className="flex justify-center text-sm my-4">
-          채널에 룸이 없습니다
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      modifiers={[restrictToVerticalAxis]}
+    >
+      <div className="text-muted-foreground">
+        <div>
+          <h2 className="text-lg font-semibold mb-2 text-foreground truncate">
+            <span>채널에 속한 내 룸</span>
+          </h2>
         </div>
-      )}
-    </div>
+        {total > 0 ? (
+          <SortableContext items={rooms} strategy={verticalListSortingStrategy}>
+            {rooms.map((room) => (
+              <RoomListItem key={room.id} room={room} />
+            ))}
+          </SortableContext>
+        ) : (
+          <div className="flex justify-center text-sm my-4">
+            채널에 룸이 없습니다
+          </div>
+        )}
+      </div>
+    </DndContext>
   );
 }
 
 function RoomListItem({ room }: { room: Room }) {
   const { channelId } = useParams<{ channelId: string }>();
   const id = channelId as string;
+  const navigate = useNavigate();
+
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: room.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const handleClick = () => {
+    navigate(`/channels/${id}/rooms/${room.id}/spaces`);
+  };
 
   return (
     <Button
       variant="ghost"
       className="justify-start w-full"
       key={room.title}
-      asChild
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={handleClick}
     >
-      <Link to={`/channels/${id}/rooms/${room.id}/spaces`}>
-        <Avatar className="w-6 h-6 mr-2 shrink-0">
-          <AvatarImage src={room.imageUrl} />
-          <AvatarFallback>
-            <span>{room.title[0].toUpperCase()}</span>
-          </AvatarFallback>
-        </Avatar>
-        <span className="truncate">{room.title}</span>
-      </Link>
+      <Avatar className="w-6 h-6 mr-2 shrink-0">
+        <AvatarImage src={room.imageUrl} />
+        <AvatarFallback>
+          <span>{room.title[0].toUpperCase()}</span>
+        </AvatarFallback>
+      </Avatar>
+      <span className="truncate">{room.title}</span>
     </Button>
   );
 }

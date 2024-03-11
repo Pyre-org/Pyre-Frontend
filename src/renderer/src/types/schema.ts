@@ -1,3 +1,4 @@
+import { CreateSpaceSchemaType } from "@renderer/lib/schemas/CreateSpaceSchema";
 import { RoomCreateSchemaType } from "@renderer/lib/schemas/RoomCreateSchema";
 
 export interface ListResponse<T> {
@@ -118,13 +119,13 @@ export interface Feed {
   room_id: string;
 }
 
-export interface Space {
+export interface Space extends SpaceBody {
   id: string;
-  roomId: string;
-  title: string;
-  description: string;
-  type: "SPACE_FEED" | "SPACE_CHAT";
   role: "SPACEROLE_GUEST" | "SPACEROLE_USER" | "SPACEROLE_MODE";
   prevSpaceId: string;
   nextSpaceId: string;
+}
+
+export interface SpaceBody extends CreateSpaceSchemaType {
+  roomId: string;
 }

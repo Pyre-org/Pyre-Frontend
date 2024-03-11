@@ -9,6 +9,7 @@ import { useGetSpace, useGetSpaces } from "@renderer/lib/queries/space";
 import { Space } from "@renderer/types/schema";
 import { LucideIcon, MessageSquareIcon, NewspaperIcon } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import CreateSpaceBtn from "./CreateSpaceBtn";
 
 function SpaceList() {
   const { channelId, roomId } = useParams<{ channelId; roomId: string }>();
@@ -19,18 +20,22 @@ function SpaceList() {
 
   return (
     <div className="flex flex-col gap-2">
-      <Link
-        to={`/channels/${channelId}/rooms/${roomId}/spaces`}
-        className="flex"
-      >
-        <Avatar className="w-6 h-6 mr-2 shrink-0">
-          <AvatarImage src={roomData?.imageUrl} />
-          <AvatarFallback>
-            <span>{roomData?.title[0].toUpperCase()}</span>
-          </AvatarFallback>
-        </Avatar>
-        <span className="truncate">{roomData?.title}</span>
-      </Link>
+      <div className="flex items-center gap-2">
+        <Link
+          to={`/channels/${channelId}/rooms/${roomId}/spaces`}
+          className="flex flex-1 truncate"
+        >
+          <Avatar className="w-6 h-6 mr-2 shrink-0">
+            <AvatarImage src={roomData?.imageUrl} />
+            <AvatarFallback>
+              <span>{roomData?.title[0].toUpperCase()}</span>
+            </AvatarFallback>
+          </Avatar>
+          <span className="truncate">{roomData?.title}</span>
+        </Link>
+        <CreateSpaceBtn />
+      </div>
+
       <div className="text-muted-foreground">
         {total > 0 ? (
           spaces.map((space) => <SpaceListItem key={space.id} space={space} />)

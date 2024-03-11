@@ -79,7 +79,7 @@ function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
             <img src={imageUrl?.[0].url} alt="profile" />
             <Button
               variant="outline"
-              onClick={() => methods.reset({ imageUrl: [] })}
+              onClick={() => methods.setValue("imageUrl", [])}
             >
               <Trash2Icon className="size-4 mr-2" />
               <span>이미지 삭제</span>
