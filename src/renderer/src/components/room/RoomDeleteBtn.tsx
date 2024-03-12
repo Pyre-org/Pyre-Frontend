@@ -17,11 +17,14 @@ import {
 
 function RoomDeleteBtn() {
   const room = useRoomStore((state) => state.room);
+  const { close } = useRoomStore((state) => state.actions);
   const deleteMutation = useDeleteRoomMutation();
+
   const handleDelete = () => {
     if (!room) return;
     deleteMutation.mutate(room.id, {
       onSuccess: () => {
+        close();
         toast.success("룸이 삭제되었습니다");
       },
       onError(error) {
@@ -48,7 +51,12 @@ function RoomDeleteBtn() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction onClick={handleDelete}>삭제</AlertDialogAction>
+          <AlertDialogAction
+            onClick={handleDelete}
+            className="bg-red-500 hover:bg-red-600"
+          >
+            삭제
+          </AlertDialogAction>
           <AlertDialogCancel>취소</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
