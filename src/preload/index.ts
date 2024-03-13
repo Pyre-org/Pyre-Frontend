@@ -22,6 +22,8 @@ export const api = {
     ipcRenderer.invoke("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", area),
   closeScreenshotWindow: (): Promise<void> =>
     ipcRenderer.invoke("CLOSE_SCREENSHOT_WINDOW"),
+  showCaptureNotification: (url: string, localPath: string): Promise<void> =>
+    ipcRenderer.invoke("SHOW_CAPTURE_NOTIFICATION", url, localPath),
   openPath: (path: string): Promise<void> =>
     ipcRenderer.invoke("OPEN_PATH", path),
   handleOAuthLogin: (params: { url: string; authority: string }) =>

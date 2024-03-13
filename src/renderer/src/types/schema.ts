@@ -129,3 +129,11 @@ export interface Space extends SpaceBody {
 export interface SpaceBody extends CreateSpaceSchemaType {
   roomId: string;
 }
+
+export interface ICaptureResponse {
+  dataURL: string;
+  width: number;
+  height: number;
+  name: string;
+  path: string;
+}

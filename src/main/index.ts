@@ -8,6 +8,7 @@ import {
   globalShortcut,
   Tray,
   Menu,
+  clipboard,
 } from "electron";
 import fs from "fs";
 import { join } from "path";
@@ -16,9 +17,9 @@ import notifier from "node-notifier";
 import icon from "../../resources/icon.png?asset";
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
-app.setAppUserModelId(process.execPath);
 
 const appID = "Pyre";
+const appName = "com.pyre.app";
 
 let isRunning = false;
 
@@ -50,9 +51,14 @@ function createWindow(): void {
     mainWindow.show();
   });
 
-  mainWindow.on("close", () => {
-    windows.main = null;
-    if (!isRunning) return;
+  mainWindow.on("close", (e) => {
+    if (!isRunning) {
+      windows.main = null;
+      return;
+    }
+    e.preventDefault();
+    mainWindow.hide();
+
     notifier.notify({
       title: "Pyre",
       message: "앱이 백그라운드에서 실행 중입니다.",
@@ -138,8 +144,8 @@ function createTray() {
     {
       label: "앱 종료",
       click: () => {
-        app.quit();
         isRunning = false;
+        app.quit();
       },
     },
   ]);
@@ -188,6 +194,8 @@ app.on("window-all-closed", () => {
   // }
 });
 
+app.on("ready", () => app.setAppUserModelId(appName));
+
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
@@ -229,23 +237,31 @@ ipcMain.handle("DESKTOP_CAPTURER_CAPTURE_SCREEN_AREA", async (_, area) => {
     dataURL: image.toDataURL(),
   };
 
-  notifier.notify(
-    {
-      title: "스크린샷이 저장되었습니다",
-      message: screenshotPath,
-      icon: screenshotPath,
-      wait: true,
-      appID,
-    },
-    (_, response) => {
-      if (!response) {
-        shell.openPath(screenshotPath);
-      }
-    },
-  );
+  windows.main?.webContents.send("SCREENSHOT_CAPTURED", res);
 
   return res;
 });
+
+ipcMain.handle(
+  "SHOW_CAPTURE_NOTIFICATION",
+  (_, url: string, localPath: string) => {
+    clipboard.writeText(url);
+    notifier.notify(
+      {
+        title: "스크린샷이 저장되었습니다",
+        message: url,
+        icon: localPath,
+        wait: true,
+        appID,
+      },
+      (_, response) => {
+        if (!response) {
+          shell.openExternal(url);
+        }
+      },
+    );
+  },
+);
 
 ipcMain.handle("CLOSE_SCREENSHOT_WINDOW", () => {
   handleCloseScreenshotWindow();

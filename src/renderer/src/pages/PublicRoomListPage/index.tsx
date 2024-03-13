@@ -86,7 +86,7 @@ function PublicRoomListPage() {
                 <StarIcon
                   className="size-4 mr-2"
                   {...(isSubscribed
-                    ? { fill: theme === "light" ? "black" : "white" }
+                    ? { fill: theme !== "light" ? "white" : "black" }
                     : {})}
                 />
                 {isSubscribed ? "구독 중" : "채널 구독"}
