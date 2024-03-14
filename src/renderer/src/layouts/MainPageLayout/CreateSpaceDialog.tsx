@@ -52,7 +52,7 @@ function CreateSpaceDialog() {
           </Tooltip>
         </DialogTrigger>
       </TooltipProvider>
-      <DialogContent className="flex flex-col max-h-[80%] scrollbar-thin">
+      <DialogContent className="flex flex-col max-h-[80%] overflow-y-scroll scrollbar-thin">
         <DialogHeader>
           <DialogTitle>스페이스 {isEdit ? "수정" : "생성"}</DialogTitle>
         </DialogHeader>
