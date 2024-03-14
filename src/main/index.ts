@@ -20,6 +20,19 @@ app.commandLine.appendSwitch("ignore-certificate-errors");
 
 const appID = "Pyre";
 const appName = "com.pyre.app";
+const lock = app.requestSingleInstanceLock();
+
+if (!lock) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    if (windows.main) {
+      if (windows.main.isMinimized() || !windows.main.isVisible())
+        windows.main.show();
+      windows.main.focus();
+    }
+  });
+}
 
 let isRunning = false;
 
