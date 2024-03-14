@@ -15,6 +15,6 @@ export const useRoomStore = create<IRoomStore>((set) => ({
   isOpen: false,
   actions: {
     open: (room) => set({ room: room ?? null, isOpen: true }),
-    close: () => set({ room: null, isOpen: false }),
+    close: () => set({ isOpen: false }),
   },
 }));

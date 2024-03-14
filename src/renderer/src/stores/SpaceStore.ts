@@ -15,6 +15,6 @@ export const useSpaceStore = create<ISpaceStore>((set) => ({
   isOpen: false,
   actions: {
     open: (space) => set({ space: space ?? null, isOpen: true }),
-    close: () => set({ space: null, isOpen: false }),
+    close: () => set({ isOpen: false }),
   },
 }));
