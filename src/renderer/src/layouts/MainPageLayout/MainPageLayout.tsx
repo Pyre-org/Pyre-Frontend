@@ -32,7 +32,7 @@ function MainPageLayout() {
             <Link to="/channels">채널</Link>
           </Button>
           <Button size="sm" variant="ghost" asChild>
-            <Link to="#">설정</Link>
+            <Link to="/settings">설정</Link>
           </Button>
           <Profile />
         </div>

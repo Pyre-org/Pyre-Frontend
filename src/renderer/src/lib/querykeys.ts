@@ -64,4 +64,11 @@ export const QUERY_KEYS = {
     }),
     list: (params?: any) => ["space", "list", ...(params ? [params] : [])],
   },
+  feed: {
+    all: ["feed"],
+    single: (id: string) => ({
+      all: ["feed", "single", id],
+    }),
+    list: (params?: any) => ["feed", "list", ...(params ? [params] : [])],
+  },
 };

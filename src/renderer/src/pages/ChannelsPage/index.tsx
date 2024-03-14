@@ -13,7 +13,7 @@ function ChannelsPage() {
     <>
       <div className="container my-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl">채널 탐색</h1>
+          <h1 className="text-lg font-semibold">채널 탐색</h1>
           <Button size="sm" onClick={() => setShowCreateChannel(true)}>
             채널 생성 요청
           </Button>

@@ -6,6 +6,7 @@ import LoginPage from "@renderer/pages/LoginPage";
 import PublicRoomListPage from "@renderer/pages/PublicRoomListPage";
 import RegisterPage from "@renderer/pages/RegisterPage";
 import RoomInfoPage from "@renderer/pages/RoomInfoPage";
+import SettingsPage from "@renderer/pages/SettingsPage";
 import SpaceDetailPage from "@renderer/pages/SpaceDetailPage";
 import SpaceHomePage from "@renderer/pages/SpaceHomePage";
 import { createHashRouter, Navigate } from "react-router-dom";
@@ -70,6 +71,10 @@ export const router = createHashRouter([
                 ],
               },
             ],
+          },
+          {
+            path: "settings",
+            element: <SettingsPage />,
           },
         ],
       },

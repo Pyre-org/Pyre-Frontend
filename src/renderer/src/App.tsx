@@ -10,6 +10,7 @@ import { ThemeProvider } from "@renderer/components/common/ThemeProvider";
 import { Toaster } from "sonner";
 import { useDragDrop } from "./hooks/useDragDrop";
 import useCapture from "./hooks/useCapture";
+import CaptureWrapper from "./components/CaptureWrapper";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient(config));
@@ -20,7 +21,9 @@ function App() {
     <ThemeProvider>
       <Toaster />
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} fallbackElement={<LoadingPage />} />
+        <CaptureWrapper>
+          <RouterProvider router={router} fallbackElement={<LoadingPage />} />
+        </CaptureWrapper>
         <ReactQueryDevtools />
       </QueryClientProvider>
     </ThemeProvider>
