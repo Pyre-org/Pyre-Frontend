@@ -11,9 +11,14 @@ import {
   useLocateSpaceMutation,
 } from "@renderer/lib/queries/space";
 import { Space } from "@renderer/types/schema";
-import { LucideIcon, MessageSquareIcon, NewspaperIcon } from "lucide-react";
+import {
+  LucideIcon,
+  MessageSquareIcon,
+  NewspaperIcon,
+  SettingsIcon,
+} from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import CreateSpaceBtn from "./CreateSpaceBtn";
+import CreateSpaceBtn from "./CreateSpaceDialog";
 import {
   DndContext,
   DragEndEvent,
@@ -32,6 +37,7 @@ import {
 import { toast } from "sonner";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { CSS } from "@dnd-kit/utilities";
+import { useSpaceStore } from "@renderer/stores/SpaceStore";
 
 function SpaceList() {
   const { channelId, roomId } = useParams<{ channelId; roomId: string }>();
@@ -129,10 +135,16 @@ const iconMap: Record<Space["type"], LucideIcon> = {
   SPACE_GENERAL_CHAT: MessageSquareIcon,
 };
 
+const showSettings = (space: Space) => {
+  // return type === "SPACEROLE_MODE";
+  return space.type !== "SPACE_GENERAL" && space.type !== "SPACE_GENERAL_CHAT";
+};
+
 function SpaceListItem({ space }: { space: Space }) {
   const { channelId } = useParams<{ channelId: string }>();
   const { data: spaceData } = useGetSpace(space.id);
-  const Icon = iconMap[space.type];
+  const Icon = iconMap[space.type!];
+  const { open: openDialog } = useSpaceStore((state) => state.actions);
   const navigate = useNavigate();
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -147,10 +159,12 @@ function SpaceListItem({ space }: { space: Space }) {
     navigate(`/channels/${channelId}/rooms/${space.roomId}/spaces/${space.id}`);
   };
 
+  if (!spaceData) return null;
+
   return (
     <Button
       variant="ghost"
-      className="justify-start w-full"
+      className="justify-between w-full items-center truncate"
       key={space.id}
       onClick={handleClick}
       ref={setNodeRef}
@@ -158,8 +172,22 @@ function SpaceListItem({ space }: { space: Space }) {
       {...attributes}
       {...listeners}
     >
-      <Icon className="size-4 mr-2" />
-      <span className="truncate">{spaceData?.title}</span>
+      <div className="flex items-center w-full truncate">
+        <Icon className="size-4 mr-2" />
+        <span className="truncate">{spaceData.title}</span>
+      </div>
+      {showSettings(spaceData) && (
+        <div
+          className="size-8 flex justify-center items-center aspect-square"
+          onClick={(e) => {
+            e.stopPropagation();
+            openDialog(space);
+            console.log(space);
+          }}
+        >
+          <SettingsIcon className="w-4 hover:text-primary" />
+        </div>
+      )}
     </Button>
   );
 }

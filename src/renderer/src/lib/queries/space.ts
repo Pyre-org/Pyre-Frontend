@@ -12,6 +12,7 @@ import {
   ListResponse,
   Space,
   SpaceBody,
+  UpdateSpaceBody,
 } from "@renderer/types/schema";
 import { AxiosError } from "axios";
 
@@ -101,6 +102,50 @@ export const useLocateSpaceMutation = (
   return useMutation({
     ...options,
     mutationFn: locateSpace,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const updateSpace = async (data: UpdateSpaceBody) => {
+  const { spaceId, ...body } = data;
+  const res = await api.put<string>(`${baseUrl}/update/${spaceId}`, { body });
+  return res.data;
+};
+
+export const useUpdateSpaceMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, UpdateSpaceBody>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: updateSpace,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.space.single(variables.spaceId).all,
+      });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const deleteSpace = async (spaceId: string) => {
+  const res = await api.delete<string>(`${baseUrl}/delete/${spaceId}`);
+  return res.data;
+};
+
+export const useDeleteSpaceMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, string>,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: deleteSpace,
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
       options?.onSuccess?.(data, variables, context);

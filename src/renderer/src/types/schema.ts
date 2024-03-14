@@ -1,3 +1,4 @@
+import { ROLE_TYPES } from "@renderer/constants/space";
 import { CreateSpaceSchemaType } from "@renderer/lib/schemas/CreateSpaceSchema";
 import { RoomCreateSchemaType } from "@renderer/lib/schemas/RoomCreateSchema";
 
@@ -119,15 +120,26 @@ export interface Feed {
   room_id: string;
 }
 
+export type SpaceRole = (typeof ROLE_TYPES)[number];
+
 export interface Space extends SpaceBody {
   id: string;
-  role: "SPACEROLE_GUEST" | "SPACEROLE_USER" | "SPACEROLE_MODE";
+  role: SpaceRole;
   prevSpaceId: string;
   nextSpaceId: string;
 }
 
-export interface SpaceBody extends CreateSpaceSchemaType {
+export interface SpaceBody
+  extends Omit<Required<CreateSpaceSchemaType>, "role" | "description"> {
   roomId: string;
+  description?: string;
+}
+
+export interface UpdateSpaceBody {
+  title: string;
+  description: string;
+  role: SpaceRole;
+  spaceId: string;
 }
 
 export interface ICaptureResponse {
