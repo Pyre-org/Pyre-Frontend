@@ -20,7 +20,9 @@ interface GetFeedsParams {
 
 export const getFeeds = async (data: GetFeedsParams) => {
   const { spaceId, ...params } = data;
-  const res = await api.get(`${baseUrl}/list/${spaceId}`, { params });
+  const res = await api.get<ListResponse<Feed>>(`${baseUrl}/list/${spaceId}`, {
+    params,
+  });
   return res.data;
 };
 

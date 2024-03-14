@@ -10,6 +10,7 @@ import {
   CreateFeedSchema,
   CreateFeedSchemaType,
 } from "@renderer/lib/schemas/CreateFeedSchema";
+import { useFeedStore } from "@renderer/stores/FeedStore";
 import { useForm, useWatch } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ const defaultValues = {
 
 function FeedUploadForm() {
   const { spaceId } = useParams<{ spaceId: string }>();
+  const close = useFeedStore((state) => state.actions.close);
   const uploadMutation = useUploadFeedMutation();
   const methods = useForm<CreateFeedSchemaType>({
     resolver: zodResolver(CreateFeedSchema),
@@ -40,6 +42,7 @@ function FeedUploadForm() {
       },
       {
         onSuccess: () => {
+          close();
           methods.reset();
           toast.success("피드가 등록되었습니다");
         },

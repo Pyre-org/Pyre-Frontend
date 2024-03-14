@@ -113,14 +113,11 @@ export interface ScreenShot {
 
 export interface Feed {
   id: string;
-  user: User;
-  description: string;
-  screenshots: ScreenShot[];
-  tags: string[];
-  visibility: string;
-  likes: number;
-  views: number;
-  room_id: string;
+  userId: string;
+  nickname: string;
+  spaceId: string;
+  imageUrl: string;
+  cAt: string;
 }
 
 export type SpaceRole = (typeof ROLE_TYPES)[number];
