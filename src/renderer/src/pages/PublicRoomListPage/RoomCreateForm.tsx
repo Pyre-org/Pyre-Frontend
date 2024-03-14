@@ -6,7 +6,10 @@ import FormTextarea from "@renderer/components/form/FormTextarea";
 import RoomDeleteBtn from "@renderer/components/room/RoomDeleteBtn";
 import { Button } from "@renderer/components/ui/button";
 import { Form } from "@renderer/components/ui/form";
-import { ROOM_TYPES, ROOM_TYPE_OPTIONS } from "@renderer/constants/room";
+import {
+  SPACE_ROOM_TYPES,
+  SPACE_ROOM_TYPE_OPTIONS,
+} from "@renderer/constants/room";
 import {
   RoomCreateSchemaType,
   roomCreateSchema,
@@ -22,7 +25,7 @@ interface RoomCreateFormProps {
 
 const defaultValues = {
   imageUrl: [],
-  type: ROOM_TYPES[0],
+  type: SPACE_ROOM_TYPES[0],
 };
 
 function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
@@ -70,7 +73,7 @@ function RoomCreateForm({ onSubmit }: RoomCreateFormProps) {
           label="공개 여부"
           name="type"
           placeholder="공개 여부를 선택해주세요"
-          options={ROOM_TYPE_OPTIONS}
+          options={SPACE_ROOM_TYPE_OPTIONS}
         />
         <FormDropzone
           control={methods.control}

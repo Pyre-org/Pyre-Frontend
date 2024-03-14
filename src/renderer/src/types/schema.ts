@@ -1,3 +1,4 @@
+import { ROOM_ROLE_TYPES } from "@renderer/constants/room";
 import { ROLE_TYPES } from "@renderer/constants/space";
 import { CreateSpaceSchemaType } from "@renderer/lib/schemas/CreateSpaceSchema";
 import { RoomCreateSchemaType } from "@renderer/lib/schemas/RoomCreateSchema";
@@ -88,6 +89,8 @@ export enum RoomType {
   ROOM_GLOBAL = "ROOM_GLOBAL",
   ROOM_CAPTURE = "ROOM_CAPTURE",
 }
+
+export type RoomRole = (typeof ROOM_ROLE_TYPES)[number];
 
 export interface Chat {
   id: string;

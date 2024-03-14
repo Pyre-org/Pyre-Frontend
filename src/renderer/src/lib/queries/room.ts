@@ -3,6 +3,7 @@ import {
   ListResponse,
   Room,
   RoomBody,
+  RoomRole,
   RoomWithSpace,
 } from "@renderer/types/schema";
 import {
@@ -316,5 +317,24 @@ export const useDeleteRoomMutation = (
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
       options?.onSuccess?.(data, variables, context);
     },
+  });
+};
+
+export const getRoomRole = async (roomId: string) => {
+  const res = await api.get<RoomRole>(`${baseUrl}/role/${roomId}`);
+  return res.data;
+};
+
+export const useGetRoomRole = (
+  roomId: string,
+  options?: Omit<
+    UseQueryOptions<RoomRole, AxiosError<BaseError>, RoomRole>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.room.single(roomId).role,
+    queryFn: () => getRoomRole(roomId),
   });
 };

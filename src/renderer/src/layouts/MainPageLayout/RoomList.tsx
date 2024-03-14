@@ -24,10 +24,11 @@ import {
 import { Button } from "@renderer/components/ui/button";
 import {
   useGetMyRoomsWithSpaces,
+  useGetRoomRole,
   useLocateRoomMutation,
 } from "@renderer/lib/queries/room";
 import { useRoomStore } from "@renderer/stores/RoomStore";
-import { Room, RoomType } from "@renderer/types/schema";
+import { Room, RoomRole, RoomType } from "@renderer/types/schema";
 import { SettingsIcon } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -112,8 +113,14 @@ function RoomList() {
   );
 }
 
-const showSettings = (type: RoomType) => {
-  return type !== RoomType.ROOM_GLOBAL && type !== RoomType.ROOM_CAPTURE;
+const showSettings = (room: Room, role: RoomRole) => {
+  return (
+    (room.type !== RoomType.ROOM_GLOBAL &&
+      room.type !== RoomType.ROOM_CAPTURE &&
+      // lower role has higher authority
+      role === "ROOM_ADMIN") ||
+    role === "ROOM_MODE"
+  );
 };
 
 function RoomListItem({ room }: { room: Room }) {
@@ -121,6 +128,8 @@ function RoomListItem({ room }: { room: Room }) {
   const id = channelId as string;
   const navigate = useNavigate();
   const { open: openRoom } = useRoomStore((state) => state.actions);
+  const { data: roleData } = useGetRoomRole(room.id);
+  const role = roleData ?? "ROOM_GUEST";
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: room.id });
@@ -154,7 +163,7 @@ function RoomListItem({ room }: { room: Room }) {
         </Avatar>
         <span className="truncate">{room.title}</span>
       </div>
-      {showSettings(room.type) && (
+      {showSettings(room, role) && (
         <div
           className="size-8 flex justify-center items-center aspect-square"
           onClick={(e) => {

@@ -4,13 +4,13 @@ import {
   AvatarImage,
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
-import { useGetRoom } from "@renderer/lib/queries/room";
+import { useGetRoom, useGetRoomRole } from "@renderer/lib/queries/room";
 import {
   useGetSpace,
   useGetSpaces,
   useLocateSpaceMutation,
 } from "@renderer/lib/queries/space";
-import { Space } from "@renderer/types/schema";
+import { RoomRole, Space } from "@renderer/types/schema";
 import {
   LucideIcon,
   MessageSquareIcon,
@@ -135,9 +135,13 @@ const iconMap: Record<Space["type"], LucideIcon> = {
   SPACE_GENERAL_CHAT: MessageSquareIcon,
 };
 
-const showSettings = (space: Space) => {
-  // return type === "SPACEROLE_MODE";
-  return space.type !== "SPACE_GENERAL" && space.type !== "SPACE_GENERAL_CHAT";
+const showSettings = (space: Space, role: RoomRole) => {
+  console.log(role);
+  return (
+    space.type !== "SPACE_GENERAL" &&
+    space.type !== "SPACE_GENERAL_CHAT" &&
+    (role === "ROOM_ADMIN" || role === "ROOM_MODE")
+  );
 };
 
 function SpaceListItem({ space }: { space: Space }) {
@@ -145,6 +149,8 @@ function SpaceListItem({ space }: { space: Space }) {
   const { data: spaceData } = useGetSpace(space.id);
   const Icon = iconMap[space.type!];
   const { open: openDialog } = useSpaceStore((state) => state.actions);
+  const { data: roleData } = useGetRoomRole(space.roomId);
+  const role = roleData ?? "ROOM_GUEST";
   const navigate = useNavigate();
 
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -176,13 +182,12 @@ function SpaceListItem({ space }: { space: Space }) {
         <Icon className="size-4 mr-2" />
         <span className="truncate">{spaceData.title}</span>
       </div>
-      {showSettings(spaceData) && (
+      {showSettings(spaceData, role) && (
         <div
           className="size-8 flex justify-center items-center aspect-square"
           onClick={(e) => {
             e.stopPropagation();
             openDialog(space);
-            console.log(space);
           }}
         >
           <SettingsIcon className="w-4 hover:text-primary" />

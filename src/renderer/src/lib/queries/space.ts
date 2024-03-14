@@ -111,7 +111,7 @@ export const useLocateSpaceMutation = (
 
 export const updateSpace = async (data: UpdateSpaceBody) => {
   const { spaceId, ...body } = data;
-  const res = await api.put<string>(`${baseUrl}/update/${spaceId}`, { body });
+  const res = await api.put<string>(`${baseUrl}/update/${spaceId}`, body);
   return res.data;
 };
 
@@ -150,5 +150,43 @@ export const useDeleteSpaceMutation = (
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
       options?.onSuccess?.(data, variables, context);
     },
+  });
+};
+
+export const canWrite = async (spaceId: string) => {
+  const res = await api.get<boolean>(`${baseUrl}/canWrite/${spaceId}`);
+  return res.data;
+};
+
+export const useCanWrite = (
+  spaceId: string,
+  options?: Omit<
+    UseQueryOptions<boolean, AxiosError<BaseError>, boolean>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.space.single(spaceId).write,
+    queryFn: () => canWrite(spaceId),
+  });
+};
+
+export const getCaptureSpaceId = async (spaceId: string) => {
+  const res = await api.get<string>(`${baseUrl}/getCapture/${spaceId}`);
+  return res.data;
+};
+
+export const useGetCaptureSpaceId = (
+  spaceId: string,
+  options?: Omit<
+    UseQueryOptions<string, AxiosError<BaseError>, string>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.space.capture,
+    queryFn: () => getCaptureSpaceId(spaceId),
   });
 };

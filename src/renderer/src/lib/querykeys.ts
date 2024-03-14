@@ -36,6 +36,7 @@ export const QUERY_KEYS = {
     single: (id: string) => ({
       all: ["room", "single", id],
       sub: ["room", "single", id, "subscription"],
+      role: ["room", "single", id, "role"],
     }),
     list: {
       all: ["room", "list"],
@@ -56,7 +57,11 @@ export const QUERY_KEYS = {
   },
   space: {
     all: ["space"],
-    single: (id: string) => ({ all: ["space", "single", id] }),
+    capture: ["space", "capture"],
+    single: (id: string) => ({
+      all: ["space", "single", id],
+      write: ["space", "single", id, "write"],
+    }),
     list: (params?: any) => ["space", "list", ...(params ? [params] : [])],
   },
 };
