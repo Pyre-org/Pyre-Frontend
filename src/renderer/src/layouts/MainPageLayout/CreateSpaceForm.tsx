@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "@renderer/components/form/FormInput";
 import FormSelect from "@renderer/components/form/FormSelect";
 import FormTextarea from "@renderer/components/form/FormTextarea";
+import SpaceDeleteBtn from "@renderer/components/space/SpaceDeleteBtn";
 import { Button } from "@renderer/components/ui/button";
 import { Form } from "@renderer/components/ui/form";
 import {
@@ -111,9 +112,12 @@ function CreateSpaceForm() {
             options={ROLE_TYPE_OPTIONS}
           />
         )}
-        <Button type="submit" className="mt-4">
-          스페이스 {isEdit ? "수정하기" : "만들기"}
-        </Button>
+        <div className="mt-4 flex gap-4 items-center justify-center">
+          <Button type="submit" fullWidth>
+            스페이스 {isEdit ? "수정하기" : "만들기"}
+          </Button>
+          <SpaceDeleteBtn />
+        </div>
       </form>
     </Form>
   );
