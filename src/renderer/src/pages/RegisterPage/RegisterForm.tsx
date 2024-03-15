@@ -134,7 +134,6 @@ function RegisterForm({ methods, onNext }: RegisterFormProps) {
                         />
                       </FormControl>
                     </div>
-
                     <FormMessage />
                   </FormItem>
                 )}

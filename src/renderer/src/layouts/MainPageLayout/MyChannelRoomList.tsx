@@ -2,7 +2,7 @@ import { useGetMyChannels } from "@renderer/lib/queries/channel";
 import MyRoomList from "./MyRoomList";
 
 function MyChannelRoomList() {
-  const { data: channelData } = useGetMyChannels();
+  const { data: channelData } = useGetMyChannels({});
   const channels = channelData?.hits ?? [];
   const total = channelData?.total ?? 0;
 

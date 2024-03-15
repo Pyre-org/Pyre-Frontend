@@ -255,15 +255,39 @@ export const useDeleteChannelMutation = (
   });
 };
 
-export const getMyChannels = async () => {
-  const res = await api.get<ListResponse<Channel>>(baseUrl);
+interface GetMyChannelsParams {
+  genre: string;
+  keyword: string;
+  sortBy: string;
+  orderByDesc: boolean;
+}
+
+export const getMyChannels = async (params: Partial<GetMyChannelsParams>) => {
+  const res = await api.get<ListResponse<Channel>>(`${baseUrl}/my/search`, {
+    params,
+  });
   return res.data;
 };
 
-export const useGetMyChannels = () => {
+export const useGetMyChannels = (
+  { genre, keyword, sortBy, orderByDesc }: Partial<GetMyChannelsParams>,
+  options?: UseQueryOptions<
+    ListResponse<Channel>,
+    AxiosError<BaseError>,
+    ListResponse<Channel>
+  >,
+) => {
+  const params = {
+    genre,
+    keyword,
+    sortBy,
+    orderByDesc,
+  };
+
   return useQuery({
+    ...options,
     queryKey: QUERY_KEYS.channel.list.my,
-    queryFn: getMyChannels,
+    queryFn: () => getMyChannels(params),
   });
 };
 

@@ -11,19 +11,24 @@ import {
   useGetMyChannels,
 } from "@renderer/lib/queries/channel";
 import { Channel } from "@renderer/types/schema";
+import { useDebounce } from "@uidotdev/usehooks";
 import { AtSignIcon } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function ChannelList() {
-  const { data: initialPublicChannelData } = useGetChannels({});
-  const { data: myChannelData } = useGetMyChannels();
+  const [input, setInput] = useState("");
+  const keyword = useDebounce(input, 300);
+  const { data: initialPublicChannelData } = useGetChannels({ keyword });
+  const { data: myChannelData } = useGetMyChannels({ keyword });
 
-  if (!initialPublicChannelData || !myChannelData) return null;
-
-  const publicChannels = initialPublicChannelData.hits.filter(
-    (channel) =>
-      !myChannelData.hits.some((myChannel) => myChannel.id === channel.id),
+  const myChannels = myChannelData?.hits ?? [];
+  const initialPublicChannels = initialPublicChannelData?.hits ?? [];
+  const myChannelTotal = myChannelData?.total ?? 0;
+  const publicChannels = initialPublicChannels.filter(
+    (channel) => !myChannels.some((myChannel) => myChannel.id === channel.id),
   );
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col">
@@ -32,12 +37,17 @@ function ChannelList() {
             구독 채널
           </h2>
           <div className="relative">
-            <Input className="h-8 mb-4 pl-8" placeholder="채널 이름으로 검색" />
+            <Input
+              className="h-8 mb-4 pl-8"
+              placeholder="채널 이름으로 검색"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
             <MagnifyingGlassIcon className="w-5 h-5 absolute left-1 top-0 translate-y-1.5" />
           </div>
         </div>
-        {myChannelData.total > 0 ? (
-          myChannelData.hits.map((channel) => (
+        {myChannelTotal > 0 ? (
+          myChannels.map((channel) => (
             <ChannelListItem channel={channel} key={channel.id} />
           ))
         ) : (
@@ -71,12 +81,7 @@ function ChannelList() {
 
 function ChannelListItem({ channel }: { channel: Channel }) {
   return (
-    <Button
-      variant="ghost"
-      className="justify-start"
-      key={channel.title}
-      asChild
-    >
+    <Button variant="ghost" className="justify-start" asChild>
       <Link to={`/channels/${channel.id}`}>
         <Avatar className="w-6 h-6 mr-2 shrink-0">
           <AvatarImage src={channel.imageUrl} />
