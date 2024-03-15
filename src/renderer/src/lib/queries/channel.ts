@@ -270,7 +270,7 @@ export const getMyChannels = async (params: Partial<GetMyChannelsParams>) => {
 };
 
 export const useGetMyChannels = (
-  { genre, keyword, sortBy, orderByDesc }: Partial<GetMyChannelsParams>,
+  { genre = "", keyword, sortBy, orderByDesc }: Partial<GetMyChannelsParams>,
   options?: UseQueryOptions<
     ListResponse<Channel>,
     AxiosError<BaseError>,

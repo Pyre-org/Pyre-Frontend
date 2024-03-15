@@ -11,6 +11,7 @@ import {
 import RoomList from "./RoomList";
 import MyChannelRoomList from "./MyChannelRoomList";
 import SpaceList from "./SpaceList";
+import InviteDialog from "./InviteDialog";
 
 function MainPageLayout() {
   return (
@@ -63,6 +64,7 @@ function MainPageLayout() {
           </aside>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <InviteDialog />
     </div>
   );
 }

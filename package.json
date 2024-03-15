@@ -57,6 +57,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^0.2.1",
+    "electron-deeplink": "^1.0.10",
     "electron-updater": "^6.1.7",
     "framer-motion": "^11.0.8",
     "lucide-react": "^0.315.0",
