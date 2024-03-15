@@ -1,15 +1,17 @@
 import { create } from "zustand";
 
 interface IInviteStore {
+  invitationId: string | null;
   isOpen: boolean;
   actions: {
-    setOpen: (isOpen: boolean) => void;
+    setOpen: (isOpen: boolean, invitationId: string | null) => void;
   };
 }
 
 export const useInviteStore = create<IInviteStore>((set) => ({
+  invitationId: null,
   isOpen: false,
   actions: {
-    setOpen: (isOpen) => set({ isOpen }),
+    setOpen: (isOpen, invitationId) => set({ isOpen, invitationId }),
   },
 }));

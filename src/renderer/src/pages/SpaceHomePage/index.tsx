@@ -11,11 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
 import { Separator } from "@renderer/components/ui/separator";
-import { useGetRoom, useGetRoomRole } from "@renderer/lib/queries/room";
+import {
+  useCreateInvitationMutation,
+  useGetRoom,
+  useGetRoomRole,
+} from "@renderer/lib/queries/room";
 import { useRoomStore } from "@renderer/stores/RoomStore";
 import { MailIcon, MoreHorizontalIcon, SettingsIcon } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 function SpaceHomePage() {
   const { roomId } = useParams<{ roomId: string }>();
@@ -23,10 +28,31 @@ function SpaceHomePage() {
   const { open: openDialog } = useRoomStore((state) => state.actions);
   const { data: roomData } = useGetRoom(roomId!, { enabled: !!roomId });
   const { data: roomRole } = useGetRoomRole(roomId!, { enabled: !!roomId });
+  const createInviteMutation = useCreateInvitationMutation();
 
   const handleOpenDialog = () => {
     openDialog(roomData);
     setShowList(false);
+  };
+
+  const handleCreateInvite = () => {
+    createInviteMutation.mutate(
+      { roomId: roomId!, maxDays: 7 },
+      {
+        onSuccess: (id) => {
+          const link = `pyre://invitations/${id}`;
+          navigator.clipboard.writeText(link);
+          toast.success("초대 링크가 클립보드에 복사되었습니다", {
+            description: link,
+          });
+        },
+        onError: (error) => {
+          toast.error("초대 링크 생성에 실패했습니다", {
+            description: error.response?.data.reason,
+          });
+        },
+      },
+    );
   };
 
   return (
@@ -59,7 +85,7 @@ function SpaceHomePage() {
                     <SettingsIcon className="size-4 mr-3" />
                     <span>룸 정보 수정</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleCreateInvite}>
                     <MailIcon className="size-4 mr-3" />
                     <span>초대 링크 생성</span>
                   </DropdownMenuItem>
