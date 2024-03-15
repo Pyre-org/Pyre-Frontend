@@ -1,6 +1,9 @@
 import {
+  InfiniteData,
+  QueryKey,
   UseMutationOptions,
   UseQueryOptions,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -40,8 +43,30 @@ export const useGetFeeds = (
   const params = { spaceId, page, size };
   return useQuery({
     ...options,
-    queryKey: QUERY_KEYS.feed.list(params),
+    queryKey: QUERY_KEYS.feed.list.general(params),
     queryFn: () => getFeeds(params),
+  });
+};
+
+export const useGetFeedsInfinite = ({ spaceId, size = 20 }: GetFeedsParams) => {
+  const params = { spaceId, size };
+  return useInfiniteQuery<
+    ListResponse<Feed>,
+    AxiosError<BaseError>,
+    InfiniteData<ListResponse<Feed>>,
+    QueryKey,
+    number
+  >({
+    queryKey: QUERY_KEYS.feed.list.infinite(params),
+    queryFn: ({ pageParam = 0 }) =>
+      getFeeds({ spaceId, page: pageParam, size }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const total = lastPage.total;
+      const current =
+        Math.max(0, allPages.length - 1) * size + lastPage.hits.length;
+      return current < total ? allPages.length : undefined;
+    },
   });
 };
 
@@ -63,7 +88,7 @@ export const useUploadFeedMutation = (
     ...options,
     mutationFn: uploadFeed,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list.all });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -88,7 +113,7 @@ export const useUpdateFeedMutation = (
     ...options,
     mutationFn: updateFeed,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list.all });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.feed.single(variables.feedId).all,
       });
@@ -110,7 +135,7 @@ export const useDeleteFeedMutation = (
     ...options,
     mutationFn: deleteFeed,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list.all });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.feed.single(variables).all,
       });

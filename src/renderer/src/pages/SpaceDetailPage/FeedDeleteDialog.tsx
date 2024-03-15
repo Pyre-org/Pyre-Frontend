@@ -6,18 +6,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@renderer/components/ui/alert-dialog";
-import { Button } from "@renderer/components/ui/button";
 import { useDeleteFeedMutation } from "@renderer/lib/queries/feed";
-import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
-interface FeedDeleteBtnProps {
+interface FeedDeleteDialogProps {
+  open: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   feedId: string;
 }
 
-function FeedDeleteBtn({ feedId }: FeedDeleteBtnProps) {
+function FeedDeleteDialog({
+  feedId,
+  open,
+  onOpenChange,
+}: FeedDeleteDialogProps) {
   const deleteMutation = useDeleteFeedMutation();
 
   const handleDelete = () => {
@@ -35,13 +38,7 @@ function FeedDeleteBtn({ feedId }: FeedDeleteBtnProps) {
   };
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button fullWidth variant="destructive">
-          <Trash2Icon className="size-4 mr-2" />
-          <span>삭제</span>
-        </Button>
-      </AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>정말로 피드를 삭제하시겠습니까?</AlertDialogTitle>
@@ -60,4 +57,4 @@ function FeedDeleteBtn({ feedId }: FeedDeleteBtnProps) {
   );
 }
 
-export default FeedDeleteBtn;
+export default FeedDeleteDialog;

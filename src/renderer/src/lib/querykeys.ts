@@ -79,6 +79,20 @@ export const QUERY_KEYS = {
     single: (id: string) => ({
       all: ["feed", "single", id],
     }),
-    list: (params?: any) => ["feed", "list", ...(params ? [params] : [])],
+    list: {
+      all: ["feed", "list"],
+      general: (params?: any) => [
+        "feed",
+        "list",
+        "general",
+        ...(params ? [params] : []),
+      ],
+      infinite: (params?: any) => [
+        "feed",
+        "list",
+        "infinite",
+        ...(params ? [params] : []),
+      ],
+    },
   },
 };
