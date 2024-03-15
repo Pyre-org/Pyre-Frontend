@@ -36,6 +36,19 @@ export interface User {
   refresh_token: string | null;
 }
 
+export interface DetailedProfile {
+  email: string;
+  nickname: string;
+  profilePictureUrl: string;
+  shortDescription: string;
+  createDate: string;
+  modifyDate: string;
+  lastActive: string;
+  socialType: string;
+  followerCounts: number;
+  followingCounts: number;
+}
+
 export interface IProfile
   extends Pick<User, "id" | "email" | "image_url" | "nickname"> {}
 
@@ -148,4 +161,20 @@ export interface ICaptureResponse {
   height: number;
   name: string;
   path: string;
+}
+
+export interface ProfileSettingBody {
+  profilePictureUrl: string;
+  shortDescription: string;
+  selectedChannelId: string;
+  selectedSpaceId: string;
+  useCaptureRoom: boolean;
+  useFeedInfo: boolean;
+}
+
+export interface FeedSettings {
+  useCaptureRoom: boolean;
+  useFeedInfo: boolean;
+  captureRoomId: string;
+  spaceId: string;
 }

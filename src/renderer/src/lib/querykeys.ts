@@ -1,7 +1,11 @@
 export const QUERY_KEYS = {
   user: {
     all: ["user"],
-    me: ["user", "me"],
+    me: {
+      all: ["user", "me"],
+      feed: ["user", "me", "feed"],
+      profile: ["user", "me", "profile"],
+    },
     single: (id: string) => ["user", "single", id],
     list: (params?: any) => ["user", "list", ...(params ? [params] : [])],
   },
@@ -19,7 +23,12 @@ export const QUERY_KEYS = {
         "public",
         ...(params ? [params] : []),
       ],
-      my: ["channel", "list", "my"],
+      my: (params?: any) => [
+        "channel",
+        "list",
+        "my",
+        ...(params ? [params] : []),
+      ],
     },
     genre: {
       all: ["genres"],

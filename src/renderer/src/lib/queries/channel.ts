@@ -286,7 +286,7 @@ export const useGetMyChannels = (
 
   return useQuery({
     ...options,
-    queryKey: QUERY_KEYS.channel.list.my,
+    queryKey: QUERY_KEYS.channel.list.my(params),
     queryFn: () => getMyChannels(params),
   });
 };

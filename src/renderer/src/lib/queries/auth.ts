@@ -1,8 +1,15 @@
 import { api } from "../api";
-import { BaseError, IProfile } from "../../types/schema";
+import {
+  BaseError,
+  DetailedProfile,
+  FeedSettings,
+  IProfile,
+  ProfileSettingBody,
+} from "../../types/schema";
 import { AxiosError } from "axios";
 import {
   UseMutationOptions,
+  UseQueryOptions,
   useMutation,
   useQuery,
   useQueryClient,
@@ -40,7 +47,7 @@ export const useLoginMutation = (
     mutationFn: login,
     onSuccess: (...params) => {
       setToken(params[0].access_token);
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me.all });
       options?.onSuccess?.(...params);
     },
   });
@@ -74,7 +81,7 @@ export const useRegisterMutation = (
     mutationFn: register,
     onSuccess: (...params) => {
       setToken(params[0].access_token);
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me.all });
       options?.onSuccess?.(...params);
     },
   });
@@ -95,7 +102,7 @@ export const useLogoutMutation = (
     mutationFn: logout,
     onSuccess: (...params) => {
       setToken(null);
-      queryClient.setQueryData(QUERY_KEYS.user.me, null);
+      queryClient.setQueryData(QUERY_KEYS.user.me.all, null);
       options?.onSuccess?.(...params);
     },
   });
@@ -118,7 +125,7 @@ export const useRefreshMutation = (
     mutationFn: refresh,
     onSuccess: (...params) => {
       setToken(params[0].access_token);
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me.all });
       options?.onSuccess?.(...params);
     },
   });
@@ -131,7 +138,7 @@ export const me = async () => {
 
 export const useMyUser = () => {
   return useQuery<IProfile, AxiosError<BaseError>>({
-    queryKey: QUERY_KEYS.user.me,
+    queryKey: QUERY_KEYS.user.me.all,
     queryFn: me,
   });
 };
@@ -148,7 +155,7 @@ export const useSetTokenMutation = (
       return Promise.resolve();
     },
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me.all });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -171,4 +178,59 @@ export const checkNickname = async (nickname: string) => {
     nickname,
   });
   return res.data;
+};
+
+export const editProfile = async (body: ProfileSettingBody) => {
+  const res = await api.put(`${baseUrl}/profile/my/edit`, body);
+  return res.data;
+};
+
+export const useEditProfileMutation = (
+  options?: UseMutationOptions<void, AxiosError<BaseError>, ProfileSettingBody>,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<void, AxiosError<BaseError>, ProfileSettingBody>({
+    ...options,
+    mutationFn: editProfile,
+    onSuccess: (...params) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me.all });
+      options?.onSuccess?.(...params);
+    },
+  });
+};
+
+export const getFeedSettings = async () => {
+  const res = await api.get<FeedSettings>(`${baseUrl}/feedSpace`);
+  return res.data;
+};
+
+export const useGetFeedSettings = (
+  options?: Omit<
+    UseQueryOptions<FeedSettings, AxiosError<BaseError>, FeedSettings>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery<FeedSettings, AxiosError<BaseError>>({
+    ...options,
+    queryKey: QUERY_KEYS.user.me.feed,
+    queryFn: getFeedSettings,
+  });
+};
+
+export const getMyProfile = async () => {
+  const res = await api.get<DetailedProfile>(`${baseUrl}/profile/my`);
+  return res.data;
+};
+
+export const useGetMyProfile = (
+  options?: Omit<
+    UseQueryOptions<DetailedProfile, AxiosError<BaseError>, DetailedProfile>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery<DetailedProfile, AxiosError<BaseError>>({
+    ...options,
+    queryKey: QUERY_KEYS.user.me.profile,
+    queryFn: getMyProfile,
+  });
 };
