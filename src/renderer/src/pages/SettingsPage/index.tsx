@@ -14,18 +14,31 @@ import {
   useGetFeedSettings,
   useGetMyProfile,
 } from "@renderer/lib/queries/auth";
-import { useEffect } from "react";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { BaseError } from "@renderer/types/schema";
+import { useEffect } from "react";
 
 function SettingsPage() {
   const { data: profileData } = useGetMyProfile();
   const { data: feedSettings } = useGetFeedSettings();
   const editProfileMutation = useEditProfileMutation();
 
+  const defaultValues: EditProfileSchemaType = {
+    profilePictureUrl: profileData?.profilePictureUrl
+      ? [{ url: profileData.profilePictureUrl }]
+      : [],
+    shortDescription: profileData?.shortDescription ?? "",
+    selectedRoomId: feedSettings?.captureRoomId ?? undefined,
+    selectedSpaceId: feedSettings?.spaceId ?? undefined,
+    selectedChannelId: feedSettings?.channelId ?? undefined,
+    useCaptureRoom: feedSettings?.useCaptureRoom ?? false,
+    useFeedInfo: feedSettings?.useFeedInfo ?? false,
+  };
+
   const methods = useForm<EditProfileSchemaType>({
     resolver: zodResolver(EditProfileSchema),
+    defaultValues,
   });
 
   const onSubmit = (data) => {
@@ -33,9 +46,7 @@ function SettingsPage() {
     editProfileMutation.mutate(
       {
         ...body,
-        profilePictureUrl: data.profilePictureUrl?.[0]?.url ?? "",
-        selectedChannelId: data.selectedChannelId ?? "",
-        selectedSpaceId: data.selectedSpaceId ?? "",
+        profilePictureUrl: data.profilePictureUrl?.[0]?.url ?? undefined,
       },
       {
         onSuccess: () => {
@@ -51,16 +62,6 @@ function SettingsPage() {
   };
 
   useEffect(() => {
-    const defaultValues: EditProfileSchemaType = {
-      profilePictureUrl: profileData?.profilePictureUrl
-        ? [{ url: profileData.profilePictureUrl }]
-        : [],
-      shortDescription: profileData?.shortDescription ?? "",
-      selectedRoomId: feedSettings?.captureRoomId ?? undefined,
-      selectedSpaceId: feedSettings?.spaceId ?? undefined,
-      useCaptureRoom: feedSettings?.useCaptureRoom ?? false,
-      useFeedInfo: feedSettings?.useFeedInfo ?? false,
-    };
     methods.reset(defaultValues);
   }, [profileData, feedSettings]);
 

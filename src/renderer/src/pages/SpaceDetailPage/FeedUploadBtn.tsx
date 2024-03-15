@@ -12,6 +12,8 @@ import { useFeedStore } from "@renderer/stores/FeedStore";
 
 function FeedUploadBtn() {
   const open = useFeedStore((state) => state.isOpen);
+  const feed = useFeedStore((state) => state.feed);
+  const isEdit = !!feed;
   const { open: openDialog, close: closeDialog } = useFeedStore(
     (state) => state.actions,
   );
@@ -34,7 +36,7 @@ function FeedUploadBtn() {
       </DialogTrigger>
       <DialogContent className="flex flex-col max-h-[80%] overflow-y-scroll scrollbar-thin">
         <DialogHeader>
-          <DialogTitle>피드 업로드</DialogTitle>
+          <DialogTitle>{`피드 ${isEdit ? "수정" : "업로드"}`}</DialogTitle>
         </DialogHeader>
         <FeedUploadForm />
       </DialogContent>

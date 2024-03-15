@@ -39,8 +39,8 @@ function SpaceHomePage() {
     createInviteMutation.mutate(
       { roomId: roomId!, maxDays: 7 },
       {
-        onSuccess: (id) => {
-          const link = `pyre://invitations/${id}`;
+        onSuccess: (httpLink) => {
+          const link = `pyre://invitations/${httpLink.split("/").pop()}`;
           navigator.clipboard.writeText(link);
           toast.success("초대 링크가 클립보드에 복사되었습니다", {
             description: link,

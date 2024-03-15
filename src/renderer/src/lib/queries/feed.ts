@@ -68,3 +68,53 @@ export const useUploadFeedMutation = (
     },
   });
 };
+
+interface UpdateFeedBody {
+  feedId: string;
+  title: string;
+  description?: string;
+}
+
+export const updateFeed = async (body: UpdateFeedBody) => {
+  const res = await api.patch<Feed>(`${baseUrl}/edit`, body);
+  return res.data;
+};
+
+export const useUpdateFeedMutation = (
+  options?: UseMutationOptions<Feed, AxiosError<BaseError>, UpdateFeedBody>,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: updateFeed,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list() });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.feed.single(variables.feedId).all,
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const deleteFeed = async (feedId: string) => {
+  const res = await api.delete<string>(`${baseUrl}/delete/${feedId}`);
+  return res.data;
+};
+
+export const useDeleteFeedMutation = (
+  options?: UseMutationOptions<string, AxiosError<BaseError>, string>,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    ...options,
+    mutationFn: deleteFeed,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list() });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.feed.single(variables).all,
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};

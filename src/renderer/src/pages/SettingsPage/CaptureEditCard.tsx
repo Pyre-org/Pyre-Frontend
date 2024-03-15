@@ -11,6 +11,7 @@ import { useGetMyChannels } from "@renderer/lib/queries/channel";
 import { useGetMyRooms } from "@renderer/lib/queries/room";
 import { useGetSpaces } from "@renderer/lib/queries/space";
 import { EditProfileSchemaType } from "@renderer/lib/schemas/EditProfileSchema";
+import { cn } from "@renderer/lib/utils";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
@@ -65,40 +66,47 @@ function CaptureEditCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <FormComboBox
-          control={methods.control}
-          name="selectedChannelId"
-          label="기본 채널 설정"
-          keyword={channelInput}
-          setKeyword={setChannelInput}
-          placeholder="채널을 선택해주세요"
-          searchPlaceholder="구독 중인 채널 이름을 검색해주세요"
-          options={channelOptions}
-        />
-        {channelId && (
+        <div className="overflow-hidden">
           <FormComboBox
             control={methods.control}
-            name="selectedRoomId"
-            label="기본 룸 설정"
-            keyword={roomInput}
-            setKeyword={setRoomInput}
-            placeholder="룸을 선택해주세요"
-            searchPlaceholder="룸의 이름을 검색해주세요"
-            options={roomOptions}
+            name="selectedChannelId"
+            label="기본 채널 설정"
+            keyword={channelInput}
+            setKeyword={setChannelInput}
+            placeholder="채널을 선택해주세요"
+            searchPlaceholder="구독 중인 채널 이름을 검색해주세요"
+            options={channelOptions}
           />
-        )}
-        {roomId && (
-          <FormComboBox
-            control={methods.control}
-            name="selectedSpaceId"
-            label="기본 스페이스 설정"
-            keyword={spaceInput}
-            setKeyword={setSpaceInput}
-            placeholder="스페이스를 선택해주세요"
-            searchPlaceholder="스페이스의 이름을 검색해주세요"
-            options={spaceOptions}
-          />
-        )}
+          {channelId && (
+            <div className={cn(!channelId ? "h-0" : "mt-4")}>
+              <FormComboBox
+                control={methods.control}
+                name="selectedRoomId"
+                label="기본 룸 설정"
+                keyword={roomInput}
+                setKeyword={setRoomInput}
+                placeholder="룸을 선택해주세요"
+                searchPlaceholder="룸의 이름을 검색해주세요"
+                options={roomOptions}
+              />
+            </div>
+          )}
+          {roomId && (
+            <div className={cn(!roomId ? "h-0" : "mt-4")}>
+              <FormComboBox
+                control={methods.control}
+                name="selectedSpaceId"
+                label="기본 스페이스 설정"
+                keyword={spaceInput}
+                setKeyword={setSpaceInput}
+                placeholder="스페이스를 선택해주세요"
+                searchPlaceholder="스페이스의 이름을 검색해주세요"
+                options={spaceOptions}
+              />
+            </div>
+          )}
+        </div>
+
         <FormCheckbox
           control={methods.control}
           name="useCaptureRoom"

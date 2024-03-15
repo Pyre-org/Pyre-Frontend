@@ -128,6 +128,9 @@ export interface Feed {
   id: string;
   userId: string;
   nickname: string;
+  profilePictureUrl: string;
+  title: string;
+  description?: string;
   spaceId: string;
   imageUrl: string;
   cAt: string;
@@ -167,6 +170,7 @@ export interface ProfileSettingBody {
   profilePictureUrl: string;
   shortDescription: string;
   selectedChannelId: string;
+  // selectedRoomId: string;
   selectedSpaceId: string;
   useCaptureRoom: boolean;
   useFeedInfo: boolean;
@@ -175,6 +179,7 @@ export interface ProfileSettingBody {
 export interface FeedSettings {
   useCaptureRoom: boolean;
   useFeedInfo: boolean;
+  channelId: string;
   captureRoomId: string;
   spaceId: string;
 }
