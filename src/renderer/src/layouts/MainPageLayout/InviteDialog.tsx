@@ -6,20 +6,34 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@renderer/components/ui/dialog";
+import { useGetInvitationInfo } from "@renderer/lib/queries/room";
 import { useInviteStore } from "@renderer/stores/InviteStore";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
+// pyre://invitations/{UUID}
+const re = /pyre:\/\/invitations\/([a-zA-Z0-9-]+)/;
 
 function InviteDialog() {
   const isOpen = useInviteStore((state) => state.isOpen);
   const { setOpen } = useInviteStore((state) => state.actions);
-  const [link, setLink] = useState("");
+  const [invitationId, setInvitationId] = useState<string | null>(null);
+  const { data: roomData } = useGetInvitationInfo(invitationId!, {
+    enabled: !!invitationId,
+  });
 
   useEffect(() => {
     const ref = window.electron.ipcRenderer.on(
       "deeplink",
-      (_, link: string) => {
+      (_e, link: string) => {
         setOpen(true);
-        setLink(link);
+        const match = link.match(re);
+        if (!match) {
+          toast.error("잘못된 초대 링크입니다.");
+          return;
+        }
+        const [_, invitationId] = match;
+        setInvitationId(invitationId);
       },
     );
 
@@ -32,7 +46,9 @@ function InviteDialog() {
         <DialogHeader>
           <DialogTitle>초대 링크로 룸 참가하기</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col justify-center items-center">{link}</div>
+        <div className="flex flex-col justify-center items-center">
+          {roomData?.id}
+        </div>
         <DialogFooter>
           <Button onClick={() => setOpen(false)}>참가하기</Button>
           <Button variant="secondary">취소</Button>

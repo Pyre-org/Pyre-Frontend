@@ -136,7 +136,6 @@ const iconMap: Record<Space["type"], LucideIcon> = {
 };
 
 const showSettings = (space: Space, role: RoomRole) => {
-  console.log(role);
   return (
     space.type !== "SPACE_GENERAL" &&
     space.type !== "SPACE_GENERAL_CHAT" &&

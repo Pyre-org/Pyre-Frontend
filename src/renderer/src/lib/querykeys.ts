@@ -63,6 +63,7 @@ export const QUERY_KEYS = {
         ...(params ? [params] : []),
       ],
     },
+    invitation: (id: string) => ["room", "invitation", id],
   },
   space: {
     all: ["space"],

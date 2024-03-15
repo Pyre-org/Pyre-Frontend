@@ -14,8 +14,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@renderer/components/ui/alert-dialog";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function RoomDeleteBtn() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { channelId } = useParams<{ channelId: string }>();
   const room = useRoomStore((state) => state.room);
   const { close } = useRoomStore((state) => state.actions);
   const deleteMutation = useDeleteRoomMutation();
@@ -26,6 +30,13 @@ function RoomDeleteBtn() {
       onSuccess: () => {
         close();
         toast.success("룸이 삭제되었습니다");
+        if (
+          location.pathname.startsWith(
+            `/channels/${channelId}/rooms/${room?.id}`,
+          )
+        ) {
+          navigate(`/channels/${channelId}`);
+        }
       },
       onError(error) {
         toast.error("룸 삭제 중 오류가 발생했습니다", {

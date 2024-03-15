@@ -15,7 +15,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import RoomCreateDialog from "@renderer/components/room/RoomCreateDialog";
 import {
   Avatar,
   AvatarFallback,
@@ -108,7 +107,6 @@ function RoomList() {
           )}
         </div>
       </DndContext>
-      <RoomCreateDialog />
     </>
   );
 }

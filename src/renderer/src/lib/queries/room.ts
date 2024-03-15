@@ -228,7 +228,7 @@ export const useCreateRoomMutation = (
   });
 };
 
-interface UpdateRoomBody extends RoomBody {
+interface UpdateRoomBody extends Omit<RoomBody, "channelId"> {
   roomId: string;
 }
 
@@ -336,5 +336,85 @@ export const useGetRoomRole = (
     ...options,
     queryKey: QUERY_KEYS.room.single(roomId).role,
     queryFn: () => getRoomRole(roomId),
+  });
+};
+
+interface CreateInvitationBody {
+  roomId: string;
+  maxDays: number;
+}
+
+// returns invitation id
+export const createInvitation = async (body: CreateInvitationBody) => {
+  const res = await api.post<string>(`${baseUrl}/invitation`, body);
+  return res.data;
+};
+
+export const useCreateInvitationMutation = (
+  options?: UseMutationOptions<
+    string,
+    AxiosError<BaseError>,
+    CreateInvitationBody
+  >,
+) => {
+  return useMutation({
+    ...options,
+    mutationFn: createInvitation,
+  });
+};
+
+// returns room id of the invitation
+interface AcceptInvitationResponse {
+  id: string;
+}
+
+export const acceptInvitation = async (invitationId: string) => {
+  const res = await api.post<AcceptInvitationResponse>(
+    `${baseUrl}/invitation/accept`,
+    {
+      invitationId,
+    },
+  );
+  return res.data;
+};
+
+export const useAcceptInvitationMutation = (
+  options?: UseMutationOptions<
+    AcceptInvitationResponse,
+    AxiosError<BaseError>,
+    string
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: acceptInvitation,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.room.list.all });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.single(data.id).all,
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
+
+export const getInvitationInfo = async (invitationId: string) => {
+  const res = await api.get<Room>(`${baseUrl}/invitation/${invitationId}`);
+  return res.data;
+};
+
+export const useGetInvitationInfo = (
+  invitationId: string,
+  options?: Omit<
+    UseQueryOptions<Room, AxiosError<BaseError>, Room>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.room.invitation(invitationId),
+    queryFn: () => getInvitationInfo(invitationId),
   });
 };

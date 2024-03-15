@@ -32,7 +32,6 @@ function RoomCreateDialog() {
       ...data,
       description: data.description ?? "",
       imageUrl: data.imageUrl?.[0]?.url ?? undefined,
-      channelId: channelId as string,
     };
     const options = {
       onSuccess: () => {
@@ -49,7 +48,7 @@ function RoomCreateDialog() {
     if (isEdit) {
       updateMutation.mutate({ ...body, roomId: room.id }, options);
     } else {
-      createMutation.mutate(body, options);
+      createMutation.mutate({ ...body, channelId: channelId! }, options);
     }
   };
 

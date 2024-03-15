@@ -12,6 +12,7 @@ import RoomList from "./RoomList";
 import MyChannelRoomList from "./MyChannelRoomList";
 import SpaceList from "./SpaceList";
 import InviteDialog from "./InviteDialog";
+import RoomCreateDialog from "@renderer/components/room/RoomCreateDialog";
 
 function MainPageLayout() {
   return (
@@ -64,6 +65,7 @@ function MainPageLayout() {
           </aside>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <RoomCreateDialog />
       <InviteDialog />
     </div>
   );

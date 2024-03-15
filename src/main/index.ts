@@ -16,15 +16,36 @@ import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import notifier from "node-notifier";
 import { Deeplink } from "electron-deeplink";
 import icon from "../../resources/icon.png?asset";
-import path from "node:path";
 
 app.commandLine.appendSwitch("ignore-certificate-errors");
 
+let isRunning = false;
+
+const windows = {
+  main: null as BrowserWindow | null,
+  screenshot: null as BrowserWindow | null,
+  auth: null as BrowserWindow | null,
+};
+
 const appID = "Pyre";
 const appName = "com.pyre.app";
-const protocol = "pyre";
+const protocol = is.dev ? "pyre-dev" : "pyre";
 const lock = app.requestSingleInstanceLock();
-let deeplink: Deeplink | null = null;
+const deeplink = new Deeplink({
+  app,
+  // @ts-ignore - mainWindow is not null
+  mainWindow: windows.main,
+  isDev: is.dev,
+  debugLogging: is.dev,
+  protocol,
+});
+
+deeplink.on("received", (link: string) => {
+  if (windows.main?.isMinimized() || !windows.main?.isVisible())
+    windows.main?.show();
+  windows.main?.focus();
+  windows.main?.webContents.send("deeplink", link);
+});
 
 if (!lock) {
   app.quit();
@@ -37,24 +58,6 @@ if (!lock) {
     }
   });
 }
-
-if (process.defaultApp) {
-  if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient(protocol, process.execPath, [
-      path.resolve(process.argv[1]),
-    ]);
-  }
-} else {
-  app.setAsDefaultProtocolClient(protocol);
-}
-
-let isRunning = false;
-
-const windows = {
-  main: null as BrowserWindow | null,
-  screenshot: null as BrowserWindow | null,
-  auth: null as BrowserWindow | null,
-};
 
 function createWindow(): void {
   // Create the browser window.
@@ -106,20 +109,6 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
   }
-
-  deeplink = new Deeplink({
-    app,
-    mainWindow,
-    isDev: is.dev,
-    protocol,
-  });
-
-  deeplink.on("received", (link: string) => {
-    if (windows.main?.isMinimized() || !windows.main?.isVisible())
-      windows.main?.show();
-    windows.main?.focus();
-    windows.main?.webContents.send("deeplink", link);
-  });
 }
 
 function createScreenshotWindow() {
