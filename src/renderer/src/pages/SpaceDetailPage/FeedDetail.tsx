@@ -22,6 +22,7 @@ import { Button } from "@renderer/components/ui/button";
 import { EditIcon } from "lucide-react";
 import { useFeedStore } from "@renderer/stores/FeedStore";
 import FeedDeleteBtn from "./FeedDeleteBtn";
+import { useMyUser } from "@renderer/lib/queries/auth";
 
 function FeedDetail() {
   const { spaceId } = useParams<{ spaceId: string }>();
@@ -84,6 +85,8 @@ const ProfileNickname = ({
 
 const FeedItem = ({ feed }: FeedItemProps) => {
   const { open: openDialog } = useFeedStore((state) => state.actions);
+  const { data: myUser } = useMyUser();
+
   return (
     <Dialog>
       <div className="cursor-pointer flex flex-col gap-4 text-muted-foreground">
@@ -95,17 +98,19 @@ const FeedItem = ({ feed }: FeedItemProps) => {
             transition={{ type: "spring", stiffness: 200 }}
           />
         </DialogTrigger>
-        <div className="flex gap-2">
-          <Button
-            fullWidth
-            variant="secondary"
-            onClick={() => openDialog(feed)}
-          >
-            <EditIcon className="size-4 mr-2 text-muted-foreground" />
-            <span>수정</span>
-          </Button>
-          <FeedDeleteBtn feedId={feed.id} />
-        </div>
+        {feed.userId === myUser?.id && (
+          <div className="flex gap-2">
+            <Button
+              fullWidth
+              variant="secondary"
+              onClick={() => openDialog(feed)}
+            >
+              <EditIcon className="size-4 mr-2 text-muted-foreground" />
+              <span>수정</span>
+            </Button>
+            <FeedDeleteBtn feedId={feed.id} />
+          </div>
+        )}
       </div>
       <DialogContent className="flex flex-col max-h-[80%] overflow-y-scroll scrollbar-thin">
         <DialogHeader>
