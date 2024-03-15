@@ -75,7 +75,12 @@ function SettingsPage() {
           <ProfileEditCard />
           <CaptureEditCard />
           <div className="flex justify-end">
-            <Button>
+            <Button
+              type="submit"
+              disabled={
+                editProfileMutation.isPending || !methods.formState.isDirty
+              }
+            >
               <SaveIcon className="size-4 mr-2" />
               <span>설정 저장</span>
             </Button>
