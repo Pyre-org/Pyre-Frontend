@@ -66,19 +66,19 @@ function HomePage() {
 
   return (
     <section className="flex-1 p-4 flex flex-col gap-4">
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center justify-between gap-4">
         <h2 className="text-lg font-semibold">최신 피드</h2>
+        <Tabs value={view} onValueChange={setView}>
+          <TabsList>
+            <TabsTrigger value="list">
+              <ListIcon className="size-4" />
+            </TabsTrigger>
+            <TabsTrigger value="grid">
+              <GridIcon className="size-4" />
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
-      <Tabs className="ml-auto" value={view} onValueChange={setView}>
-        <TabsList>
-          <TabsTrigger value="list">
-            <ListIcon className="size-4" />
-          </TabsTrigger>
-          <TabsTrigger value="grid">
-            <GridIcon className="size-4" />
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
       <Tabs value={mode} onValueChange={setMode} className="w-full">
         <TabsList className="w-full flex">
           <TabsTrigger value="others" className="flex-1">
