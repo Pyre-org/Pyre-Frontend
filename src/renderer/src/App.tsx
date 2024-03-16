@@ -9,14 +9,12 @@ import LoadingPage from "./pages/LoadingPage";
 import { ThemeProvider } from "@renderer/components/common/ThemeProvider";
 import { Toaster } from "sonner";
 import { useDragDrop } from "./hooks/useDragDrop";
-import useCapture from "./hooks/useCapture";
 import CaptureWrapper from "./components/CaptureWrapper";
 import { useInvite } from "./hooks/useInvite";
 
 function App() {
   const [queryClient] = useState(() => new QueryClient(config));
   useDragDrop();
-  useCapture();
   useInvite();
 
   return (

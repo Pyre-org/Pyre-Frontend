@@ -10,7 +10,12 @@ import {
 } from "@tanstack/react-query";
 import { api } from "../api";
 import { QUERY_KEYS } from "../querykeys";
-import { BaseError, Feed, ListResponse } from "@renderer/types/schema";
+import {
+  BaseError,
+  Feed,
+  FeedBody,
+  ListResponse,
+} from "@renderer/types/schema";
 import { AxiosError } from "axios";
 
 const baseUrl = "/feed";
@@ -70,18 +75,13 @@ export const useGetFeedsInfinite = ({ spaceId, size = 20 }: GetFeedsParams) => {
   });
 };
 
-interface UploadFeedParams {
-  spaceId: string;
-  url: string;
-}
-
-export const uploadFeed = async (body: UploadFeedParams) => {
+export const uploadFeed = async (body: FeedBody) => {
   const res = await api.post<string>(`${baseUrl}/upload`, body);
   return res.data;
 };
 
 export const useUploadFeedMutation = (
-  options?: UseMutationOptions<string, AxiosError<BaseError>, UploadFeedParams>,
+  options?: UseMutationOptions<string, AxiosError<BaseError>, FeedBody>,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({

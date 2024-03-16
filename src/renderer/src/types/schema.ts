@@ -1,5 +1,6 @@
 import { ROOM_ROLE_TYPES } from "@renderer/constants/room";
 import { ROLE_TYPES } from "@renderer/constants/space";
+import { CreateFeedSchemaType } from "@renderer/lib/schemas/CreateFeedSchema";
 import { CreateSpaceSchemaType } from "@renderer/lib/schemas/CreateSpaceSchema";
 import { RoomCreateSchemaType } from "@renderer/lib/schemas/RoomCreateSchema";
 
@@ -136,6 +137,11 @@ export interface Feed {
   cAt: string;
 }
 
+export interface FeedBody extends Omit<CreateFeedSchemaType, "imageUrl"> {
+  spaceId: string;
+  url: string;
+}
+
 export type SpaceRole = (typeof ROLE_TYPES)[number];
 
 export interface Space extends SpaceBody {
@@ -169,8 +175,6 @@ export interface ICaptureResponse {
 export interface ProfileSettingBody {
   profilePictureUrl: string;
   shortDescription: string;
-  selectedChannelId: string;
-  // selectedRoomId: string;
   selectedSpaceId: string;
   useCaptureRoom: boolean;
   useFeedInfo: boolean;
@@ -180,6 +184,6 @@ export interface FeedSettings {
   useCaptureRoom: boolean;
   useFeedInfo: boolean;
   channelId: string;
-  captureRoomId: string;
+  captureRoomSpaceId: string;
   spaceId: string;
 }

@@ -18,10 +18,14 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { BaseError } from "@renderer/types/schema";
 import { useEffect } from "react";
+import { useGetSpace } from "@renderer/lib/queries/space";
 
 function SettingsPage() {
   const { data: profileData } = useGetMyProfile();
   const { data: feedSettings } = useGetFeedSettings();
+  const { data: spaceData } = useGetSpace(feedSettings?.spaceId!, {
+    enabled: !!feedSettings?.spaceId,
+  });
   const editProfileMutation = useEditProfileMutation();
 
   const defaultValues: EditProfileSchemaType = {
@@ -29,7 +33,7 @@ function SettingsPage() {
       ? [{ url: profileData.profilePictureUrl }]
       : [],
     shortDescription: profileData?.shortDescription ?? "",
-    selectedRoomId: feedSettings?.captureRoomId ?? undefined,
+    selectedRoomId: spaceData?.roomId ?? undefined,
     selectedSpaceId: feedSettings?.spaceId ?? undefined,
     selectedChannelId: feedSettings?.channelId ?? undefined,
     useCaptureRoom: feedSettings?.useCaptureRoom ?? false,
@@ -42,7 +46,7 @@ function SettingsPage() {
   });
 
   const onSubmit = (data) => {
-    const { selectedRoomId, ...body } = data;
+    const { selectedRoomId, selectedChannelId, ...body } = data;
     editProfileMutation.mutate(
       {
         ...body,

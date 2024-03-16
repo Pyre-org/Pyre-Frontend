@@ -16,6 +16,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
     "react/prop-types": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
     "prettier/prettier": [
       "error",
       {
