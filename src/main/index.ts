@@ -361,3 +361,8 @@ ipcMain.handle("OAUTH_LOGIN", (_, { authority, url }: IOAuthLoginParams) => {
     windows.auth = null;
   });
 });
+
+ipcMain.handle("FOCUS_MAIN_WINDOW", () => {
+  windows.main?.show();
+  windows.main?.focus();
+});

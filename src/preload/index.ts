@@ -28,6 +28,7 @@ export const api = {
     ipcRenderer.invoke("OPEN_PATH", path),
   handleOAuthLogin: (params: { url: string; authority: string }) =>
     ipcRenderer.invoke("OAUTH_LOGIN", params),
+  focusMainWindow: () => ipcRenderer.invoke("FOCUS_MAIN_WINDOW"),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

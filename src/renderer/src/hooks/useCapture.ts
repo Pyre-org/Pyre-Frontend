@@ -4,9 +4,15 @@ import { useUploadFeedMutation } from "@renderer/lib/queries/feed";
 import { uploadFileToS3 } from "@renderer/lib/queries/upload";
 import { dataURLtoBlob } from "@renderer/lib/utils";
 import { ICaptureResponse } from "@renderer/types/schema";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-function useCapture() {
+interface UseCaptureProps {
+  setOpenPopup: (open: boolean) => void;
+}
+
+function useCapture({ setOpenPopup }: UseCaptureProps) {
+  const [url, setUrl] = useState<string | null>(null);
   const { data: profileData } = useGetFeedSettings();
   const uploadFeedMutation = useUploadFeedMutation();
 
@@ -18,22 +24,14 @@ function useCapture() {
         });
 
         const url = await uploadFileToS3(file);
-        if (profileData?.useCaptureRoom && profileData.captureRoomSpaceId) {
-          uploadFeedMutation.mutate({
-            url,
-            spaceId: profileData.captureRoomSpaceId,
-            title: new Date().toLocaleString(),
-            description: "",
-          });
+        setUrl(url);
+        if (profileData?.useFeedInfo) {
+          setOpenPopup(true);
+          window.api.focusMainWindow();
+        } else {
+          onSubmit({ title: new Date().toLocaleString(), url });
         }
-        if (profileData?.spaceId) {
-          uploadFeedMutation.mutate({
-            url,
-            spaceId: profileData.spaceId,
-            title: new Date().toLocaleString(),
-            description: "",
-          });
-        }
+
         window.api.showCaptureNotification(url, res.path);
       } catch (error) {
         console.error(error);
@@ -44,6 +42,49 @@ function useCapture() {
 
     return ref;
   }, [profileData]);
+
+  const onSubmit = (data: {
+    title: string;
+    description?: string;
+    url: string;
+  }) => {
+    if (profileData?.useCaptureRoom && profileData.captureRoomSpaceId) {
+      uploadFeedMutation.mutate(
+        { ...data, spaceId: profileData.captureRoomSpaceId },
+        {
+          onSuccess: () => {
+            toast.success("캡처룸에 업로드 되었습니다");
+          },
+          onError: (error) => {
+            toast.error("캡처룸 업로드에 실패했습니다", {
+              description: error.response?.data.reason,
+            });
+          },
+        },
+      );
+    }
+    if (profileData?.spaceId) {
+      uploadFeedMutation.mutate(
+        { ...data, spaceId: profileData.spaceId },
+        {
+          onSuccess: () => {
+            toast.success("피드가 업로드 되었습니다");
+          },
+          onError: (error) => {
+            toast.error("피드 업로드에 실패했습니다", {
+              description: error.response?.data.reason,
+            });
+          },
+        },
+      );
+    }
+    setOpenPopup(false);
+  };
+
+  return {
+    onSubmit,
+    url,
+  };
 }
 
 export default useCapture;
