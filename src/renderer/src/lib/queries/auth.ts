@@ -234,3 +234,22 @@ export const useGetMyProfile = (
     queryFn: getMyProfile,
   });
 };
+
+const getUserProfile = async (userId: string) => {
+  const res = await api.get<DetailedProfile>(`${baseUrl}/profile/${userId}`);
+  return res.data;
+};
+
+export const useGetUserProfile = (
+  userId: string,
+  options?: Omit<
+    UseQueryOptions<DetailedProfile, AxiosError<BaseError>, DetailedProfile>,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery<DetailedProfile, AxiosError<BaseError>, DetailedProfile>({
+    ...options,
+    queryKey: QUERY_KEYS.user.single(userId),
+    queryFn: () => getUserProfile(userId),
+  });
+};

@@ -1,5 +1,5 @@
 import { useGetFeedsInfinite } from "@renderer/lib/queries/feed";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import FeedUploadBtn from "./FeedUploadBtn";
 import { Feed } from "@renderer/types/schema";
@@ -133,10 +133,12 @@ const FeedItem = ({ feed }: FeedItemProps) => {
           />
         </DialogTrigger>
         <div className="flex gap-2 rounded-b-md p-2 justify-between">
-          <ProfileNickname
-            imageUrl={feed.profilePictureUrl}
-            nickname={feed.nickname}
-          />
+          <Link to={`/users/${feed.userId}`}>
+            <ProfileNickname
+              imageUrl={feed.profilePictureUrl}
+              nickname={feed.nickname}
+            />
+          </Link>
           {myUser?.id === feed.userId && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -162,10 +164,12 @@ const FeedItem = ({ feed }: FeedItemProps) => {
         <DialogHeader>
           <DialogTitle>{feed.title ?? feed.cAt}</DialogTitle>
           <DialogDescription className="text-xs flex items-center justify-between gap-4 py-4">
-            <ProfileNickname
-              imageUrl={feed.profilePictureUrl}
-              nickname={feed.nickname}
-            />
+            <Link to={`/users/${feed.userId}`}>
+              <ProfileNickname
+                imageUrl={feed.profilePictureUrl}
+                nickname={feed.nickname}
+              />
+            </Link>
             <span>{feed.cAt}</span>
           </DialogDescription>
           <DialogDescription>{feed.description}</DialogDescription>

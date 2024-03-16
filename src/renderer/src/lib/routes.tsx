@@ -9,6 +9,7 @@ import RoomInfoPage from "@renderer/pages/RoomInfoPage";
 import SettingsPage from "@renderer/pages/SettingsPage";
 import SpaceDetailPage from "@renderer/pages/SpaceDetailPage";
 import SpaceHomePage from "@renderer/pages/SpaceHomePage";
+import UserDetailPage from "@renderer/pages/UserDetailPage";
 import { createHashRouter, Navigate } from "react-router-dom";
 
 export const router = createHashRouter([
@@ -75,6 +76,15 @@ export const router = createHashRouter([
           {
             path: "settings",
             element: <SettingsPage />,
+          },
+          {
+            path: "users",
+            children: [
+              {
+                path: ":userId",
+                element: <UserDetailPage />,
+              },
+            ],
           },
         ],
       },
