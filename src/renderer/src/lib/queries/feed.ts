@@ -20,10 +20,13 @@ import { AxiosError } from "axios";
 
 const baseUrl = "/feed";
 
-interface GetFeedsParams {
-  spaceId: string;
+interface GetFeedsBaseParams {
   page?: number;
   size?: number;
+}
+
+interface GetFeedsParams extends GetFeedsBaseParams {
+  spaceId: string;
 }
 
 export const getFeeds = async (data: GetFeedsParams) => {
@@ -65,6 +68,64 @@ export const useGetFeedsInfinite = ({ spaceId, size = 20 }: GetFeedsParams) => {
     queryKey: QUERY_KEYS.feed.list.infinite(params),
     queryFn: ({ pageParam = 0 }) =>
       getFeeds({ spaceId, page: pageParam, size }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const total = lastPage.total;
+      const current =
+        Math.max(0, allPages.length - 1) * size + lastPage.hits.length;
+      return current < total ? allPages.length : undefined;
+    },
+  });
+};
+
+export const getOthersFeeds = async (data: GetFeedsBaseParams) => {
+  const res = await api.get<ListResponse<Feed>>(`${baseUrl}/other/list`, {
+    params: data,
+  });
+  return res.data;
+};
+
+export const useGetOthersFeedsInfinite = ({
+  size = 20,
+}: GetFeedsBaseParams) => {
+  const params = { size };
+  return useInfiniteQuery<
+    ListResponse<Feed>,
+    AxiosError<BaseError>,
+    InfiniteData<ListResponse<Feed>>,
+    QueryKey,
+    number
+  >({
+    queryKey: QUERY_KEYS.feed.list.othersInfinite(params),
+    queryFn: ({ pageParam = 0 }) => getOthersFeeds({ page: pageParam, size }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const total = lastPage.total;
+      const current =
+        Math.max(0, allPages.length - 1) * size + lastPage.hits.length;
+      return current < total ? allPages.length : undefined;
+    },
+  });
+};
+
+const getMyFeeds = async (data: GetFeedsBaseParams) => {
+  const res = await api.get<ListResponse<Feed>>(`${baseUrl}/my/list`, {
+    params: data,
+  });
+  return res.data;
+};
+
+export const useGetMyFeedsInfinite = ({ size = 20 }: GetFeedsBaseParams) => {
+  const params = { size };
+  return useInfiniteQuery<
+    ListResponse<Feed>,
+    AxiosError<BaseError>,
+    InfiniteData<ListResponse<Feed>>,
+    QueryKey,
+    number
+  >({
+    queryKey: QUERY_KEYS.feed.list.myInfinite(params),
+    queryFn: ({ pageParam = 0 }) => getMyFeeds({ page: pageParam, size }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
       const total = lastPage.total;

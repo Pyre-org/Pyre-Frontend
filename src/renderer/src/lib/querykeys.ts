@@ -93,6 +93,18 @@ export const QUERY_KEYS = {
         "infinite",
         ...(params ? [params] : []),
       ],
+      othersInfinite: (params?: any) => [
+        "feed",
+        "list",
+        "othersInfinite",
+        ...(params ? [params] : []),
+      ],
+      myInfinite: (params?: any) => [
+        "feed",
+        "list",
+        "myInfinite",
+        ...(params ? [params] : []),
+      ],
     },
   },
 };

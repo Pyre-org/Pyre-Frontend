@@ -42,9 +42,11 @@ import { useSpaceStore } from "@renderer/stores/SpaceStore";
 function SpaceList() {
   const { channelId, roomId } = useParams<{ channelId; roomId: string }>();
   const { data: roomData } = useGetRoom(roomId as string);
+  const { data: roomRole } = useGetRoomRole(roomId as string);
   const { data: spaceData } = useGetSpaces({ roomId: roomId as string });
   const locateMutation = useLocateSpaceMutation();
 
+  const canEdit = roomRole === "ROOM_ADMIN" || roomRole === "ROOM_MODE";
   const total = spaceData?.total ?? 0;
   const spaces = spaceData?.hits ?? [];
 
@@ -104,7 +106,7 @@ function SpaceList() {
             </Avatar>
             <span className="truncate">{roomData?.title}</span>
           </Link>
-          <CreateSpaceBtn />
+          {canEdit && <CreateSpaceBtn />}
         </div>
 
         <div className="text-muted-foreground">
