@@ -1,5 +1,6 @@
 import FormDropzone from "@renderer/components/form/FormDropzone";
 import FormDropzoneWithRemove from "@renderer/components/form/FormDropzoneWithRemove";
+import FormInput from "@renderer/components/form/FormInput";
 import FormTextarea from "@renderer/components/form/FormTextarea";
 import {
   Card,
@@ -27,6 +28,7 @@ function ProfileEditCard() {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <FormInput control={methods.control} name="nickname" label="닉네임" />
         <FormDropzoneWithRemove
           dropzone={
             <FormDropzone

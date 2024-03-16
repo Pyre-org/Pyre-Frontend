@@ -83,6 +83,7 @@ export interface Room {
   memberCounts: number;
   spaceCounts: number;
   type: RoomType;
+  channelId: string;
   cAt: string;
   mAt?: string;
 }

@@ -15,6 +15,7 @@ import { useGetSpace } from "@renderer/lib/queries/space";
 import { Feed } from "@renderer/types/schema";
 import { ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const [mode, setMode] = useState<string>("others");
@@ -99,12 +100,20 @@ const FeedItem: React.FC<{ feed: Feed }> = ({ feed }) => {
             </AvatarFallback>
           </Avatar>
           <div className="truncate text-sm font-semibold flex items-center gap-2">
-            <Button variant="link" className="p-0">
-              {roomData?.title}
+            <Button variant="link" className="p-0" asChild>
+              <Link
+                to={`/channels/${roomData?.channelId}/rooms/${roomData?.id}/spaces`}
+              >
+                {roomData?.title}
+              </Link>
             </Button>
             <ChevronRightIcon className="size-4" />
-            <Button variant="link" className="p-0">
-              {roomData?.title}
+            <Button variant="link" className="p-0" asChild>
+              <Link
+                to={`/channels/${roomData?.channelId}/rooms/${roomData?.id}/spaces/${spaceData?.id}`}
+              >
+                {spaceData?.title}
+              </Link>
             </Button>
           </div>
         </div>

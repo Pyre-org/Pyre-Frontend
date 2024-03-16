@@ -32,6 +32,7 @@ function SettingsPage() {
     profilePictureUrl: profileData?.profilePictureUrl
       ? [{ url: profileData.profilePictureUrl }]
       : [],
+    nickname: profileData?.nickname ?? "",
     shortDescription: profileData?.shortDescription ?? "",
     selectedRoomId: spaceData?.roomId ?? undefined,
     selectedSpaceId: feedSettings?.spaceId ?? undefined,
