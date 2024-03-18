@@ -193,7 +193,8 @@ export const useEditProfileMutation = (
     ...options,
     mutationFn: editProfile,
     onSuccess: (...params) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.me.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.feed.list.all });
       options?.onSuccess?.(...params);
     },
   });

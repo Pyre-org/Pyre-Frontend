@@ -323,6 +323,9 @@ export const useJoinChannelMutation = (
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.list.all,
       });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.list.all,
+      });
       options?.onSuccess?.(...params);
     },
   });
@@ -346,6 +349,9 @@ export const useLeaveChannelMutation = (
       });
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.channel.list.all,
+      });
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.list.all,
       });
       options?.onSuccess?.(...params);
     },
