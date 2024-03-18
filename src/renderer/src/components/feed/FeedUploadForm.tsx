@@ -35,7 +35,11 @@ function FeedUploadForm() {
   const methods = useForm<CreateFeedSchemaType>({
     resolver: zodResolver(CreateFeedSchema),
     defaultValues: feed
-      ? { ...feed, imageUrl: [{ url: feed.imageUrl }] }
+      ? {
+          ...feed,
+          imageUrl: [{ url: feed.imageUrl }],
+          description: feed.description ?? "",
+        }
       : defaultValues,
   });
   const imageUrl = useWatch({

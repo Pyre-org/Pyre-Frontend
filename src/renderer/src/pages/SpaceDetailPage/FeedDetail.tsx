@@ -1,7 +1,7 @@
 import { useGetFeedsInfinite } from "@renderer/lib/queries/feed";
 import { Link, useParams } from "react-router-dom";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import FeedUploadBtn from "./FeedUploadBtn";
+import FeedUploadBtn from "../../components/feed/FeedUploadBtn";
 import { Feed } from "@renderer/types/schema";
 import { motion } from "framer-motion";
 import Loader from "@renderer/components/common/Loader";

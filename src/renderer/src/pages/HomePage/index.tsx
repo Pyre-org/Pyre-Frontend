@@ -7,12 +7,15 @@ import {
 import { Button } from "@renderer/components/ui/button";
 import { Card, CardContent, CardHeader } from "@renderer/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@renderer/components/ui/tabs";
+import { useMyUser } from "@renderer/lib/queries/auth";
 import {
   useGetMyFeedsInfinite,
   useGetOthersFeedsInfinite,
 } from "@renderer/lib/queries/feed";
 import { useGetRoom } from "@renderer/lib/queries/room";
 import { useGetSpace } from "@renderer/lib/queries/space";
+import { cn } from "@renderer/lib/utils";
+import { useFeedStore } from "@renderer/stores/FeedStore";
 import { Feed } from "@renderer/types/schema";
 import { ChevronRightIcon, GridIcon, ListIcon } from "lucide-react";
 import { useState } from "react";
@@ -137,6 +140,8 @@ function FeedGridView({ feeds }: { feeds: Feed[] }) {
 }
 
 const FeedItem: React.FC<{ feed: Feed }> = ({ feed }) => {
+  const { data: myUser } = useMyUser();
+  const { open } = useFeedStore((state) => state.actions);
   const { data: spaceData } = useGetSpace(feed.spaceId);
   const { data: roomData } = useGetRoom(spaceData?.roomId!, {
     enabled: !!spaceData?.roomId,
@@ -172,7 +177,12 @@ const FeedItem: React.FC<{ feed: Feed }> = ({ feed }) => {
         </div>
 
         <h2 className="font-semibold truncate">{feed.title}</h2>
-        <img src={feed.imageUrl} alt="img" />
+        <img
+          src={feed.imageUrl}
+          alt="img"
+          className={cn(myUser?.id === feed.userId && "cursor-pointer")}
+          onClick={() => myUser?.id === feed.userId && open(feed)}
+        />
       </CardHeader>
       {feed.nickname && (
         <CardContent>
@@ -199,9 +209,17 @@ const FeedItem: React.FC<{ feed: Feed }> = ({ feed }) => {
 };
 
 const FeedGridItem = ({ feed }: { feed: Feed }) => {
+  const { data: myUser } = useMyUser();
+  const { open } = useFeedStore((state) => state.actions);
   return (
     <Card className="flex flex-col">
-      <CardHeader className="flex gap-2 items-center flex-1">
+      <CardHeader
+        className={cn(
+          "flex gap-2 items-center flex-1",
+          myUser?.id === feed.userId && "cursor-pointer",
+        )}
+        onClick={() => myUser?.id === feed.userId && open(feed)}
+      >
         <img
           src={feed.imageUrl}
           alt="img"

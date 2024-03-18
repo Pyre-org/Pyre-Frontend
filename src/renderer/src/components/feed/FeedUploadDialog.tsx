@@ -1,16 +1,13 @@
-import { Button } from "@renderer/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@renderer/components/ui/dialog";
-import { UploadIcon } from "lucide-react";
-import FeedUploadForm from "./FeedUploadForm";
+import FeedUploadForm from "@renderer/components/feed/FeedUploadForm";
 import { useFeedStore } from "@renderer/stores/FeedStore";
 
-function FeedUploadBtn() {
+function FeedUploadDialog() {
   const open = useFeedStore((state) => state.isOpen);
   const feed = useFeedStore((state) => state.feed);
   const isEdit = !!feed;
@@ -28,12 +25,6 @@ function FeedUploadBtn() {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button onClick={() => openDialog()}>
-          <UploadIcon className="size-4 mr-2" />
-          <span>피드 업로드</span>
-        </Button>
-      </DialogTrigger>
       <DialogContent className="flex flex-col max-h-[80%] overflow-y-scroll scrollbar-thin">
         <DialogHeader>
           <DialogTitle>{`피드 ${isEdit ? "수정" : "업로드"}`}</DialogTitle>
@@ -44,4 +35,4 @@ function FeedUploadBtn() {
   );
 }
 
-export default FeedUploadBtn;
+export default FeedUploadDialog;

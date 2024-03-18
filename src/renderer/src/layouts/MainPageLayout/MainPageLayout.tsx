@@ -14,6 +14,7 @@ import SpaceList from "./SpaceList";
 import InviteDialog from "./InviteDialog";
 import RoomCreateDialog from "@renderer/components/room/RoomCreateDialog";
 import { useState } from "react";
+import FeedUploadDialog from "@renderer/components/feed/FeedUploadDialog";
 
 function MainPageLayout() {
   const navigate = useNavigate();
@@ -78,6 +79,7 @@ function MainPageLayout() {
       </ResizablePanelGroup>
       <RoomCreateDialog />
       <InviteDialog />
+      <FeedUploadDialog />
     </div>
   );
 }
