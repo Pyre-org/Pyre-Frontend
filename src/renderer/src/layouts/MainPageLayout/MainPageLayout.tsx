@@ -1,4 +1,4 @@
-import { Link, Outlet, Route, Routes } from "react-router-dom";
+import { Link, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import { Input } from "@renderer/components/ui/input";
 import { Button } from "@renderer/components/ui/button";
 import Profile from "@renderer/components/common/Profile";
@@ -13,8 +13,12 @@ import MyChannelRoomList from "./MyChannelRoomList";
 import SpaceList from "./SpaceList";
 import InviteDialog from "./InviteDialog";
 import RoomCreateDialog from "@renderer/components/room/RoomCreateDialog";
+import { useState } from "react";
 
 function MainPageLayout() {
+  const navigate = useNavigate();
+  const [keyword, setKeyword] = useState("");
+
   return (
     <div className="flex flex-col h-screen w-full bg-background divide-y overflow-hidden">
       <header className="h-[60px] flex justify-between px-4">
@@ -24,6 +28,13 @@ function MainPageLayout() {
             className="w-64 rounded-md px-2 py-1"
             placeholder="검색"
             type="search"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                navigate(`/search?keyword=${keyword}`);
+              }
+            }}
           />
         </div>
         <div className="flex items-center gap-4">

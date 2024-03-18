@@ -6,6 +6,7 @@ import LoginPage from "@renderer/pages/LoginPage";
 import PublicRoomListPage from "@renderer/pages/PublicRoomListPage";
 import RegisterPage from "@renderer/pages/RegisterPage";
 import RoomInfoPage from "@renderer/pages/RoomInfoPage";
+import SearchPage from "@renderer/pages/SearchPage";
 import SettingsPage from "@renderer/pages/SettingsPage";
 import SpaceDetailPage from "@renderer/pages/SpaceDetailPage";
 import SpaceHomePage from "@renderer/pages/SpaceHomePage";
@@ -85,6 +86,10 @@ export const router = createHashRouter([
                 element: <UserDetailPage />,
               },
             ],
+          },
+          {
+            path: "search",
+            element: <SearchPage />,
           },
         ],
       },

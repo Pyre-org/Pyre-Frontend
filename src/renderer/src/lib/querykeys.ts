@@ -7,7 +7,15 @@ export const QUERY_KEYS = {
       profile: ["user", "me", "profile"],
     },
     single: (id: string) => ["user", "single", id],
-    list: (params?: any) => ["user", "list", ...(params ? [params] : [])],
+    list: {
+      all: ["user", "list"],
+      search: (params?: any) => [
+        "user",
+        "list",
+        "search",
+        ...(params ? [params] : []),
+      ],
+    },
   },
   channel: {
     all: ["channel"],
@@ -62,6 +70,12 @@ export const QUERY_KEYS = {
         "myWithSpaces",
         ...(params ? [params] : []),
       ],
+      search: (params?: any) => [
+        "room",
+        "list",
+        "search",
+        ...(params ? [params] : []),
+      ],
     },
     invitation: (id: string) => ["room", "invitation", id],
   },
@@ -72,7 +86,16 @@ export const QUERY_KEYS = {
       all: ["space", "single", id],
       write: ["space", "single", id, "write"],
     }),
-    list: (params?: any) => ["space", "list", ...(params ? [params] : [])],
+    list: {
+      all: ["space", "list"],
+      general: (params?: any) => ["space", "list", ...(params ? [params] : [])],
+      search: (params?: any) => [
+        "space",
+        "list",
+        "search",
+        ...(params ? [params] : []),
+      ],
+    },
   },
   feed: {
     all: ["feed"],
@@ -103,6 +126,12 @@ export const QUERY_KEYS = {
         "feed",
         "list",
         "myInfinite",
+        ...(params ? [params] : []),
+      ],
+      search: (params?: any) => [
+        "feed",
+        "list",
+        "search",
         ...(params ? [params] : []),
       ],
     },

@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { cn } from "./lib/utils";
+import { IpcRendererListener } from "@electron-toolkit/preload";
 
 function Screenshot() {
   const [show, setShow] = useState(false);
   const [pivot, setPivot] = useState({ x: 0, y: 0 });
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [rect, setRect] = useState({ top: 0, left: 0, width: 0, height: 0 });
+  const [mode, setMode] = useState<"area" | "fullscreen">("area");
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setPivot({ x: e.clientX, y: e.clientY });
@@ -29,10 +32,10 @@ function Screenshot() {
     setShow(false);
     window.api
       .captureScreenArea({
-        x: rect.left,
-        y: rect.top,
-        width: rect.width,
-        height: rect.height,
+        x: mode === "area" ? rect.left : 0,
+        y: mode === "area" ? rect.top : 0,
+        width: mode === "area" ? rect.width : window.screen.width,
+        height: mode === "area" ? rect.height : window.screen.height,
       })
       .then(() => {
         window.api.closeScreenshotWindow();
@@ -49,14 +52,23 @@ function Screenshot() {
     };
   }, []);
 
+  useLayoutEffect(() => {
+    const handler: IpcRendererListener = (_, mode) => {
+      setMode(mode);
+    };
+    const ref = window.electron.ipcRenderer.on("CHANGE_CAPTURE_MODE", handler);
+
+    return ref;
+  }, []);
+
   return (
     <div
-      className="container"
+      className={cn("container", mode)}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
     >
-      {show && (
+      {mode === "area" && show && (
         <>
           <div
             className="capture-area"

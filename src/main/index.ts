@@ -111,7 +111,9 @@ function createWindow(): void {
   }
 }
 
-function createScreenshotWindow() {
+type CaptureMode = "area" | "fullscreen";
+
+function createScreenshotWindow(mode: CaptureMode) {
   if (windows.screenshot) {
     windows.screenshot.close();
     windows.screenshot = null;
@@ -142,6 +144,7 @@ function createScreenshotWindow() {
   windows.screenshot = win;
 
   win.on("ready-to-show", () => {
+    win.webContents.send("CHANGE_CAPTURE_MODE", mode);
     win.show();
   });
 
@@ -191,7 +194,10 @@ function createTray() {
 app.whenReady().then(() => {
   isRunning = true;
   globalShortcut.register("CommandOrControl+Shift+C", () => {
-    createScreenshotWindow();
+    createScreenshotWindow("area");
+  });
+  globalShortcut.register("CommandOrControl+Shift+D", () => {
+    createScreenshotWindow("fullscreen");
   });
 
   createTray();

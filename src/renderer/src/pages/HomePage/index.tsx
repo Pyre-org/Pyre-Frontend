@@ -170,23 +170,28 @@ const FeedItem: React.FC<{ feed: Feed }> = ({ feed }) => {
             </Button>
           </div>
         </div>
+
         <h2 className="font-semibold truncate">{feed.title}</h2>
         <img src={feed.imageUrl} alt="img" />
       </CardHeader>
       {feed.nickname && (
         <CardContent>
-          <div className="flex gap-2">
-            <Avatar className="w-8 h-8">
-              <AvatarImage src={feed.profilePictureUrl} />
-              <AvatarFallback>
-                <span>{feed.nickname[0].toUpperCase()}</span>
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold">{feed.nickname}</span>
-              <span className="text-muted-foreground text-xs">{feed.cAt}</span>
+          <Link to={`/users/${feed.userId}`}>
+            <div className="flex gap-2">
+              <Avatar className="w-8 h-8">
+                <AvatarImage src={feed.profilePictureUrl} />
+                <AvatarFallback>
+                  <span>{feed.nickname[0].toUpperCase()}</span>
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold">{feed.nickname}</span>
+                <span className="text-muted-foreground text-xs">
+                  {feed.cAt}
+                </span>
+              </div>
             </div>
-          </div>
+          </Link>
         </CardContent>
       )}
     </Card>

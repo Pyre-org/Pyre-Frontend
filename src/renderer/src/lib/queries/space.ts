@@ -40,7 +40,7 @@ export const useGetSpaces = (
 ) => {
   return useQuery({
     ...options,
-    queryKey: QUERY_KEYS.space.list(params),
+    queryKey: QUERY_KEYS.space.list.general(params),
     queryFn: () => getSpaces(params),
   });
 };
@@ -78,7 +78,7 @@ export const useCreateSpaceMutation = (
     ...options,
     mutationFn: createSpace,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list.all });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -103,7 +103,7 @@ export const useLocateSpaceMutation = (
     ...options,
     mutationFn: locateSpace,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list.all });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -127,7 +127,7 @@ export const useUpdateSpaceMutation = (
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.space.single(variables.spaceId).all,
       });
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list.all });
       options?.onSuccess?.(data, variables, context);
     },
   });
@@ -147,7 +147,7 @@ export const useDeleteSpaceMutation = (
     ...options,
     mutationFn: deleteSpace,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.space.list.all });
       options?.onSuccess?.(data, variables, context);
     },
   });

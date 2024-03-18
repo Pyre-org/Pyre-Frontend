@@ -63,6 +63,7 @@ function useCapture({ setOpenPopup }: UseCaptureProps) {
         },
       );
     }
+
     if (profileData?.spaceId) {
       uploadFeedMutation.mutate(
         { ...data, spaceId: profileData.spaceId },
