@@ -39,7 +39,9 @@ function ProfileEditCard() {
             />
           }
           imageUrl={imageUrl?.[0]?.url}
-          resetImageUrl={() => methods.setValue("profilePictureUrl", [])}
+          resetImageUrl={() =>
+            methods.setValue("profilePictureUrl", [], { shouldDirty: true })
+          }
         />
         <FormTextarea
           control={methods.control}

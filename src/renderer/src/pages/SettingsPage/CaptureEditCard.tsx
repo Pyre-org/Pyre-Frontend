@@ -1,5 +1,6 @@
 import FormCheckbox from "@renderer/components/form/FormCheckbox";
 import FormComboBox from "@renderer/components/form/FormCombobox";
+import { Button } from "@renderer/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,7 +14,7 @@ import { useGetSpaces } from "@renderer/lib/queries/space";
 import { EditProfileSchemaType } from "@renderer/lib/schemas/EditProfileSchema";
 import { cn } from "@renderer/lib/utils";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 function CaptureEditCard() {
@@ -30,6 +31,10 @@ function CaptureEditCard() {
   const roomId = useWatch({
     control: methods.control,
     name: "selectedRoomId",
+  });
+  const spaceId = useWatch({
+    control: methods.control,
+    name: "selectedSpaceId",
   });
   const { data: channelData } = useGetMyChannels({ keyword: channelKeyword });
   const { data: roomData } = useGetMyRooms(
@@ -55,6 +60,10 @@ function CaptureEditCard() {
     label: space.title,
     value: space.id,
   }));
+
+  useEffect(() => {
+    console.log(methods.getValues());
+  }, [methods]);
 
   return (
     <Card>
@@ -104,6 +113,24 @@ function CaptureEditCard() {
                 options={spaceOptions}
               />
             </div>
+          )}
+          {spaceId && (
+            <Button
+              variant="destructive"
+              type="button"
+              className="mt-4"
+              fullWidth
+              onClick={() => {
+                methods.reset({
+                  ...methods.getValues(),
+                  selectedChannelId: undefined,
+                  selectedRoomId: undefined,
+                  selectedSpaceId: undefined,
+                });
+              }}
+            >
+              기본 설정 초기화
+            </Button>
           )}
         </div>
 

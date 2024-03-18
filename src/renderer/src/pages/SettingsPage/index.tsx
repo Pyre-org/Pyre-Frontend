@@ -28,22 +28,8 @@ function SettingsPage() {
   });
   const editProfileMutation = useEditProfileMutation();
 
-  const defaultValues: EditProfileSchemaType = {
-    profilePictureUrl: profileData?.profilePictureUrl
-      ? [{ url: profileData.profilePictureUrl }]
-      : [],
-    nickname: profileData?.nickname ?? "",
-    shortDescription: profileData?.shortDescription ?? "",
-    selectedRoomId: spaceData?.roomId ?? undefined,
-    selectedSpaceId: feedSettings?.spaceId ?? undefined,
-    selectedChannelId: feedSettings?.channelId ?? undefined,
-    useCaptureRoom: feedSettings?.useCaptureRoom ?? false,
-    useFeedInfo: feedSettings?.useFeedInfo ?? false,
-  };
-
   const methods = useForm<EditProfileSchemaType>({
     resolver: zodResolver(EditProfileSchema),
-    defaultValues,
   });
 
   const onSubmit = (data) => {
@@ -67,8 +53,21 @@ function SettingsPage() {
   };
 
   useEffect(() => {
-    methods.reset(defaultValues);
-  }, [profileData, feedSettings]);
+    if (!profileData || !feedSettings || !spaceData) return;
+    const defaultValues: EditProfileSchemaType = {
+      profilePictureUrl: profileData?.profilePictureUrl
+        ? [{ url: profileData.profilePictureUrl }]
+        : [],
+      nickname: profileData?.nickname ?? "",
+      shortDescription: profileData?.shortDescription ?? "",
+      selectedRoomId: spaceData?.roomId ?? undefined,
+      selectedSpaceId: feedSettings?.spaceId ?? undefined,
+      selectedChannelId: feedSettings?.channelId ?? undefined,
+      useCaptureRoom: feedSettings?.useCaptureRoom ?? false,
+      useFeedInfo: feedSettings?.useFeedInfo ?? false,
+    };
+    if (!methods.formState.isDirty) methods.reset(defaultValues);
+  }, [profileData, feedSettings, spaceData]);
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -81,12 +80,7 @@ function SettingsPage() {
           <ProfileEditCard />
           <CaptureEditCard />
           <div className="flex justify-end">
-            <Button
-              type="submit"
-              disabled={
-                editProfileMutation.isPending || !methods.formState.isDirty
-              }
-            >
+            <Button type="submit" disabled={editProfileMutation.isPending}>
               <SaveIcon className="size-4 mr-2" />
               <span>설정 저장</span>
             </Button>
