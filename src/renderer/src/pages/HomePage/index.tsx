@@ -1,4 +1,5 @@
 import Loader from "@renderer/components/common/Loader";
+import FeedDeleteDialog from "@renderer/components/feed/FeedDeleteDialog";
 import {
   Avatar,
   AvatarFallback,
@@ -6,6 +7,12 @@ import {
 } from "@renderer/components/ui/avatar";
 import { Button } from "@renderer/components/ui/button";
 import { Card, CardContent, CardHeader } from "@renderer/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@renderer/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger } from "@renderer/components/ui/tabs";
 import { useMyUser } from "@renderer/lib/queries/auth";
 import {
@@ -17,7 +24,14 @@ import { useGetSpace } from "@renderer/lib/queries/space";
 import { cn } from "@renderer/lib/utils";
 import { useFeedStore } from "@renderer/stores/FeedStore";
 import { Feed } from "@renderer/types/schema";
-import { ChevronRightIcon, GridIcon, ListIcon } from "lucide-react";
+import {
+  ChevronRightIcon,
+  EditIcon,
+  GridIcon,
+  ListIcon,
+  MoreHorizontal,
+  Trash2Icon,
+} from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -141,93 +155,88 @@ function FeedGridView({ feeds }: { feeds: Feed[] }) {
 
 const FeedItem: React.FC<{ feed: Feed }> = ({ feed }) => {
   const { data: myUser } = useMyUser();
-  const { open } = useFeedStore((state) => state.actions);
   const { data: spaceData } = useGetSpace(feed.spaceId);
   const { data: roomData } = useGetRoom(spaceData?.roomId!, {
     enabled: !!spaceData?.roomId,
   });
+  const canEdit = myUser?.id === feed.userId;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-col gap-2">
-        <div className="flex gap-2 items-center truncate">
-          <Avatar className="size-8">
-            <AvatarImage src={roomData?.imageUrl} />
-            <AvatarFallback>
-              <span>{roomData?.title?.[0]?.toUpperCase()}</span>
-            </AvatarFallback>
-          </Avatar>
-          <div className="truncate text-sm font-semibold flex items-center gap-2">
-            <Button variant="link" className="p-0" asChild>
-              <Link
-                to={`/channels/${roomData?.channelId}/rooms/${roomData?.id}/spaces`}
-              >
-                {roomData?.title}
-              </Link>
-            </Button>
-            <ChevronRightIcon className="size-4" />
-            <Button variant="link" className="p-0" asChild>
-              <Link
-                to={`/channels/${roomData?.channelId}/rooms/${roomData?.id}/spaces/${spaceData?.id}`}
-              >
-                {spaceData?.title}
-              </Link>
-            </Button>
-          </div>
-        </div>
-
-        <h2 className="font-semibold truncate">{feed.title}</h2>
-        <img
-          src={feed.imageUrl}
-          alt="img"
-          className={cn(myUser?.id === feed.userId && "cursor-pointer")}
-          onClick={() => myUser?.id === feed.userId && open(feed)}
-        />
-      </CardHeader>
-      {feed.nickname && (
-        <CardContent>
-          <Link to={`/users/${feed.userId}`}>
-            <div className="flex gap-2">
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={feed.profilePictureUrl} />
+    <>
+      <Card>
+        <CardHeader className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 justify-between">
+            <div className="flex gap-2 items-center truncate">
+              <Avatar className="size-8">
+                <AvatarImage src={roomData?.imageUrl} />
                 <AvatarFallback>
-                  <span>{feed.nickname[0].toUpperCase()}</span>
+                  <span>{roomData?.title?.[0]?.toUpperCase()}</span>
                 </AvatarFallback>
               </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold">{feed.nickname}</span>
-                <span className="text-muted-foreground text-xs">
-                  {feed.cAt}
-                </span>
+              <div className="truncate text-sm font-semibold flex items-center gap-2">
+                <Button variant="link" className="p-0" asChild>
+                  <Link
+                    to={`/channels/${roomData?.channelId}/rooms/${roomData?.id}/spaces`}
+                  >
+                    {roomData?.title}
+                  </Link>
+                </Button>
+                <ChevronRightIcon className="size-4" />
+                <Button variant="link" className="p-0" asChild>
+                  <Link
+                    to={`/channels/${roomData?.channelId}/rooms/${roomData?.id}/spaces/${spaceData?.id}`}
+                  >
+                    {spaceData?.title}
+                  </Link>
+                </Button>
               </div>
             </div>
-          </Link>
-        </CardContent>
-      )}
-    </Card>
+            {canEdit && <EditMenu feed={feed} />}
+          </div>
+
+          <h2 className="font-semibold truncate">{feed.title}</h2>
+          <img src={feed.imageUrl} alt="img" />
+        </CardHeader>
+        {feed.nickname && (
+          <CardContent>
+            <Link to={`/users/${feed.userId}`}>
+              <div className="flex gap-2">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={feed.profilePictureUrl} />
+                  <AvatarFallback>
+                    <span>{feed.nickname[0].toUpperCase()}</span>
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold">{feed.nickname}</span>
+                  <span className="text-muted-foreground text-xs">
+                    {feed.cAt}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </CardContent>
+        )}
+      </Card>
+    </>
   );
 };
 
 const FeedGridItem = ({ feed }: { feed: Feed }) => {
   const { data: myUser } = useMyUser();
-  const { open } = useFeedStore((state) => state.actions);
+  const canEdit = myUser?.id === feed.userId;
+
   return (
     <Card className="flex flex-col">
-      <CardHeader
-        className={cn(
-          "flex gap-2 items-center flex-1",
-          myUser?.id === feed.userId && "cursor-pointer",
-        )}
-        onClick={() => myUser?.id === feed.userId && open(feed)}
-      >
+      <CardHeader className={cn("flex gap-2 items-center flex-1")}>
         <img
           src={feed.imageUrl}
           alt="img"
           className="object-cover aspect-square"
         />
       </CardHeader>
-      {feed.nickname && (
-        <CardContent>
+      <CardContent className="flex justify-between gap-2">
+        {feed.nickname && (
           <Link to={`/users/${feed.userId}`}>
             <div className="flex gap-2">
               <Avatar className="w-8 h-8">
@@ -244,8 +253,45 @@ const FeedGridItem = ({ feed }: { feed: Feed }) => {
               </div>
             </div>
           </Link>
-        </CardContent>
-      )}
+        )}
+        {canEdit && (
+          <div className="ml-auto shrink-0">
+            <EditMenu feed={feed} />
+          </div>
+        )}
+      </CardContent>
     </Card>
+  );
+};
+
+export const EditMenu = ({ feed }: { feed: Feed }) => {
+  const { open } = useFeedStore((state) => state.actions);
+  const [openDelete, setOpenDelete] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="ghost" className="shrink-0">
+            <MoreHorizontal className="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => open(feed)}>
+            <EditIcon className="size-4 mr-2" />
+            <span>피드 수정</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOpenDelete(true)}>
+            <Trash2Icon className="size-4 mr-2" />
+            <span>피드 삭제</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <FeedDeleteDialog
+        feedId={feed.id}
+        open={openDelete}
+        onOpenChange={setOpenDelete}
+      />
+    </>
   );
 };
