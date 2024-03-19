@@ -6,7 +6,7 @@ import {
 import { buttonVariants } from "../ui/button";
 import { cn } from "@renderer/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { RoomRole } from "@renderer/types/schema";
+import { RoomMember, RoomRole } from "@renderer/types/schema";
 import { ReactNode } from "react";
 import {
   Select,
@@ -38,13 +38,41 @@ const RoleBadges: Partial<Record<RoomRole, ReactNode>> = {
 };
 
 function RoomUserList({ roomId }: RoomUserListProps) {
-  const { data: myUser } = useMyUser();
-  const { data: myRoomRole } = useGetRoomRole(roomId);
   const { data: memberData } = useGetRoomMembers(roomId);
-  const updateRoleMutation = useUpdateRoomRoleMutation();
-  const canEdit = myRoomRole === "ROOM_ADMIN" || myRoomRole === "ROOM_MODE";
   const members = memberData?.hits ?? [];
   const total = memberData?.total ?? 0;
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h2 className="text-sm font-semibold">
+        멤버 목록 ({total.toLocaleString()})
+      </h2>
+      <div className="flex flex-col gap-1">
+        {members.map((member) => (
+          <RoomUserListItem
+            key={member.userId}
+            member={member}
+            roomId={roomId}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default RoomUserList;
+
+function RoomUserListItem({
+  member,
+  roomId,
+}: {
+  member: RoomMember;
+  roomId: string;
+}) {
+  const { data: myUser } = useMyUser();
+  const { data: myRoomRole } = useGetRoomRole(roomId);
+  const updateRoleMutation = useUpdateRoomRoleMutation();
+  const canEdit = myRoomRole === "ROOM_ADMIN" || myRoomRole === "ROOM_MODE";
 
   const handleUpdateRole = (userId: string, role: RoomRole) => {
     updateRoleMutation.mutate(
@@ -63,58 +91,43 @@ function RoomUserList({ roomId }: RoomUserListProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-sm font-semibold">
-        멤버 목록 ({total.toLocaleString()})
-      </h2>
-      <div className="flex flex-col gap-1">
-        {members.map((member) => {
-          return (
-            <div
-              key={member.userId}
-              className={cn(
-                buttonVariants({ variant: "ghost" }),
-                "flex justify-between py-6",
-              )}
-            >
-              <div className="flex items-center gap-2">
-                <Avatar className="size-8">
-                  <AvatarImage src={member.profileImageUrl} alt="profile" />
-                  <AvatarFallback>
-                    {member.nickname[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                {RoleBadges[member.role]}
-                <span>{member.nickname}</span>
-              </div>
-              <div>
-                <Select
-                  value={member.role}
-                  onValueChange={(role) =>
-                    handleUpdateRole(member.userId, role as RoomRole)
-                  }
-                  disabled={!canEdit || member.userId === myUser?.id}
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(RoleLabels).map(([role, label]) => {
-                      return (
-                        <SelectItem key={role} value={role}>
-                          {label}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          );
-        })}
+    <div
+      key={member.userId}
+      className={cn(
+        buttonVariants({ variant: "ghost" }),
+        "flex justify-between py-6",
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Avatar className="size-8">
+          <AvatarImage src={member.profileImageUrl} alt="profile" />
+          <AvatarFallback>{member.nickname[0].toUpperCase()}</AvatarFallback>
+        </Avatar>
+        {RoleBadges[member.role]}
+        <span>{member.nickname}</span>
+      </div>
+      <div>
+        <Select
+          value={member.role}
+          onValueChange={(role) =>
+            handleUpdateRole(member.userId, role as RoomRole)
+          }
+          disabled={!canEdit || member.userId === myUser?.id}
+        >
+          <SelectTrigger className="w-[120px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(RoleLabels).map(([role, label]) => {
+              return (
+                <SelectItem key={role} value={role}>
+                  {label}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );
 }
-
-export default RoomUserList;

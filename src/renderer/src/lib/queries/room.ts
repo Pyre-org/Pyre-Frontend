@@ -3,6 +3,7 @@ import {
   ListResponse,
   Room,
   RoomBody,
+  RoomMember,
   RoomRole,
   RoomWithSpace,
 } from "@renderer/types/schema";
@@ -423,16 +424,8 @@ export const useGetInvitationInfo = (
   });
 };
 
-interface MemberResponse {
-  userId: string;
-  nickname: string;
-  profileImageUrl: string;
-  role: RoomRole;
-  isOwner: boolean;
-}
-
 export const getRoomMembers = async (roomId: string) => {
-  const res = await api.get<ListResponse<MemberResponse>>(
+  const res = await api.get<ListResponse<RoomMember>>(
     `${baseUrl}/members/${roomId}`,
   );
   return res.data;
@@ -442,9 +435,9 @@ export const useGetRoomMembers = (
   roomId: string,
   options?: Omit<
     UseQueryOptions<
-      ListResponse<MemberResponse>,
+      ListResponse<RoomMember>,
       AxiosError<BaseError>,
-      ListResponse<MemberResponse>
+      ListResponse<RoomMember>
     >,
     "queryKey" | "queryFn"
   >,

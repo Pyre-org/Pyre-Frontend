@@ -188,3 +188,11 @@ export interface FeedSettings {
   captureRoomSpaceId: string;
   spaceId: string;
 }
+
+export interface RoomMember {
+  userId: string;
+  nickname: string;
+  profileImageUrl: string;
+  role: RoomRole;
+  isOwner: boolean;
+}

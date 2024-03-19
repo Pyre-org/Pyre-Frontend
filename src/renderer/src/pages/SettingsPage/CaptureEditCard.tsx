@@ -14,7 +14,7 @@ import { useGetSpaces } from "@renderer/lib/queries/space";
 import { EditProfileSchemaType } from "@renderer/lib/schemas/EditProfileSchema";
 import { cn } from "@renderer/lib/utils";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 function CaptureEditCard() {
@@ -60,10 +60,6 @@ function CaptureEditCard() {
     label: space.title,
     value: space.id,
   }));
-
-  useEffect(() => {
-    console.log(methods.getValues());
-  }, [methods]);
 
   return (
     <Card>
@@ -121,12 +117,9 @@ function CaptureEditCard() {
               className="mt-4"
               fullWidth
               onClick={() => {
-                methods.reset({
-                  ...methods.getValues(),
-                  selectedChannelId: undefined,
-                  selectedRoomId: undefined,
-                  selectedSpaceId: undefined,
-                });
+                methods.resetField("selectedChannelId");
+                methods.resetField("selectedRoomId");
+                methods.resetField("selectedSpaceId");
               }}
             >
               기본 설정 초기화
