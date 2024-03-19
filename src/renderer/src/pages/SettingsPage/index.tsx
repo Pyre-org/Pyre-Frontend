@@ -53,7 +53,6 @@ function SettingsPage() {
   };
 
   useEffect(() => {
-    if (!profileData || !feedSettings || !spaceData) return;
     const defaultValues: EditProfileSchemaType = {
       profilePictureUrl: profileData?.profilePictureUrl
         ? [{ url: profileData.profilePictureUrl }]

@@ -117,9 +117,12 @@ function CaptureEditCard() {
               className="mt-4"
               fullWidth
               onClick={() => {
-                methods.resetField("selectedChannelId");
-                methods.resetField("selectedRoomId");
-                methods.resetField("selectedSpaceId");
+                methods.reset({
+                  ...methods.getValues(),
+                  selectedChannelId: "",
+                  selectedRoomId: "",
+                  selectedSpaceId: "",
+                });
               }}
             >
               기본 설정 초기화
