@@ -103,8 +103,8 @@ function RoomUserListItem({
           <AvatarImage src={member.profileImageUrl} alt="profile" />
           <AvatarFallback>{member.nickname[0].toUpperCase()}</AvatarFallback>
         </Avatar>
-        {RoleBadges[member.role]}
         <span>{member.nickname}</span>
+        {RoleBadges[member.role]}
       </div>
       <div>
         <Select
