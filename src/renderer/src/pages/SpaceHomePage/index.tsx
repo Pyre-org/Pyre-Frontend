@@ -1,3 +1,4 @@
+import RoomUserList from "@renderer/components/room/RoomUserList";
 import {
   Avatar,
   AvatarFallback,
@@ -104,6 +105,7 @@ function SpaceHomePage() {
         </div>
         <Separator />
       </div>
+      <RoomUserList roomId={roomId!} />
     </div>
   );
 }

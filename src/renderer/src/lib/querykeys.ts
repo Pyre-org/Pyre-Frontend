@@ -54,6 +54,7 @@ export const QUERY_KEYS = {
       all: ["room", "single", id],
       sub: ["room", "single", id, "subscription"],
       role: ["room", "single", id, "role"],
+      members: ["room", "single", id, "members"],
     }),
     list: {
       all: ["room", "list"],

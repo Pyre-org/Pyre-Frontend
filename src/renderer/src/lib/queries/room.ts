@@ -422,3 +422,68 @@ export const useGetInvitationInfo = (
     queryFn: () => getInvitationInfo(invitationId),
   });
 };
+
+interface MemberResponse {
+  userId: string;
+  nickname: string;
+  profileImageUrl: string;
+  role: RoomRole;
+  isOwner: boolean;
+}
+
+export const getRoomMembers = async (roomId: string) => {
+  const res = await api.get<ListResponse<MemberResponse>>(
+    `${baseUrl}/members/${roomId}`,
+  );
+  return res.data;
+};
+
+export const useGetRoomMembers = (
+  roomId: string,
+  options?: Omit<
+    UseQueryOptions<
+      ListResponse<MemberResponse>,
+      AxiosError<BaseError>,
+      ListResponse<MemberResponse>
+    >,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    ...options,
+    queryKey: QUERY_KEYS.room.single(roomId).members,
+    queryFn: () => getRoomMembers(roomId),
+  });
+};
+
+interface UpdateRoomRoleBody {
+  userId: string;
+  roomId: string;
+  role: RoomRole;
+}
+
+export const updateRoomRole = async (body: UpdateRoomRoleBody) => {
+  const res = await api.patch<string>(`${baseUrl}/role`, body);
+  return res.data;
+};
+
+export const useUpdateRoomRoleMutation = (
+  options?: UseMutationOptions<
+    string,
+    AxiosError<BaseError>,
+    UpdateRoomRoleBody
+  >,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...options,
+    mutationFn: updateRoomRole,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.room.single(variables.roomId).members,
+      });
+      options?.onSuccess?.(data, variables, context);
+    },
+  });
+};
