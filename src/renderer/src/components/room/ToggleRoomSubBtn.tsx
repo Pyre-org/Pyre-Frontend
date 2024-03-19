@@ -1,46 +1,46 @@
-import { StarIcon } from "lucide-react";
-import { Button } from "../ui/button";
 import {
-  useCheckSubscription,
-  useJoinChannelMutation,
-  useLeaveChannelMutation,
-} from "@renderer/lib/queries/channel";
-import { useTheme } from "../common/ThemeProvider";
+  useCheckSubscribtion,
+  useJoinRoomMutation,
+  useLeaveRoomMutation,
+} from "@renderer/lib/queries/room";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { LogInIcon, LogOutIcon } from "lucide-react";
 
 interface ToggleRoomSubBtnProps {
   channelId: string;
+  roomId: string;
 }
 
-function ToggleRoomSubBtn({ channelId }: ToggleRoomSubBtnProps) {
-  const joinMutation = useJoinChannelMutation();
-  const leaveMutation = useLeaveChannelMutation();
-  const { data: subData } = useCheckSubscription(channelId!);
-  const { theme } = useTheme();
-
-  const isSubscribed = subData;
+function ToggleRoomSubBtn({ roomId, channelId }: ToggleRoomSubBtnProps) {
+  const joinMutation = useJoinRoomMutation();
+  const leaveMutation = useLeaveRoomMutation();
+  const { data: isSubscribed } = useCheckSubscribtion(roomId!);
   const subPending = joinMutation.isPending || leaveMutation.isPending;
 
   const handleSubscribe = () => {
     if (subPending) return;
     if (!isSubscribed) {
-      joinMutation.mutate(channelId!, {
-        onSuccess: () => {
-          toast("채널 구독에 성공했습니다");
+      joinMutation.mutate(
+        { roomId, channelId },
+        {
+          onSuccess: () => {
+            toast("룸 참가에 성공했습니다");
+          },
+          onError: (error) => {
+            toast("룸 참가에 실패했습니다", {
+              description: error.response?.data.reason,
+            });
+          },
         },
-        onError: (error) => {
-          toast("채널 구독에 실패했습니다", {
-            description: error.response?.data.reason,
-          });
-        },
-      });
+      );
     } else {
-      leaveMutation.mutate(channelId!, {
+      leaveMutation.mutate(roomId!, {
         onSuccess: () => {
-          toast("채널 구독을 취소했습니다");
+          toast("룸 나가기에 성공했습니다");
         },
         onError: (error) => {
-          toast("채널 구독 취소에 실패했습니다", {
+          toast("룸 나가기에 실패했습니다", {
             description: error.response?.data.reason,
           });
         },
@@ -49,14 +49,17 @@ function ToggleRoomSubBtn({ channelId }: ToggleRoomSubBtnProps) {
   };
 
   return (
-    <Button variant="outline" disabled={subPending} onClick={handleSubscribe}>
-      <StarIcon
-        className="size-4 mr-2"
-        {...(isSubscribed
-          ? { fill: theme !== "light" ? "white" : "black" }
-          : {})}
-      />
-      {isSubscribed ? "구독 중" : "채널 구독"}
+    <Button
+      variant={isSubscribed ? "destructive" : "outline"}
+      disabled={subPending}
+      onClick={handleSubscribe}
+    >
+      {isSubscribed ? (
+        <LogOutIcon className="size-4 mr-2" />
+      ) : (
+        <LogInIcon className="size-4 mr-2" />
+      )}
+      {isSubscribed ? "룸 나가기" : "룸 참가하기"}
     </Button>
   );
 }

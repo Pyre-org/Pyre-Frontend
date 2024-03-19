@@ -10,7 +10,7 @@ import { Link, useParams } from "react-router-dom";
 import RoomCreateBtn from "./RoomCreateBtn";
 import { Separator } from "@renderer/components/ui/separator";
 import RoomList from "./RoomList";
-import ToggleRoomSubBtn from "@renderer/components/room/ToggleRoomSubBtn";
+import ToggleChannelSubBtn from "@renderer/components/channel/ToggleChannelSubBtn";
 
 function PublicRoomListPage() {
   const { channelId } = useParams<{ channelId: string }>();
@@ -38,7 +38,7 @@ function PublicRoomListPage() {
               <p className="text-sm">{channelData?.title}</p>
             </div>
             <div>
-              <ToggleRoomSubBtn channelId={channelId!} />
+              <ToggleChannelSubBtn channelId={channelId!} />
             </div>
           </div>
           <div className="my-2 text-xs text-muted-foreground flex items-center gap-2 mb-4">

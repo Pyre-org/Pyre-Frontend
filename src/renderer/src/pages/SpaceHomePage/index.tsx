@@ -1,4 +1,5 @@
 import RoomUserList from "@renderer/components/room/RoomUserList";
+import ToggleRoomSubBtn from "@renderer/components/room/ToggleRoomSubBtn";
 import {
   Avatar,
   AvatarFallback,
@@ -24,7 +25,10 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 function SpaceHomePage() {
-  const { roomId } = useParams<{ roomId: string }>();
+  const { roomId, channelId } = useParams<{
+    roomId: string;
+    channelId: string;
+  }>();
   const [showList, setShowList] = useState(false);
   const { open: openDialog } = useRoomStore((state) => state.actions);
   const { data: roomData } = useGetRoom(roomId!, { enabled: !!roomId });
@@ -70,29 +74,32 @@ function SpaceHomePage() {
               </Avatar>
               <p className="text-sm font-semibold">{roomData?.title}</p>
             </div>
-            {(roomRole === "ROOM_ADMIN" || roomRole === "ROOM_MODE") && (
-              <DropdownMenu open={showList} onOpenChange={setShowList}>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={() => setShowList(true)}
-                  >
-                    <MoreHorizontalIcon className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={handleOpenDialog}>
-                    <SettingsIcon className="size-4 mr-3" />
-                    <span>룸 정보 수정</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleCreateInvite}>
-                    <MailIcon className="size-4 mr-3" />
-                    <span>초대 링크 생성</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+            <div className="flex items-center gap-2 shrink-0">
+              <ToggleRoomSubBtn roomId={roomId!} channelId={channelId!} />
+              {(roomRole === "ROOM_ADMIN" || roomRole === "ROOM_MODE") && (
+                <DropdownMenu open={showList} onOpenChange={setShowList}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => setShowList(true)}
+                    >
+                      <MoreHorizontalIcon className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={handleOpenDialog}>
+                      <SettingsIcon className="size-4 mr-3" />
+                      <span>룸 정보 수정</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleCreateInvite}>
+                      <MailIcon className="size-4 mr-3" />
+                      <span>초대 링크 생성</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
           </div>
           <div className="my-2 text-xs text-muted-foreground flex items-center gap-2 mb-4">
             <span>룸의 멤버 {roomData?.memberCounts}명</span>·
