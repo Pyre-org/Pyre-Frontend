@@ -28,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@renderer/components/ui/dropdown-menu";
-import FeedDeleteDialog from "./FeedDeleteDialog";
+import FeedDeleteDialog from "../../components/feed/FeedDeleteDialog";
 import { useState } from "react";
 
 function FeedDetail() {

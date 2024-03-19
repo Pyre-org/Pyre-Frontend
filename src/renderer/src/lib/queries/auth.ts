@@ -15,7 +15,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../querykeys";
-import { useAuthStoreActions } from "../../stores/authStore";
+import { useAuthStoreActions } from "../../stores/AuthStore";
 
 const baseUrl = "/auth-service/user";
 

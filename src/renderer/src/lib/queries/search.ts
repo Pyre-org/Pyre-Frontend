@@ -11,7 +11,7 @@ import {
 import { AxiosError } from "axios";
 import { QUERY_KEYS } from "../querykeys";
 
-const baseUrl = "/search";
+const baseUrl = "/community/search";
 
 export interface SearchQueryParams {
   page?: number;

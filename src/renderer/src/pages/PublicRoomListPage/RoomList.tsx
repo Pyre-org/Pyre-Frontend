@@ -2,21 +2,36 @@ import { Button } from "@renderer/components/ui/button";
 import { Input } from "@renderer/components/ui/input";
 import { useGetRooms } from "@renderer/lib/queries/room";
 import { SearchIcon } from "lucide-react";
-import { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useRef } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import RoomItem from "./RoomItem";
+import Pagination from "@renderer/components/common/Pagination";
+
+const SIZE = 15;
 
 function RoomList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword") || "";
+  const page = parseInt(searchParams.get("page") || "0");
+  const size = parseInt(searchParams.get("size") || SIZE.toString());
   const { channelId } = useParams<{ channelId: string }>();
-  const [keyword, setKeyword] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const { data: roomData } = useGetRooms({ channelId: channelId!, keyword });
+  const { data: roomData } = useGetRooms({
+    channelId: channelId!,
+    keyword,
+    page,
+    size,
+  });
 
   const handleSearch = () => {
     if (!inputRef.current) return;
 
-    setKeyword(inputRef.current.value);
+    setSearchParams(() => {
+      const searchParams = new URLSearchParams();
+      searchParams.set("keyword", inputRef.current?.value ?? "");
+      return searchParams;
+    });
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -62,6 +77,9 @@ function RoomList() {
           {keyword ? "검색 결과가 없습니다" : "채널에 룸이 없습니다"}
         </div>
       )}
+      <div className="mt-6">
+        <Pagination total={total} linkCount={5} perPage={size} />
+      </div>
     </div>
   );
 }

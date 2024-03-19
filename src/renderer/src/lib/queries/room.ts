@@ -25,6 +25,8 @@ interface ChannelIdParams {
 
 interface GetRoomsParams extends ChannelIdParams {
   keyword?: string;
+  page?: number;
+  size?: number;
 }
 
 export const getRooms = async (params: GetRoomsParams) => {
@@ -37,7 +39,7 @@ export const getRooms = async (params: GetRoomsParams) => {
 };
 
 export const useGetRooms = (
-  { channelId, keyword }: GetRoomsParams,
+  { channelId, keyword, page = 0, size = 10 }: GetRoomsParams,
   options?: Omit<
     UseQueryOptions<
       ListResponse<Room>,
@@ -50,6 +52,8 @@ export const useGetRooms = (
   const params = {
     channelId,
     keyword,
+    page,
+    size,
   };
 
   return useQuery({
