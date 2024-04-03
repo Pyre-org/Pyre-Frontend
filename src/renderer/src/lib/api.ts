@@ -1,6 +1,8 @@
 import axios from "axios";
 import { getToken, setToken } from "../stores/AuthStore";
-import { refresh } from "./queries/auth";
+import { ITokenResponse, refresh } from "./queries/auth";
+
+let refreshPromise: Promise<ITokenResponse> | null = null;
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -28,7 +30,8 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const { access_token } = await refresh();
+        if (!refreshPromise) refreshPromise = refresh();
+        const { access_token } = await refreshPromise;
         if (!access_token) {
           return Promise.reject(error);
         }
@@ -37,6 +40,8 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (e) {
         console.log(e);
+      } finally {
+        refreshPromise = null;
       }
     }
     return Promise.reject(error);
